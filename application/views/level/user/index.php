@@ -1,4 +1,5 @@
 <?php $this->load->view('layouts/user/head'); ?>
+<link rel="stylesheet" href="<?= base_url() ?>public/template/vendor/libs/sweetalert2/sweetalert2.css" />
 <?php $this->load->view('layouts/user/header'); ?>
 <nav class="navbar navbar--show navbar-expand-lg navbar-light" style="background: #2F5596 !important;">
     <div class="container">
@@ -164,7 +165,7 @@
             <p class="">
               Silahkan memberikan kritik dan saran terhadap aplikasi!
           </p>
-          <a style="margin-top:-10px" href="#" class="btn btn-success"><i class='bx bxs-paper-plane'></i> Kritik Saran</a>
+          <a style="margin-top:-10px" href="<?= base_url('krisan') ?>" class="btn btn-success"><i class='bx bxs-paper-plane'></i> Kritik Saran</a>
          </div>
       </div>
    </div>
@@ -219,13 +220,52 @@
 
 <?php $this->load->view('layouts/user/menu'); ?>
 <?php $this->load->view('layouts/user/footer'); ?>
-
 <script>
    document.addEventListener('DOMContentLoaded', function() {
       var myCarousel = new bootstrap.Carousel(document.getElementById('carouselExampleIndicators'), {
       interval: 1000 // Interval dalam milidetik (5000 ms = 5 detik)
       });
    });
+
+   $('.add_keranjang').click(function() {
+    // Mengambil data yang perlu ditambahkan ke database
+    var idProduk = $(this).data('idproduk');
+    var data = {
+      idProduk: idProduk
+    };
+
+    $.ajax({
+      url: '<?= base_url('keranjang/add') ?>', // Ganti dengan URL endpoint Anda
+      type: 'POST', // Metode HTTP yang digunakan (POST, GET, dll.)
+      data: data, // Data yang dikirim ke server
+      success: function(response) {
+        if (response.success == true) {
+                Swal.fire({
+                 title: 'Success!',
+                 text: response.msg,
+                 type: 'success',
+                 customClass: {
+                   confirmButton: 'btn btn-success'
+                 },
+                 buttonsStyling: false
+                });
+        }else{
+                Swal.fire({
+                 title: 'Error!',
+                 text: response.msg,
+                 type: 'error',
+                 customClass: {
+                   confirmButton: 'btn btn-danger'
+                 },
+                 buttonsStyling: false
+                });
+        }
+      },
+      error: function(request, status, error) {
+        alert(request.responseText);
+        },
+    });
+  });
 </script>
 
 </body>
