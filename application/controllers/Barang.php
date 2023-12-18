@@ -1,7 +1,8 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Barang extends CI_Controller {
+class Barang extends CI_Controller
+{
 
 	function __construct()
 	{
@@ -14,11 +15,13 @@ class Barang extends CI_Controller {
 		$this->load->view('level/admin/master_barang');
 	}
 
-	public function barang_masuk(){
+	public function barang_masuk()
+	{
 		$this->load->view('level/admin/barang_masuk');
 	}
 
-	public function barang_masuk_add(){
+	public function barang_masuk_add()
+	{
 		$this->load->view('level/admin/barang_masuk_add');
 	}
 }

@@ -1,11 +1,11 @@
 <?php $this->load->view('layouts/user/head'); ?>
 <link rel="stylesheet" href="<?= base_url('') ?>public/template/vendor/libs/sweetalert2/sweetalert2.css" />
 <style>
-	.info-list:not(:last-child) > div {
+	.info-list:not(:last-child)>div {
 		margin-bottom: 1.6rem;
 	}
 
-	.info-list > div {
+	.info-list>div {
 		margin-top: 0.4rem;
 	}
 
@@ -17,21 +17,13 @@
 		font-size: 1rem;
 	}
 
-	.navbar__left{
+	.navbar__left {
 		width: 4rem;
 		z-index: 2;
 	}
 
-	.navbar__left__icon,{
-		position: absolute;
-		font-size: 3.2rem;
-		color: #fff;
-		top: 50%;
-		transform: translate(0, -50%);
-	}
-
 	.avatar {
-		border-radius: 50%;
+		border-radius: 5%;
 		object-fit: cover;
 	}
 
@@ -40,7 +32,7 @@
 		height: 7.6rem;
 	}
 
-	.input{
+	.input {
 		margin-top: 0.4rem;
 		font-size: 1.1rem;
 		padding: 0;
@@ -57,8 +49,10 @@
 	<div class="container nav-bar__on-container">
 		<div class="navbar__left">
 			<a href="<?= base_url('akun') ?>">
-				<i class="navbar__left__icon bx bx-arrow-back fw-bold text-white" style="cursor:pointer;z-index: 2;"></i>
-			</a>  
+				<svg class="navbar__left__icon fw-bold text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);cursor:pointer;z-index: 2;">
+					<path d="M21 11H6.414l5.293-5.293-1.414-1.414L2.586 12l7.707 7.707 1.414-1.414L6.414 13H21z"></path>
+				</svg>
+			</a>
 		</div>
 		<div class="nav-bar__center">
 			<h1 class="nav-bar__center__title" style="font-family: gotham_fonts;color: white;line-height: 1.2;">Update Profile</h1>
@@ -69,7 +63,7 @@
 <section class="mt-1 mb-4">
 	<div class="container">
 		<div class="container text-center justify-content-center align-center mt-4">
-			<img src="https://cdn-icons-png.flaticon.com/512/219/219983.png" class="avatar avatar--large shadow" name="uploadImg" id="uploadImg">
+			<img src="<?= base_url('public/template/upload/user/' . $user['avatar']) ?>" class="avatar avatar--large shadow" name="uploadImg" id="uploadImg">
 		</div>
 		<div class="card mt-3">
 			<div class="card-body">
@@ -97,11 +91,12 @@
 					<div class="mb-3">
 						<label for="exampleFormControlInput1" class="form-label">Ganti Foto?</label>
 						<div class="input-group input-group-merge">
+							<input type="hidden" name="previous_avatar" value="<?= $user['avatar'] ?>">
 							<input type="file" name="avatar" id="avatarInput" class="input" placeholder="Ganti Profile" aria-label="Ganti Profile" aria-describedby="basic-icon-default-company2">
 						</div>
 					</div>
-					<button type="submit" class="btn btn-primary w-100">Simpan Perubahan</button>
-					<button data-bs-toggle="modal" data-bs-target="#ganti_password" type="button" class="btn btn-secondary mt-2 w-100"><i class="bx bx-key"></i> Ganti Password</button>
+					<button type="submit" id="simpan_perubahan" class="btn btn-primary w-100">Simpan Perubahan</button>
+					<button data-bs-toggle="modal" data-bs-target="#ganti_password" type="button" class="btn btn-secondary mt-2 w-100"><i class="fa fa-key"></i> Ganti Password</button>
 				</form>
 			</div>
 		</div>
@@ -124,7 +119,7 @@
 						<div class="input-group input-group-merge">
 							<label class="form-label" for="basic-icon-default-fullname">Password Baru</label>
 							<div class="input-group input-group-merge">
-								<span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-key"></i></span>
+								<span id="basic-icon-default-fullname2" class="input-group-text"><i class="fa fa-key"></i></span>
 								<input required id="password_baru" name="password_baru" type="text" class="form-control" placeholder="Password Baru" aria-label="John Doe" aria-describedby="basic-icon-default-fullname2">
 							</div>
 						</div>
@@ -133,7 +128,7 @@
 						<div class="input-group input-group-merge">
 							<label class="form-label" for="basic-icon-default-fullname">Konfirmasi Password</label>
 							<div class="input-group input-group-merge">
-								<span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-key"></i></span>
+								<span id="basic-icon-default-fullname2" class="input-group-text"><i class="fa fa-key"></i></span>
 								<input required id="konfirmasi_password_baru" name="konfirmasi_password_baru" type="text" class="form-control" placeholder="Konfirmasi Password" aria-label="John Doe" aria-describedby="basic-icon-default-fullname2">
 							</div>
 						</div>
@@ -150,89 +145,114 @@
 
 <?php $this->load->view('layouts/user/menu'); ?>
 <?php $this->load->view('layouts/user/footer'); ?>
-<script src="<?= base_url('') ?>public/template/vendor/libs/sweetalert2/sweetalert2.js" />
-	<script>
-		$('#changePW').submit(function(event) {
-    event.preventDefault(); // Prevent the default form submission behavior
-    // Get the form data
-    var formData = $(this).serialize();
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+	$('#changePW').submit(function(event) {
+		event.preventDefault(); // Prevent the default form submission behavior
+		// Get the form data
+		var formData = $(this).serialize();
 
-    // Perform the AJAX request
-    $.ajax({
-    	type: 'POST',
-    	url: '<?= base_url("akun/ganti_password") ?>',
-    	data: formData,
-    	success: function(response) {
-    		if (response.status == "success") {
-    			Swal.fire({
-    				title: 'Berhasil!',
-    				text: response.message,
-    				type: 'success',
-    				customClass: {
-    					confirmButton: 'btn btn-success'
-    				},
-    				buttonsStyling: false
-    			})
-    			$('#ganti_password').modal('hide');
-    		}else{
-    			Swal.fire({
-    				title: 'Failed!',
-    				text: response.message,
-    				type: 'error',
-    				customClass: {
-    					confirmButton: 'btn btn-danger'
-    				},
-    				buttonsStyling: false
-    			})
-    		}
-    	},
-    	error: function(request, status, error) {
-    		alert(request.responseText);
-    	},
-    });
+		// Perform the AJAX request
+		$.ajax({
+			type: 'POST',
+			url: '<?= base_url("akun/ganti_password") ?>',
+			data: formData,
+			success: function(response) {
+				if (response.status == "success") {
+					Swal.fire({
+						title: 'Berhasil!',
+						text: response.message,
+						type: 'success',
+						customClass: {
+							confirmButton: 'btn btn-success'
+						},
+						buttonsStyling: false
+					})
+					$('#ganti_password').modal('hide');
+				} else {
+					Swal.fire({
+						title: 'Failed!',
+						text: response.message,
+						type: 'error',
+						customClass: {
+							confirmButton: 'btn btn-danger'
+						},
+						buttonsStyling: false
+					})
+				}
+			},
+			error: function(request, status, error) {
+				alert(request.responseText);
+			},
+		});
+	});
 
-    $('#updateBiodata').submit(function(event) {
-    event.preventDefault(); // Prevent the default form submission behavior
-    // Get the form data
-    var formData = $(this).serialize();
+	$('#updateBiodata').submit(function(event) {
+		event.preventDefault(); // Prevent the default form submission behavior
+		// Get the form data
+		var formData = $(this).serialize();
 
-    // Perform the AJAX request
-    $.ajax({
-    	type: 'POST',
-    	url: '<?= base_url("akun/update") ?>',
-    	data: formData,
-    	success: function(response) {
-    		if (response.status == "success") {
-    			Swal.fire({
-    				title: 'Berhasil!',
-    				text: response.message,
-    				type: 'success',
-    				customClass: {
-    					confirmButton: 'btn btn-success'
-    				},
-    				buttonsStyling: false
-    			}).then(function() {
-            // Setelah pengguna mengklik tombol "OK," muat ulang halaman
-            location.reload();
-          });
-    		}else{
-    			Swal.fire({
-    				title: 'Failed!',
-    				text: response.message,
-    				type: 'error',
-    				customClass: {
-    					confirmButton: 'btn btn-danger'
-    				},
-    				buttonsStyling: false
-    			})
-    		}
-    	},
-    	error: function(request, status, error) {
-    		alert(request.responseText);
-    	},
-    });
-  });
-  });
+		// Perform the AJAX request
+		$.ajax({
+			type: 'POST',
+			url: '<?= base_url("akun/update") ?>',
+			data: formData,
+			success: function(response) {
+				if (response.status == "success") {
+					Swal.fire({
+						title: 'Berhasil!',
+						text: response.message,
+						type: 'success',
+						customClass: {
+							confirmButton: 'btn btn-success'
+						},
+						buttonsStyling: false
+					}).then(function() {
+						// Setelah pengguna mengklik tombol "OK," muat ulang halaman
+						location.reload();
+					});
+				} else {
+					Swal.fire({
+						title: 'Failed!',
+						text: response.message,
+						type: 'error',
+						customClass: {
+							confirmButton: 'btn btn-danger'
+						},
+						buttonsStyling: false
+					})
+				}
+			},
+			error: function(request, status, error) {
+				alert(request.responseText);
+			},
+		});
+	});
+
+	$("#avatarInput").change(function() {
+		var formData = new FormData();
+		formData.append("previous_avatar", $("input[name='previous_avatar']").val());
+		formData.append("avatar", $("#avatarInput")[0].files[0]);
+
+		$("#simpan_perubahan").click(function() {
+			$.ajax({
+				url: "<?php echo base_url('akun/ubah_foto'); ?>", // Ganti dengan URL controller Anda
+				type: "POST",
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function(response) {
+					// Handle respons dari server
+					console.log(response);
+				},
+				error: function(xhr, textStatus, errorThrown) {
+					// Handle kesalahan
+					console.error(errorThrown);
+				}
+			});
+		});
+	});
 </script>
 </body>
+
 </html>

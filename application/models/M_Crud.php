@@ -39,7 +39,8 @@ class M_Crud extends CI_model
         $this->db->delete($table);
     }
 
-    function buat_id_pesanan($length) {
+    function buat_id_pesanan($length)
+    {
         $tanggal = date('Ymd'); // Format: Tanggal (Y-m-d)
         $waktu = date('His'); // Format: Waktu (H:i:s)
         $angka_acak = rand(100, 999); // Angka acak antara 100 dan 999

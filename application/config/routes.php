@@ -1,5 +1,5 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 /*
 | -------------------------------------------------------------------------
@@ -53,12 +53,15 @@ $route['testing'] = 'login/testing';
 
 $route['alamat'] = 'home/alamat';
 
+$route['pesanan_user'] = 'pesanan/user';
+
 $route['create_invoice'] = 'pesanan/create_invoice';
 $route['verifikasi/(:any)'] = 'register/verifikasi/$1';
 
-$route['barang_masuk'] = 'barang/barang_masuk';
-$route['barang_masuk/add'] = 'barang/barang_masuk_add';
+$route['product/pemesanan/add'] = 'product/tambah_pemesanan';
 
 $route['default_controller'] = 'login';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+$route['keranjang/add_keranjang'] = 'keranjang/add';

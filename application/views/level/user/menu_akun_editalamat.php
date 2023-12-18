@@ -1,278 +1,366 @@
 <?php $this->load->view('layouts/user/head'); ?>
-<link rel="stylesheet" href="<?= base_url('') ?>public/template/vendor/libs/sweetalert2/sweetalert2.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/icheck-bootstrap@3.0.1/icheck-bootstrap.min.css" />
 <style>
-	.navbar__left{
+   .navbar__left {
       width: 4rem;
       z-index: 2;
    }
 
-   .navbar__left__icon,{
-	   position: absolute;
-	   font-size: 3.2rem;
-	   color: #fff;
-	   top: 50%;
-	   transform: translate(0, -50%);
-	}
+   .avatar {
+      border-radius: 50%;
+      object-fit: cover;
+   }
 
-	.avatar {
-	    border-radius: 50%;
-	    object-fit: cover;
-	}
+   .avatar--large {
+      width: 7.6rem;
+      height: 7.6rem;
+   }
 
-	.avatar--large {
-	    width: 7.6rem;
-	    height: 7.6rem;
-	}
+   .input {
+      margin-top: 0.4rem;
+      font-size: 1.1rem;
+      padding: 0;
+      outline: none;
+      width: 100%;
+      color: #474645;
+      border: none;
+      margin-bottom: 0.8rem;
+      border-bottom: 0.1rem solid #e8e8e8;
+   }
 
-	.input{
-		margin-top: 0.4rem;
-	    font-size: 1.1rem;
-	    padding: 0;
-	    outline: none;
-	    width: 100%;
-	    color: #474645;
-	    border: none;
-	    margin-bottom: 0.8rem;
-	    border-bottom: 0.1rem solid #e8e8e8;
-	}
+   input[type="checkbox"] {
+      /* Sembunyikan tampilan asli */
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      /* Bentuk dan ukuran */
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      /* Gaya ketika dipilih */
+      outline: none;
+      /* Gambar latar belakang ketika dipilih */
+      background-color: #ffffff;
+      background-clip: content-box;
+      margin-top: 10px;
+      cursor: pointer;
+   }
 
-	input[type="radio"] {
-	  /* Sembunyikan tampilan asli */
-	  appearance: none;
-	  -webkit-appearance: none;
-	  -moz-appearance: none;
-	  /* Bentuk dan ukuran */
-	  width: 20px;
-	  height: 20px;
-	  border: 1px solid #2F5596;
-	  border-radius: 50%;
-	  /* Gaya ketika dipilih */
-	  outline: none;
-	  /* Gambar latar belakang ketika dipilih */
-	  background-color: #ffffff;
-	  background-clip: content-box;
-	  margin-top: 10px;
-	  cursor: pointer;
-	}
-
-	/* Gaya ketika radio input dipilih */
-	input[type="radio"]:checked {
-	  background-color: blue; /* Warna latar belakang ketika dipilih */
-	  /* Misalkan ada efek bayangan atau perubahan lain yang diinginkan */
-	}
+   .choices[data-type*=select-one] .choices__inner {
+      padding-bottom: 3.5px !important;
+   }
 </style>
 <?php $this->load->view('layouts/user/header'); ?>
 <nav class="navbar navbar--show navbar-expand-lg navbar-light" style="background: #2F5596 !important;">
    <div class="container nav-bar__on-container">
       <div class="navbar__left">
          <a href="<?= base_url('akun') ?>">
-         <i class="navbar__left__icon bx bx-arrow-back fw-bold text-white" style="cursor:pointer;z-index: 2;"></i>
-         </a>  
+            <svg class="navbar__left__icon fw-bold text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);cursor:pointer;z-index: 2;">
+               <path d="M21 11H6.414l5.293-5.293-1.414-1.414L2.586 12l7.707 7.707 1.414-1.414L6.414 13H21z"></path>
+            </svg>
+         </a>
       </div>
       <div class="nav-bar__center">
-         <h1 class="nav-bar__center__title" style="font-family: gotham_fonts;color: white;line-height: 1.2;">Update Profile</h1>
+         <h1 class="nav-bar__center__title" style="font-family: gotham_fonts;color: white;line-height: 1.2;">Update Alamat</h1>
       </div>
    </div>
 </nav>
-
 <section class="mt-4 mb-4">
    <div class="container">
-    <div class="card">
-		<div class="card-header">
-			<h6 class="card-title">Set Alamat Utama</h6>
-		</div>
-		<div class="card-body">
-			<div class="row">
-				<div class="col-1">
-					<label class="custom-radio">
-						<input type="radio" id="atur_utama1" name="alamat1" value="pria">
-					</label>
-				</div>
-				<div class="col-9">
-					Muhammad Rifki K | 6289726172913<br>
-					<span>
-						Desa Kumbang Punteut (Dekat Puskesmas)<br>
-						BLANG MANGAT, KOTA LHOKSEUMAWE,<br>
-						NANGGROE ACEH DARUSSALAM (NAD), ID<br>
-						24375
-					</span>
-				</div>
-				<div class="col-2">
-					<a data-bs-toggle="modal" data-bs-target="#edit" href="#" class="text-danger fw-bold"> Ubah</a>
-				</div>
-			</div>
-			<hr>
-			<div class="row">
-				<div class="col-1">
-					<label class="custom-radio">
-						<input type="radio" id="atur_utama2" name="alamat1" value="pria" checked>
-					</label>
-				</div>
-				<div class="col-9">
-					Ahmad Z | 6285629103781<br>
-					<span>
-						Desa A (Test Alamat)<br>
-						KEC A, KOTA B,<br>
-						NANGGROE ACEH DARUSSALAM (NAD), ID<br>
-						24375
-					</span>
-				</div>
-				<div class="col-2">
-					<a data-bs-toggle="modal" data-bs-target="#edit" href="#" class="text-danger fw-bold"> Ubah</a>
-				</div>
-			</div>
-			<hr>
-			<div class="row d-flex justify-content-center" style="margin: 0;">
-				<a data-bs-toggle="modal" data-bs-target="#tambah" href="#" class="text-center"><i class='bx bx-plus'></i> Tambah Alamat Baru</a>
-			</div>
-		</div>
-	</div>
+      <?php if ($jumlah <= 0) : ?>
+         <div class="misc-wrapper mt-3 text-center">
+            <h3 class="mb-2 mx-2">Alamat Tidak Ditemukan</h3>
+            <p class="mb-4 mx-2">Silahkan menambahkan alamat terlebih dahulu sebelum melajutkan belanja.</p>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#tambah" class="btn btn-primary justify-content-center text-center">Tambah Alamat</a>
+            <div class="mt-3">
+               <img src="<?= base_url() ?>public/template/img/illustrations/undraw_page_not_found_re_e9o6.svg" alt="page-misc-error-light" width="500" class="img-fluid" data-app-dark-img="illustrations/page-misc-error-dark.png" data-app-light-img="illustrations/page-misc-error-light.png">
+            </div>
+         </div>
+      <?php else : ?>
+         <div class="card mt-4">
+            <div class="card-header">
+               <h6 class="card-title">Set Alamat Utama</h6>
+            </div>
+            <div class="card-body">
+               <?php foreach ($alamat as $key => $a) : ?>
+                  <div class="row">
+                     <div class="col-1">
+                        <div class="icheck-primary">
+                           <input <?= $main['id_alamat_user'] == $a['id_alamat_user'] ? "checked" : "" ?> name="checkbox-main" data-id="<?= $a['id_alamat_user'] ?>" type="radio" id="penanda<?= $key ?>" class="checkbox-main" />
+                           <label for="penanda<?= $key ?>"></label>
+                        </div>
+                     </div>
+                     <div class="col-9">
+                        <?= $a['nama_penerima'] ?> | <?= $a['kontak_penerima'] ?><br>
+                        <span>
+                           <?= $a['nama_desa'] ?> (<?= $a['detail_lainnya'] ?>)<br>
+                           <?= $a['nama_kecamatan'] ?>, <?= $a['nama_kabupaten'] ?>,<br>
+                           <?= $a['nama_provinsi'] ?>, <?= $a['kode_pos'] ?>
+                        </span>
+                     </div>
+                     <div class="col-2">
+                        <a data-bs-toggle="modal" data-bs-target="#edit<?= $a['id_alamat_user'] ?>" href="#" class="text-danger fw-bold"> Ubah</a>
+                     </div>
+                  </div>
+                  <hr>
+               <?php endforeach ?>
+               <div class="row d-flex justify-content-center" style="margin: 0;">
+                  <a data-bs-toggle="modal" data-bs-target="#tambah" href="#" class="text-center"><i class='bx bx-plus'></i> Tambah Alamat Baru</a>
+               </div>
+            </div>
+         </div>
+      <?php endif ?>
    </div>
 </section>
-
 <div class="row">
    <br><br><br><br>
 </div>
-
 <div class="modal fade" id="tambah" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Tambah Alamat Baru</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+   <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Tambah Alamat Baru</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <form action="<?= base_url('akun/alamat_tambah') ?>" method="POST">
+            <div class="modal-body" style=" max-height: calc(100vh - 200px);overflow-y: auto;">
+               <div class="mb-3">
+                  <label class="form-label" for="basic-default-fullname">Kontak</label>
+                  <input style="border-radius: 2.5px;" type="text" class="form-control" id="nama_penerima" name="nama_penerima" placeholder="Nama Lengkap" required>
+                  <input style="border-radius: 2.5px;" type="text" class="form-control mt-2" id="kontak_penerima" name="kontak_penerima" placeholder="No. HP" required>
+               </div>
+               <div class="mb-3">
+                  <label class="form-label" for="basic-default-fullname">Alamat</label>
+                  <select required name="select_provinsi" id="select_provinsi" class="form-select">
+                     <option disabled selected>Pilih Provinsi</option>
+                     <?php foreach ($provinsi as $key => $prov) : ?>
+                        <option value="<?= $prov['id_provinsi'] ?>"><?= $prov['nama_provinsi'] ?></option>
+                     <?php endforeach ?>
+                  </select>
+                  <select required name="select_kabupaten" id="select_kabupaten" class="">
+                     <option selected disabled>Pilih Kabupaten</option>
+                  </select>
+                  <select required name="select_kecamatan" id="select_kecamatan" class="form-select">
+                     <option selected disabled>Pilih Kecamatan</option>
+                  </select>
+                  <select required name="select_desa" id="select_desa" class="form-select">
+                     <option selected disabled>Pilih Desa</option>
+                  </select>
+                  <textarea style="border-radius: 2.5px;" name="detail_lainnya" id="detail_lainnya" class="form-control" placeholder="Detail Lainnya"></textarea>
+               </div>
+               <div class="mb-3">
+                  <div class="row mb-3 d-flex">
+                     <label style="font-family: 'Segoe UI', sans-serif;" class="col-sm-7 col-7 col-form-label" for="basic-default-name">Atur Sebagai Alamat Utama</label>
+                     <div class="col-sm-5 col-5 text-end justify-content-end">
+                        <div class="form-check form-switch ">
+                           <input name="set_default" id="set_default" style="height: 20px;width: 35px;float: right;border-radius:2.5px" class="form-check-input" type="checkbox" role="switch">
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+               <button type="submit" class="btn btn-primary">Tambah</button>
+            </div>
+         </form>
       </div>
-      <div class="modal-body" style=" max-height: calc(100vh - 200px);overflow-y: auto;">
-        <form>
-			<div class="mb-3">
-				<label class="form-label" for="basic-default-fullname">Kontak</label>
-				<input type="text" class="form-control" id="basic-default-fullname" placeholder="Nama Lengkap">
-				<input type="text" class="form-control mt-2" id="basic-default-company" placeholder="No. HP">
-			</div>
-			<div class="mb-3">
-				<label class="form-label" for="basic-default-fullname">Alamat</label>
-				<select name="" id="" class="form-select">
-					<option>Pilih Provinsi</option>
-					<option>Provinsi A</option>
-				</select>
-
-				<select name="" id="" class="form-select mt-2">
-					<option>Pilih Kabupaten</option>
-					<option>Kabupaten A</option>
-				</select>
-
-				<select name="" id="" class="form-select mt-2">
-					<option>Pilih Kecamatan</option>
-					<option>Kecamatan A</option>
-				</select>
-
-				<select name="" id="" class="form-select mt-2">
-					<option>Pilih Desa</option>
-					<option>Desa A</option>
-				</select>
-
-				<input type="text" class="form-control mt-2" placeholder="Kode POS">
-				<textarea name="" id="" class="form-control mt-2" placeholder="Detail Lainnya"></textarea>
-			</div>
-			<div class="mb-3">
-				<div class="row mb-3">
-					<label class="col-sm-3 col-form-label" for="basic-default-name">Tandai Sebagai</label>
-					<div class="col-sm-9">
-						<div class="button-row text-end justify-content-end">
-							<button class="btn btn-secondary">Kantor</button>
-							<button class="btn btn-success">Rumah</button>
-							<button class="btn btn-secondary">Lainnya</button>
-						</div>
-					</div>
-				</div>
-				<div class="row mb-3">
-					<label class="col-sm-7 col-form-label" for="basic-default-name">Atur Sebagai Alamat Utama</label>
-					<div class="col-sm-5 text-end justify-content-end">
-						<div class="form-check form-switch ">
-							<input style="height: 20px;width: 35px;float: right;" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked">
-						</div>
-					</div>
-				</div>
-			</div>
-			<button type="submit" class="btn btn-primary d-block w-100">Tambah</button>
-		</form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-      </div>
-    </div>
-  </div>
+   </div>
 </div>
 
-<div class="modal fade" id="edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Update Alamat</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<?php foreach ($alamat as $key => $al) : ?>
+   <div class="modal fade" id="edit<?= $al['id_alamat_user'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="exampleModalLabel">Update Alamat</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="<?= base_url('akun/update_alamat/' . $al['id_alamat_user']) ?>" method="POST">
+               <div class="modal-body" style=" max-height: calc(100vh - 200px);overflow-y: auto;">
+                  <div class="mb-3">
+                     <label class="form-label" for="basic-default-fullname">Kontak</label>
+                     <input value="<?= $al['nama_penerima'] ?>" style="border-radius: 2.5px;" type="text" class="form-control" id="nama_penerima" name="nama_penerima" placeholder="Nama Lengkap" required>
+                     <input value="<?= $al['kontak_penerima'] ?>" style="border-radius: 2.5px;" type="text" class="form-control mt-2" id="kontak_penerima" name="kontak_penerima" placeholder="No. HP" required>
+                     <textarea style="border-radius: 2.5px;" name="detail_lainnya" id="detail_lainnya" class="form-control mt-2" placeholder="Detail Lainnya"><?= $al['detail_lainnya'] ?></textarea>
+                  </div>
+                  <div class="mb-3">
+                     <label class="form-label" for="basic-default-fullname">Alamat</label>
+                     <hr style="margin-top: 0px;margin-bottom:15px">
+                     <p style="margin-top: -5px;">
+                        <?= $al['nama_penerima'] ?> | <?= $al['kontak_penerima'] ?><br>
+                        <span>
+                           <?= $al['nama_desa'] ?> (<?= $al['detail_lainnya'] ?>)<br>
+                           <?= $al['nama_kecamatan'] ?>, <?= $al['nama_kabupaten'] ?>,<br>
+                           <?= $al['nama_provinsi'] ?>, <?= $al['kode_pos'] ?>
+                        </span>
+                     </p>
+                  </div>
+                  <div class="mb-3">
+                     <div class="row mb-3 d-flex">
+                        <label style="font-family: 'Segoe UI', sans-serif;" class="col-sm-7 col-7 col-form-label" for="basic-default-name">Atur Sebagai Alamat Utama</label>
+                        <div class="col-sm-5 col-5 text-end justify-content-end">
+                           <div class="form-check form-switch ">
+                              <input <?= $al['set_default'] == "Main" ? "checked" : "" ?> name="set_default" id="set_default" style="height: 20px;width: 35px;float: right;border-radius:2.5px;border:1px solid #5bc0de" class="form-check-input" type="checkbox" role="switch">
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                  <form action="<?= base_url('akun/hapus_alamat/' . $al['id_alamat_user']) ?>" method="post">
+                     <button type="button" class="btn btn-danger" onclick="if(confirm('Apakah Anda yakin ingin menghapus data ini?')) this.form.submit();">Hapus</button>
+                  </form>
+                  <button type="submit" class="btn btn-warning">Update</button>
+               </div>
+            </form>
+         </div>
       </div>
-      <div class="modal-body" style=" max-height: calc(100vh - 200px);overflow-y: auto;">
-        <form>
-			<div class="mb-3">
-				<label class="form-label" for="basic-default-fullname">Kontak</label>
-				<input type="text" class="form-control" id="basic-default-fullname" placeholder="Nama Lengkap">
-				<input type="text" class="form-control mt-2" id="basic-default-company" placeholder="No. HP">
-			</div>
-			<div class="mb-3">
-				<label class="form-label" for="basic-default-fullname">Alamat</label>
-				<select name="" id="" class="form-select">
-					<option>Pilih Provinsi</option>
-					<option>Provinsi A</option>
-				</select>
-
-				<select name="" id="" class="form-select mt-2">
-					<option>Pilih Kabupaten</option>
-					<option>Kabupaten A</option>
-				</select>
-
-				<select name="" id="" class="form-select mt-2">
-					<option>Pilih Kecamatan</option>
-					<option>Kecamatan A</option>
-				</select>
-
-				<select name="" id="" class="form-select mt-2">
-					<option>Pilih Desa</option>
-					<option>Desa A</option>
-				</select>
-
-				<input type="text" class="form-control mt-2" placeholder="Kode POS">
-				<textarea name="" id="" class="form-control mt-2" placeholder="Detail Lainnya"></textarea>
-			</div>
-			<div class="mb-3">
-				<div class="row mb-3">
-					<label class="col-sm-3 col-form-label" for="basic-default-name">Tandai Sebagai</label>
-					<div class="col-sm-9">
-						<div class="button-row text-end justify-content-end">
-							<button class="btn btn-secondary">Kantor</button>
-							<button class="btn btn-success">Rumah</button>
-							<button class="btn btn-secondary">Lainnya</button>
-						</div>
-					</div>
-				</div>
-				<div class="row mb-3">
-					<label class="col-sm-7 col-form-label" for="basic-default-name">Atur Sebagai Alamat Utama</label>
-					<div class="col-sm-5 text-end justify-content-end">
-						<div class="form-check form-switch ">
-							<input style="height: 20px;width: 35px;float: right;" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked">
-						</div>
-					</div>
-				</div>
-			</div>
-			<button type="submit" class="btn btn-primary d-block w-100">Update</button>
-		</form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-      </div>
-    </div>
-  </div>
-</div>
-
+   </div>
+<?php endforeach ?>
 <?php $this->load->view('layouts/user/menu'); ?>
 <?php $this->load->view('layouts/user/footer'); ?>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<script>
+   var choices_provinsi = new Choices(document.getElementById('select_provinsi'));
+   var choices_kabupaten = new Choices(document.getElementById('select_kabupaten'));
+   var choices_kecamatan = new Choices(document.getElementById('select_kecamatan'));
+   var choices_desa = new Choices(document.getElementById('select_desa'));
+
+   $("#select_provinsi").on('change', function() {
+      var provinsiId = $(this).val();
+      choices_kabupaten.clearStore();
+      choices_kecamatan.clearStore();
+      choices_desa.clearStore();
+
+      $.ajax({
+         url: "<?php echo base_url('akun/get_kabupaten'); ?>",
+         method: "POST",
+         data: {
+            prov_id: provinsiId
+         },
+         dataType: "JSON",
+         success: function(data) {
+            // Membuat array kosong untuk menyimpan opsi
+            var opsi = [];
+
+            // Melakukan iterasi pada data yang diterima dari AJAX
+            data.forEach(function(item) {
+               // Membuat objek opsi dengan nilai dan label dari data
+               var opsiItem = {
+                  value: item.id_kabupaten,
+                  label: item.nama_kabupaten
+               };
+
+               // Menambahkan objek opsi ke dalam array opsi
+               opsi.push(opsiItem);
+            });
+
+            choices_kabupaten.setChoices(opsi, 'value', 'label');
+         },
+         error: function(request, status, error) {
+            alert(request.responseText);
+         }
+      });
+   });
+
+   $("#select_kabupaten").on('change', function() {
+      var kabupatenId = $(this).val();
+      choices_kecamatan.clearStore();
+      choices_desa.clearStore();
+
+      $.ajax({
+         url: "<?php echo base_url('akun/get_kecamatan'); ?>",
+         method: "POST",
+         data: {
+            kab_id: kabupatenId
+         },
+         dataType: "JSON",
+         success: function(data) {
+            // Membuat array kosong untuk menyimpan opsi
+            var opsi = [];
+
+            // Melakukan iterasi pada data yang diterima dari AJAX
+            data.forEach(function(item) {
+               // Membuat objek opsi dengan nilai dan label dari data
+               var opsiItem = {
+                  value: item.id_kecamatan,
+                  label: item.nama_kecamatan
+               };
+
+               // Menambahkan objek opsi ke dalam array opsi
+               opsi.push(opsiItem);
+            });
+
+            choices_kecamatan.setChoices(opsi, 'value', 'label');
+         },
+         error: function(request, status, error) {
+            alert(request.responseText);
+         }
+      });
+   });
+
+   $("#select_kecamatan").on('change', function() {
+      var kecamatanId = $(this).val();
+      choices_desa.clearStore();
+
+      $.ajax({
+         url: "<?php echo base_url('akun/get_desa'); ?>",
+         method: "POST",
+         data: {
+            kec_id: kecamatanId
+         },
+         dataType: "JSON",
+         success: function(data) {
+            // Membuat array kosong untuk menyimpan opsi
+            var opsi = [];
+
+            // Melakukan iterasi pada data yang diterima dari AJAX
+            data.forEach(function(item) {
+               // Membuat objek opsi dengan nilai dan label dari data
+               var opsiItem = {
+                  value: item.id_desa,
+                  label: item.nama_desa
+               };
+
+               // Menambahkan objek opsi ke dalam array opsi
+               opsi.push(opsiItem);
+            });
+
+            choices_desa.setChoices(opsi, 'value', 'label');
+         },
+         error: function(request, status, error) {
+            alert(request.responseText);
+         }
+      });
+   });
+
+   $(document).ready(function() {
+      $(".checkbox-main").on("click", function() {
+         var idAlamatUser = $(this).data("id");
+
+         // Kirim permintaan AJAX ke server
+         $.ajax({
+            type: "POST",
+            url: "<?= base_url('akun/set_alamat_main') ?>", // Gantilah 'url_anda' dengan URL yang sesuai
+            data: {
+               id_alamat_user: idAlamatUser
+            },
+            success: function(response) {
+               // Tindakan yang ingin Anda lakukan setelah pembaruan data berhasil
+               console.log("Data berhasil diperbarui!");
+            },
+            error: function() {
+               // Tindakan jika terjadi kesalahan dalam permintaan AJAX
+               console.log("Terjadi kesalahan saat memperbarui data.");
+            }
+         });
+      });
+   });
+</script>
 </body>
+
 </html>

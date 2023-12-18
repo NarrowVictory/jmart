@@ -1,10 +1,6 @@
-<script src="<?= base_url() ?>public/template/vendor/libs/jquery/jquery.js"></script>
-<script src="<?= base_url() ?>public/template/vendor/libs/popper/popper.js"></script>
-<script src="<?= base_url() ?>public/template/vendor/js/bootstrap.js"></script>
-<script src="<?= base_url() ?>public/template/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-<script src="<?= base_url() ?>public/template/vendor/js/menu.js"></script>
-<script src="<?= base_url() ?>public/template/js/main.js"></script>
-<script src="<?= base_url('') ?>public/template/vendor/libs/sweetalert2/sweetalert2.js" />
+<script src="<?= base_url() ?>public/template/js/tabler.min.js?1692870487" defer></script>
+<script src="<?= base_url() ?>public/template/js/demo.min.js?1692870487" defer></script>
+<script src="<?= base_url() ?>public/template/libs/sweetalert2/sweetalert2.js"></script>
 <script>
-    navigator.serviceWorker.register("<?= base_url('') ?>public/service-worker.js")
+  navigator.serviceWorker.register("<?= base_url('') ?>public/service-worker.js")
 </script>
