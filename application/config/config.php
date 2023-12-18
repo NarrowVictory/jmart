@@ -23,7 +23,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://localhost/auth';
+$config['base_url'] = 'http://127.0.0.1/jmart';
 // $config['base_url'] = 'https://36d2-116-206-30-42.ngrok-free.app/auth';
 
 /*
