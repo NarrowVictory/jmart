@@ -21,6 +21,7 @@ class Penjualan extends CI_Controller
 		$data['pending'] = $this->M_Crud->all_data('tb_pesanan')->where('status_pesanan', 'Pending')->get()->num_rows();
 		$data['dikemas'] = $this->M_Crud->all_data('tb_pesanan')->where('status_pesanan', 'Dikemas')->get()->num_rows();
 		$data['dikirim'] = $this->M_Crud->all_data('tb_pesanan')->where('status_pesanan', 'Dikirim')->get()->num_rows();
+		// $this->load->view('level/admin/penjualan_backup', $data);
 		$this->load->view('level/admin/penjualan', $data);
 	}
 
@@ -35,11 +36,16 @@ class Penjualan extends CI_Controller
 		$jenis = $this->input->post('jenis');
 
 		$columns = '*';
-		$filter = array('nama_member', 'id_pesanan');
+		$filter = array('nama_member', 'id_pesanan', 'status_pesanan', 'status_pembayaran');
 		$joins = array(
 			array(
 				'table' => 'tb_user',
 				'condition' => 'tb_user.id_user = tb_pesanan.id_user',
+				'type' => 'left'
+			),
+			array(
+				'table' => 'tb_kasir',
+				'condition' => 'tb_kasir.id_kasir = tb_pesanan.id_kasir',
 				'type' => 'left'
 			),
 		);
@@ -79,24 +85,25 @@ class Penjualan extends CI_Controller
 		}
 
 		$list = $this->Datatable_model->get_data('tb_pesanan', $columns, $joins, $filter, $this->input->post('search')['value'], $where, $this->input->post('start'), $this->input->post('length'), $order);
+		// var_dump($this->db->last_query());
 
 		$data = array();
 		$no = $_POST['start'];
 		foreach ($list->result() as $pesanan) {
 			if ($pesanan->status_pesanan == "Pending") {
-				$status = "<span class='badge text-white bg-danger'>Pending</span>";
+				$status = "<span class='badge text-white bg-danger-lt'>Pesanan Pending</span>";
 			} else if ($pesanan->status_pesanan == "Dikemas") {
-				$status = "<span class='badge text-white bg-warning'>Dikemas</span>";
+				$status = "<span class='badge text-white bg-warning-lt'>Pesanan Dikemas</span>";
 			} else if ($pesanan->status_pesanan == "Dikirim") {
-				$status = "<span class='badge text-white bg-primary'>Dikirim</span>";
+				$status = "<span class='badge text-white bg-primary-lt'>Pesanan Dikirim</span>";
 			} else {
-				$status = "<span class='badge text-white bg-success'>Selesai</span>";
+				$status = "<span class='badge text-white bg-success-lt'>Pesanan Selesai</span>";
 			}
 
 			if ($pesanan->status_pembayaran == "Menunggu Pembayaran") {
-				$pembayaran = "<span class='badge text-white bg-danger'>Pending</span>";
+				$pembayaran = "<span class='badge text-white bg-danger-lt'>Menunggu</span>";
 			} else {
-				$pembayaran = "<span class='badge text-white bg-success'>Lunas</span>";
+				$pembayaran = "<span class='badge text-white bg-success-lt'>Lunas</span>";
 			}
 
 			if ($pesanan->metode_bayar == "cash") {
@@ -114,41 +121,39 @@ class Penjualan extends CI_Controller
 			} else {
 				$jenis = "<span class='badge text-white bg-info'>Dianterin ke PT</span>";
 			}
-
+			$name = ($pesanan->nama_member === "" || $pesanan->nama_member === NULL) ? "Walk In Customer" :  $pesanan->nama_member;
+			$gambar = (empty($pesanan->avatar) or !isset($pesanan->avatar)) ? '<img width="85" class="img-thumbnail" src="' . base_url('public/template/upload/user/default.jpg') . '">' : '<img width="85" class="img-thumbnail" src="' . base_url('public/template/upload/user/' . $pesanan->avatar) . '">';
 			$no++;
 			$row = array(
 				$no,
 				'
-				<div class="btn-group dropup">
-					<button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-						Action
+				<div class="btn-group">
+					<button type="button" class="btn btn-sm btn-secondary text-uppercase dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+					<svg xmlns="http://www.w3.org/2000/svg" class="icon-tabler icon-tabler-dots-vertical" width="14" height="14" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+						<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+						<path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+						<path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+						<path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+					</svg>
+					Aksi&nbsp;
 					</button>
-					<ul class="dropdown-menu" style="z-index:10">
-						<li>
-							<a href="javascript::void" onclick="modalUbah(' . $pesanan->id_pesanan . ')" class="dropdown-item">Ubah Transaksi</a>
-						</li>
-						<li>
-							<a href="javascript::void" class="dropdown-item" onclick="myQRCode(' . $pesanan->id_pesanan . ')">Cetak QR-Code</a>
-						</li>
-						<li>
-							<a href="javascript::void" class="dropdown-item" onclick="BuktiTransaksi(' . $pesanan->id_pesanan . ')">Bukti Transaksi</a>
-						</li>
-						<li>
-							<a href="javascript::void" class="dropdown-item" onclick="CetakInvoice(' . $pesanan->id_pesanan . ')">Cetak Invoice</a>
-						</li>
-						<li>
-							<a href="javascript::void" class="dropdown-item text-danger">Batalkan Transaksi</a>
-						</li>
+					<ul class="dropdown-menu dropdown-menu-end">
+						<li><a onclick="modalUbah(\'' . $pesanan->id_pesanan . '\')" href="javascript:void(0)" class="dropdown-item">Ubah Transaksi</a></li>
+						<li><a onclick="BuktiTransaksi(\'' . $pesanan->id_pesanan . '\')" href="javascript:void(0)" class="dropdown-item">Bukti Transaksi</a></li>
+						<li><a onclick="CetakInvoice(\'' . $pesanan->id_pesanan . '\')" href="javascript:void(0)" class="delete dropdown-item">Cetak Invoice</a></li>
+						<li><a onclick="myQRCode(\'' . $pesanan->id_pesanan . '\')" href="javascript:void(0)" class="delete dropdown-item">Cetak QR Code</a></li>
+						<li><a href="javascript:void(0)" class="delete dropdown-item">Batalkan Transaksi</a></li>
 					</ul>
 				</div>
 				',
+				"
+				<img src=" . base_url('public/template/upload/user/' . ($pesanan->avatar ? $pesanan->avatar : 'default.png')) . " class=\"avatar avatar-md img-zoom\" draggable=\"false\" style=\"cursor: pointer\">
+				",
+				$name,
 				$pesanan->id_pesanan,
 				date('d/m/Y H:i:s', strtotime($pesanan->tgl_pesanan)),
-				$pesanan->nama_member,
-				$status,
-				$metode,
+				$status . "<br><i class='text-info fw-bold'>" . ucwords($pesanan->metode_bayar) . "</i>",
 				$pembayaran,
-				$jenis,
 				"Rp. " . number_format($pesanan->grand_total),
 			);
 			$data[] = $row;
@@ -156,8 +161,8 @@ class Penjualan extends CI_Controller
 
 		$output = array(
 			"draw" => $_POST['draw'],
-			"recordsTotal" => $this->Datatable_model->count_all('tb_pesanan', $where),
-			"recordsFiltered" => $this->Datatable_model->count_filtered('tb_pesanan', $columns, $joins, $filter, $this->input->post('search')['value'], $where), // Menggunakan filter
+			"recordsTotal" => $this->Datatable_model->count_all('tb_pesanan', $joins, $where),
+			"recordsFiltered" => $this->Datatable_model->count_filtered('tb_pesanan', $columns, $joins, $filter, $this->input->post('search')['value'], $where, $order), // Menggunakan filter
 			"data" => $data,
 		);
 		echo json_encode($output);
@@ -170,7 +175,7 @@ class Penjualan extends CI_Controller
 		$length = $this->input->post('length');
 		$search = $this->input->post('search')['value'];
 
-		$filter = ['id_pesanan', 'tgl_pesanan', 'nama_barang'];
+		$filter = ['nama_member'];
 		$query = $this->db->select('*')->from('tb_pesanan_detail')->join('tb_barang', 'tb_barang.id_brg = tb_pesanan_detail.id_brg')->where('tb_pesanan_detail.id_pesanan', $id);
 		$data = $this->M_Penjualan->getData($length, $start, $search, $query, $filter);
 
@@ -209,7 +214,7 @@ class Penjualan extends CI_Controller
 	{
 		$data['id'] = $id;
 		$data['pesanan'] = $this->M_Crud->all_data('tb_pesanan')->join('tb_user', 'tb_user.id_user = tb_pesanan.id_user')->where('id_pesanan', $id)->get()->row_array();
-		$data['barang'] = $this->M_Crud->all_data('tb_pesanan_detail')->join('tb_pesanan', 'tb_pesanan.id_pesanan = tb_pesanan_detail.id_pesanan')->join('tb_barang', 'tb_barang.id_brg = tb_pesanan_detail.id_brg')->where('tb_pesanan_detail.id_pesanan', $id)->get()->result_array();
+		$data['barang'] = $this->M_Crud->all_data('tb_pesanan_detail')->join('tb_pesanan', 'tb_pesanan.id_pesanan = tb_pesanan_detail.id_pesanan')->join('tb_barang', 'tb_barang.id_brg = tb_pesanan_detail.id_brg')->join('tb_kategori', 'tb_kategori.id_kategori_brg = tb_barang.id_kategori_brg')->where('tb_pesanan_detail.id_pesanan', $id)->get()->result_array();
 		$data['tracking'] = $this->M_Crud->all_data('tb_pesanan_tracking')->join('tb_user', 'tb_user.id_user = tb_pesanan_tracking.updated_by')->where('id_pesanan', $id)->order_by('tb_pesanan_tracking.updated_at', 'DESC')->get()->result_array();
 
 		$data['disiapkan'] = "";
@@ -337,26 +342,66 @@ class Penjualan extends CI_Controller
 
 	public function get_bukti_transaksi($id)
 	{
-		$this->db->select('*');
-		$this->db->from('tb_pesanan_detail');
-		$this->db->join('tb_pesanan', 'tb_pesanan.id_pesanan = tb_pesanan_detail.id_pesanan');
-		$this->db->join('tb_barang', 'tb_barang.id_brg = tb_pesanan_detail.id_brg');
-		$this->db->join('tb_user', 'tb_user.id_user = tb_pesanan.id_user');
-		$this->db->where('tb_pesanan_detail.id_pesanan', $id);
-		$query = $this->db->get();
+	    // Select semua kolom dari tabel tb_pesanan_detail
+	    $this->db->select('*');
+	    $this->db->from('tb_pesanan_detail');
+	    $this->db->join('tb_pesanan', 'tb_pesanan.id_pesanan = tb_pesanan_detail.id_pesanan');
+	    $this->db->join('tb_barang', 'tb_barang.id_brg = tb_pesanan_detail.id_brg', 'left');
+	    $this->db->join('tb_user', 'tb_user.id_user = tb_pesanan.id_user', 'left');
+	    $this->db->join('tb_user_alamat', 'tb_user_alamat.id_alamat_user = tb_pesanan.id_alamat_user', 'left');
+	    $this->db->join('tb_kasir', 'tb_kasir.id_kasir = tb_pesanan.id_kasir', 'left');
+	    $this->db->join('tb_desa', 'tb_desa.id_desa = tb_user_alamat.id_desa', 'left');
+	    $this->db->where('tb_pesanan_detail.id_pesanan', $id);
 
-		// Mengonversi hasil query menjadi array
-		$result = $query->result_array();
+	    // Jalankan query
+	    $query = $this->db->get();
 
-		// Mengembalikan data dalam bentuk JSON
-		header('Content-Type: application/json');
-		echo json_encode($result);
+	    // Mengonversi hasil query menjadi array
+	    $result = $query->result_array();
+
+	    // Tambahkan total_rows ke dalam $result
+	    $result[0]['total_rows'] = $query->num_rows();
+
+	    // Panggil fungsi untuk mendapatkan total belanja bulan ini dan kirimkan id_pesanan
+	    $result[0]['total_bulan_ini'] = $this->get_total_bulan_ini($id);
+
+	    // Mengembalikan data dalam bentuk JSON
+	    header('Content-Type: application/json');
+	    echo json_encode($result);
 	}
+
+	private function get_total_bulan_ini($id_pesanan)
+	{
+	    // Ambil id_user berdasarkan id_pesanan
+	    $this->db->select('id_user');
+	    $this->db->from('tb_pesanan');
+	    $this->db->where('id_pesanan', $id_pesanan);
+	    $id_user_query = $this->db->get();
+	    $id_user_result = $id_user_query->row_array();
+
+	    if ($id_user_result) {
+	        $id_user = $id_user_result['id_user'];
+
+	        // Hitung total belanja bulan ini untuk id_user
+	        $this->db->select_sum('grand_total', 'total_bulan_ini');
+	        $this->db->from('tb_pesanan');
+	        $this->db->where('id_user', $id_user); // Menggunakan id_user yang ditemukan
+	        $this->db->where('MONTH(tgl_pesanan)', date('m')); // Bulan sekarang
+	        $this->db->where('YEAR(tgl_pesanan)', date('Y'));  // Tahun sekarang
+	        $total_belanja_query = $this->db->get();
+	        $total_belanja_result = $total_belanja_query->row_array();
+
+	        return $total_belanja_result['total_bulan_ini'] ?? 0;
+	    } else {
+	        return 0; // Jika id_user tidak ditemukan
+	    }
+	}
+
 
 	public function siapkan($id)
 	{
 		$data['id'] = $id;
-		$data['pesanan'] = $this->M_Crud->all_data('tb_pesanan')->where('id_pesanan', $id)->get()->row_array();
+		$data['pesanan'] = $this->M_Crud->all_data('tb_pesanan')->join('tb_user', 'tb_user.id_user = tb_pesanan.id_user')->where('id_pesanan', $id)->get()->row_array();
 		$data['user'] = $this->M_Crud->all_data('tb_user')->where('id_user', $data['pesanan']['id_user'])->get()->row_array();
 		$this->load->view('level/admin/penjualan_siapkan', $data);
 	}

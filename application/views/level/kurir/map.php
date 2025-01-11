@@ -67,8 +67,9 @@
         <div class="row mb-2">
             <div class="col-8 col-md-8">
                 <select name="latLng" id="selectLatLng" class="form-control">
-                    <option value="3.5960087357355723, 98.67779667182214">Pilihan 1</option>
-                    <option value="3.59600866037935, 98.69174448956379">Pilihan 2</option>
+                    <?php foreach ($list as $key => $value) : ?>
+                        <option value="<?= $value['koordinat'] ?>"><?= $value['nama_member'] ?></option>
+                    <?php endforeach ?>
                 </select>
             </div>
             <div class="col-4 col-md-4">
@@ -108,7 +109,8 @@
         var map = L.map('map', {
             fullscreenControl: {
                 pseudoFullscreen: false
-            }
+            },
+            crs: L.CRS.EPSG3857 // Sesuaikan dengan CRS yang Anda perlukan
         }).setView([0, 0], 2);
 
         // Add a tile layer (e.g., OpenStreetMap)
@@ -138,7 +140,6 @@
         }
 
         var routingControl = null;
-        var isRoutingEnabled = false;
 
         function enableRouting() {
             if (routingControl !== null) {
@@ -165,8 +166,11 @@
             }).addTo(map);
         }
 
-        L.marker([3.5960087357355723, 98.67779667182214]).addTo(map).bindPopup('User 1');
-        L.marker([3.59600866037935, 98.69174448956379]).addTo(map).bindPopup('User 2');
+        // Tambahkan marker untuk setiap pengguna dari PHP
+        <?php foreach ($list as $user) : ?>
+            const content = '<div id="bodyContent"><?= $user['koordinat'] ?><div class="view-link"><a target="_blank" jstcache="6" href="https://www.google.com/maps/dir/?api=1&amp;destination=<?= $user['koordinat'] ?>" tabindex="0"> <span>Tampilan di Google Maps</span> </a> </div></div>';
+            const marker = L.marker([<?= $user['koordinat'] ?>]).addTo(map).bindPopup(content);
+        <?php endforeach; ?>
 
         document.getElementById('AktifkanRute').addEventListener('click', enableRouting);
     });

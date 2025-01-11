@@ -25,14 +25,53 @@ class Login extends CI_Controller
 		$this->load->view('layouts/auth/footer');
 	}
 
+	public function login_kasir()
+	{
+		$this->load->view('layouts/auth/header');
+		$this->load->view('vw_login_kasir');
+		$this->load->view('layouts/auth/footer');
+	}
+
+	public function proses_kasir()
+	{
+		$username = $this->input->post('username');
+		$password = $this->input->post('password');
+		$login_result = $this->auth->login_kasir($username, $password);
+
+		if ($login_result === "Login successful") {
+			$response = array(
+				'status' => 'success',
+				'message' => 'Login Berhasil...'
+			);
+		} else {
+			$response = array(
+				'status' => 'error',
+				'message' => 'Username & Password salah'
+			);
+		}
+
+		$this->output
+			->set_status_header(200)
+			->set_content_type('application/json', 'utf-8')
+			->set_output(json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES))
+			->_display();
+		exit;
+	}
+
 	public function proses()
 	{
 		$username = $this->input->post('username');
 		$password = $this->input->post('password');
-		if ($this->auth->login_user($username, $password)) {
+		$login_result = $this->auth->login_user($username, $password);
+		if ($login_result === "Login successful") {
 			$response = array(
 				'status' => 'success',
 				'message' => 'Login Berhasil...'
+			);
+		} else if ($login_result == "Account not activated") {
+			$response = array(
+				'status' => 'error',
+				'message' => 'Akun Anda Belum Diaktivasi'
 			);
 		} else {
 			$response = array(

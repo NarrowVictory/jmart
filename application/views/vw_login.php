@@ -56,7 +56,7 @@
                 echo '</div>';
               }
               ?>
-              <h2 class="h2 text-center mb-4">Login to your account</h2>
+              <h2 class="h2 text-center mb-4">Login Akun</h2>
               <form id="form-login" method="POST" autocomplete="off">
                 <div class="mb-3">
                   <label class="form-label">Username atau Phone</label>
@@ -66,7 +66,7 @@
                   <label class="form-label">
                     Password
                     <span class="form-label-description">
-                      <a href="<?= base_url('forgotten') ?>">I forgot password</a>
+                      <a href="<?= base_url('forgotten') ?>">Saya Lupa Password</a>
                     </span>
                   </label>
                   <div class="input-group input-group-flat">
@@ -84,13 +84,13 @@
                   </div>
                 </div>
                 <div class="form-footer">
-                  <button type="submit" class="btn btn-primary w-100">Sign in</button>
+                  <button type="submit" class="btn btn-primary w-100">Login</button>
                 </div>
               </form>
             </div>
           </div>
           <div class="text-center text-secondary mt-3">
-            Don't have account yet? <a href="<?= base_url('register') ?>" tabindex="-1">Sign up</a>
+            Belum Punya Akun? <a href="<?= base_url('register') ?>" tabindex="-1">Daftar</a>
           </div>
         </div>
       </div>

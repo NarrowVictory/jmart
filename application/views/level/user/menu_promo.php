@@ -49,119 +49,14 @@
         /* Menghapus margin bawaan */
     }
 
-    .product-box {
-        position: relative;
-        border-radius: 8px;
-        overflow: hidden;
-        padding: 10px;
-        background-color: rgba(235, 235, 236, 1);
-    }
-
-    .product-box .product-box-img {
-        position: relative;
-        display: block;
-    }
-
-    .product-box .product-box-img .img {
-        position: relative;
-        width: 100%;
-        height: 146px;
-        -o-object-fit: contain;
-        object-fit: contain;
-        border-radius: 8px;
-        padding: 15px;
-        background-color: rgba(255, 255, 255, 1);
-    }
-
-    .product-box .product-box-img .cart-box {
-        position: absolute;
-        bottom: -15px;
-        right: 0;
-        background-color: rgba(255, 255, 255, 1);
-        border-radius: 100%;
-        width: 36px;
-        height: 36px;
+    .ellipsis {
         display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-pack: center;
-        -ms-flex-pack: center;
-        justify-content: center;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
-    }
-
-    .product-box .product-box-img .cart-box .cart-bag {
-        background-color: #DFE8E3;
-        border-radius: 100%;
-        width: 45px;
-        height: 45px;
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-pack: center;
-        -ms-flex-pack: center;
-        justify-content: center;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
-    }
-
-    .product-box .product-box-detail h4 {
-        color: rgba(18, 38, 54, 1);
-        font-weight: 500;
-        line-height: 1.5;
-        margin-top: 15px;
+        -webkit-line-clamp: 2;
+        /* number of lines to show */
+        -webkit-box-orient: vertical;
         overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-    }
-
-    .gap-3 {
-        gap: 1rem !important;
-    }
-
-    .product-box .product-box-detail h5 {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        margin-top: 6px;
-        font-size: 12px;
-        font-weight: 400;
-        color: rgba(var(--light-text), 1);
-    }
-
-    .product-box .product-box-detail h3 {
-        color: rgba(18, 38, 54, 1);
-    }
-
-    .product-box .like-btn {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        line-height: 1;
-        z-index: 1;
-        border-radius: 10%;
-        background-color: #ea4c62 !important;
-        color: white;
-        -webkit-box-shadow: 0px 2px 8px rgba(18, 38, 54, 0.1);
-        box-shadow: 0px 2px 8px rgba(18, 38, 54, 0.1);
-        padding: 6px;
-        height: 24px;
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-pack: center;
-        -ms-flex-pack: center;
-        justify-content: center;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
-    }
-
-    .fw-semibold {
-        font-weight: 600 !important;
+        white-space: pre-line;
+        /* Preserve newline characters */
     }
 </style>
 <?php $this->load->view('layouts/user/header'); ?>
@@ -192,34 +87,30 @@
     </div>
 </div>
 
-<section class="mt-4 mb-4">
+<section class="mt-2 mb-4">
     <div class="container">
         <div class="row">
             <?php foreach ($barang as $key => $value) : ?>
-                <?php
-                $gambar = $value['gambar_barang'] == "https://dodolan.jogjakota.go.id/assets/media/default/default-product.png" ? "<img style='\border-radius: 3px;' src='" . $value['gambar_barang'] . "'>" : "<img style='\border-radius: 3px;' src='" . base_url('public/template/upload/barang/' . $value['gambar_barang']) . "'>";
-                ?>
-                <div class="col-6 mb-3">
-                    <div class="product-box">
-                        <div class="product-box-img">
-                            <a href="javascript::void">
-                                <?= $gambar ?>
-                            </a>
-
-                            <div class="cart-box">
-                                <a href="javascript::void" class="cart-bag add_keranjang" data-idproduk="<?= $value['id_brg'] ?>">
-                                    <i class="fa fa-shopping-cart fw-bold text-primary"></i>
-                                </a>
+                <div class="col-6 col-lg-6 col-md-6 col-sm-6 d-flex">
+                    <div class="card w-100 my-2 shadow-2-strong">
+                        <img src="<?= base_url('public/template/upload/barang/' . $value['gambar_barang']) ?>" class="card-img-top mt-3" style="height:120px;width:auto;object-fit:contain;">
+                        <div class="card-body d-flex flex-column">
+                            <p class="card-text mb-0 fs-5 ellipsis" style="font-weight: 400;"><?= $value['nama_barang'] ?></p>
+                            <h4 class="fw-bold mb-1 me-1">RP. <?= number_format($value['harga_promo']) ?></h4>
+                            <div class="d-flex mb-0">
+                                <p class="fs-5 mb-1"><span class="badge bg-danger text-white me-2"><?= number_format(($value['harga_jual_barang'] - $value['harga_promo']) / $value['harga_jual_barang'] * 100, 2) ?>%</span></p>
+                                <p class="fs-5 text-muted mb-1"><del>Rp. <?= number_format($value['harga_jual_barang']) ?></del></p>
                             </div>
-                        </div>
-                        <div class="like-btn animate">
-                            -8.5%
-                        </div>
-                        <div class="product-box-detail">
-                            <h4 style="font-size: 14px;margin-bottom: 0;"><?= $value['nama_barang'] ?></h4>
-                            <div class="d-flex justify-content-between gap-3">
-                                <h5 style="line-height: 1.2;margin-bottom: 0;"><?= $value['nama_kategori_brg'] ?></h5>
-                                <h3 class="fw-semibold">RP. <?= number_format($value['harga_jual_barang']) ?></h3>
+                            <?php
+                            $query = $this->db->query("SELECT COUNT(*) as jumlah_jual FROM tb_pesanan_detail WHERE id_brg = ?", $value['id_brg']);
+                            $result = $query->row();
+                            $jumlah_jual = $result->jumlah_jual;
+                            ?>
+                            <p class="mb-2 fs-5 text-dark" style="font-weight: 500;">
+                                <?= number_format($jumlah_jual) . " Terjual" ?>
+                            </p>
+                            <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
+                                <a data-idproduk="<?= $value['id_brg'] ?>" href="javascript::void" class="btn btn-primary shadow-0 me-1 add_keranjang">+ Keranjang</a>
                             </div>
                         </div>
                     </div>
@@ -236,11 +127,11 @@
 <?php $this->load->view('layouts/user/menu'); ?>
 <?php $this->load->view('layouts/user/footer'); ?>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     var anchorElement = document.querySelector("#harga");
     var urlParams = new URLSearchParams(window.location.search);
     var filter = urlParams.get('filter') || "tertinggi"; // Jika tidak ada filter, maka defaultnya "tertinggi"
-
 
     anchorElement.addEventListener("click", function() {
         // Toggle antara "tertinggi" dan "terendah" setiap kali elemen diklik
@@ -250,45 +141,45 @@
         window.location.href = "<?= base_url('promo?filter=') ?>" + filter;
     });
 
-     $('.add_keranjang').click(function() {
-      // Mengambil data yang perlu ditambahkan ke database
-      var idProduk = $(this).data('idproduk');
-      var data = {
-         idProduk: idProduk
-      };
+    $('.add_keranjang').click(function() {
+        // Mengambil data yang perlu ditambahkan ke database
+        var idProduk = $(this).data('idproduk');
+        var data = {
+            idProduk: idProduk
+        };
 
-      $.ajax({
-         url: '<?= base_url('keranjang/add') ?>', // Ganti dengan URL endpoint Anda
-         type: 'POST', // Metode HTTP yang digunakan (POST, GET, dll.)
-         data: data, // Data yang dikirim ke server
-         success: function(response) {
-            if (response.success == true) {
-               Swal.fire({
-                  title: 'Success!',
-                  text: response.msg,
-                  type: 'success',
-                  customClass: {
-                     confirmButton: 'btn btn-success'
-                  },
-                  buttonsStyling: false
-               });
-            } else {
-               Swal.fire({
-                  title: 'Error!',
-                  text: response.msg,
-                  type: 'error',
-                  customClass: {
-                     confirmButton: 'btn btn-danger'
-                  },
-                  buttonsStyling: false
-               });
-            }
-         },
-         error: function(request, status, error) {
-            alert(request.responseText);
-         },
-      });
-   });
+        $.ajax({
+            url: '<?= base_url('keranjang/add') ?>', // Ganti dengan URL endpoint Anda
+            type: 'POST', // Metode HTTP yang digunakan (POST, GET, dll.)
+            data: data, // Data yang dikirim ke server
+            success: function(response) {
+                if (response.success == true) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: response.msg,
+                        type: 'success',
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        },
+                        buttonsStyling: false
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: response.msg,
+                        type: 'error',
+                        customClass: {
+                            confirmButton: 'btn btn-danger'
+                        },
+                        buttonsStyling: false
+                    });
+                }
+            },
+            error: function(request, status, error) {
+                alert(request.responseText);
+            },
+        });
+    });
 </script>
 </body>
 

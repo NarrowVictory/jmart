@@ -21,6 +21,16 @@ class Register extends CI_Controller
 		$this->load->view('layouts/auth/footer');
 	}
 
+	public function validate_gmail($email)
+	{
+		if (preg_match('/@gmail\.com$/', $email)) {
+			return true;  // Valid Gmail address
+		} else {
+			$this->form_validation->set_message('validate_gmail', 'The {field} must be a valid Gmail address.');
+			return false; // Invalid Gmail address
+		}
+	}
+
 	public function proses()
 	{
 		$this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[1]|max_length[255]');
@@ -31,12 +41,12 @@ class Register extends CI_Controller
 		$this->form_validation->set_message('min_length', 'Kolom {field} harus memiliki panjang minimal {param} karakter.');
 		$this->form_validation->set_message('max_length', 'Kolom {field} harus memiliki panjang maksimal {param} karakter.');
 
-
 		if ($this->form_validation->run() == true) {
 			$username = $this->input->post('username');
 			$password = $this->input->post('password');
 			$nomor_induk = $this->input->post('nomor_induk');
 			$wa_member = $this->input->post('wa_member');
+			$email_member = $this->input->post('email_member');
 			$cek = $this->db->select('id_user,nomor_induk,wa_member,email_member,status_registrasi')->from('tb_user')->where('nomor_induk', $nomor_induk)->where('wa_member', $wa_member)->get()->row_array();
 
 			if (!empty($cek)) {
@@ -140,20 +150,26 @@ class Register extends CI_Controller
 		$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[1]|max_length[255]');
 		$this->form_validation->set_rules('nomor_induk', 'Nomor Induk', 'trim|required|min_length[1]|max_length[20]|is_unique[tb_user.nomor_induk]');
 		$this->form_validation->set_rules('wa_member', 'Nomor WA', 'trim|required|min_length[1]|max_length[20]|is_unique[tb_user.wa_member]');
+		$this->form_validation->set_rules(
+			'email_member',
+			'Email',
+			'trim|required|min_length[1]|max_length[100]|valid_email|callback_validate_gmail|is_unique[tb_user.email_member]'
+		);
 
 		$this->form_validation->set_message('required', 'Kolom {field} harus diisi.');
 		$this->form_validation->set_message('min_length', 'Kolom {field} harus memiliki panjang minimal {param} karakter.');
 		$this->form_validation->set_message('max_length', 'Kolom {field} harus memiliki panjang maksimal {param} karakter.');
 		$this->form_validation->set_message('is_unique', 'Kolom {field} sudah terdaftar, silahkan tambahkan data lain.');
 
-
 		if ($this->form_validation->run() == true) {
 			$username = $this->input->post('username');
 			$password = $this->input->post('password');
 			$nomor_induk = $this->input->post('nomor_induk');
 			$wa_member = $this->input->post('wa_member');
+			$email_member = $this->input->post('email_member');
+			$emailto = $email_member;
 
-			$this->auth->register($username, $password, $nomor_induk, $wa_member);
+			$this->auth->register($username, $password, $nomor_induk, $wa_member, $email_member);
 			$last_id = $this->db->insert_id();
 
 			$access_key = random_string('alnum', 50);
@@ -163,39 +179,72 @@ class Register extends CI_Controller
 			$waktu_sekarang = time();
 			$waktu_5_menit_lagi = $waktu_sekarang + 300;
 
-			$message = "Kode Verifikasi J-MART Anda adalah: " . $verifikasi;
-			$message .= "\nValid Until : " . date('d-m-Y H:i:s', $waktu_5_menit_lagi);
-			$message .= "\n\nAtau anda dapat mengakses melalui link berikut:";
-			$message .= "\n" . base_url('verifikasi/' . $access_key);
+			if ($email_member != "") {
+				$mail_config['smtp_host'] = 'smtp.gmail.com';
+				$mail_config['smtp_port'] = '587';
+				$mail_config['smtp_user'] = 'rifkilhokseumawe2484@gmail.com';
+				$mail_config['_smtp_auth'] = TRUE;
+				$mail_config['smtp_pass'] = 'bcjqwtxfihhmjvcd';
+				$mail_config['smtp_crypto'] = 'tls';
+				$mail_config['protocol'] = 'smtp';
+				$mail_config['mailtype'] = 'html';
+				$mail_config['send_multipart'] = FALSE;
+				$mail_config['charset'] = 'iso-8859-1';
+				$mail_config['wordwrap'] = TRUE;
+				$this->email->initialize($mail_config);
+				$this->email->set_newline("\r\n");
 
-			$curl = curl_init();
-			curl_setopt_array($curl, array(
-				CURLOPT_URL => "https://api.fonnte.com/send",
-				CURLOPT_RETURNTRANSFER => true,
-				CURLOPT_ENCODING => "",
-				CURLOPT_MAXREDIRS => 10,
-				CURLOPT_FOLLOWLOCATION => true,
-				CURLOPT_TIMEOUT => 30,
-				CURLOPT_SSL_VERIFYHOST => 0,
-				CURLOPT_SSL_VERIFYPEER => 0,
-				CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-				CURLOPT_CUSTOMREQUEST => "POST",
-				CURLOPT_POSTFIELDS => array(
-					'target' => $wa_member,
-					'message' => $message,
-					'url' => "https://asset-a.grid.id/crop/0x0:0x0/945x630/photo/2018/06/07/3026687346.png",
-					'filename' => "filename",
-				),
-				CURLOPT_HTTPHEADER => array(
-					'Authorization: #7VISHMuycE3qmEw8UMW'
-				),
-			));
+				$this->email->from('rifkilhokseumawe2484@gmail.com', 'J-MART APP');
+				$this->email->to($emailto);
+				$this->email->subject('JMART-VERIFIKASI');
 
-			curl_exec($curl);
+				$data = array(
+					'username' => $username,
+					'email' => $email_member,
+					'nomor_induk' => $nomor_induk,
+					'access_key' => $access_key,
+					'verifikasi' => $verifikasi
+				);
+
+				$message = $this->load->view('sample/email_signup', $data, TRUE);
+				$this->email->message($message);
+				$this->email->send();
+			}
+
+			// $message = "Kode Verifikasi J-MART Anda adalah: " . $verifikasi;
+			// $message .= "\nValid Until : " . date('d-m-Y H:i:s', $waktu_5_menit_lagi);
+			// $message .= "\n\nAtau anda dapat mengakses melalui link berikut:";
+			// $message .= "\n" . base_url('verifikasi/' . $access_key);
+
+			// $curl = curl_init();
+			// curl_setopt_array($curl, array(
+			// 	CURLOPT_URL => "https://api.fonnte.com/send",
+			// 	CURLOPT_RETURNTRANSFER => true,
+			// 	CURLOPT_ENCODING => "",
+			// 	CURLOPT_MAXREDIRS => 10,
+			// 	CURLOPT_FOLLOWLOCATION => true,
+			// 	CURLOPT_TIMEOUT => 30,
+			// 	CURLOPT_SSL_VERIFYHOST => 0,
+			// 	CURLOPT_SSL_VERIFYPEER => 0,
+			// 	CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			// 	CURLOPT_CUSTOMREQUEST => "POST",
+			// 	CURLOPT_POSTFIELDS => array(
+			// 		'target' => $wa_member,
+			// 		'message' => $message,
+			// 		'url' => "https://asset-a.grid.id/crop/0x0:0x0/945x630/photo/2018/06/07/3026687346.png",
+			// 		'filename' => "filename",
+			// 	),
+			// 	CURLOPT_HTTPHEADER => array(
+			// 		'Authorization: #7VISHMuycE3qmEw8UMW'
+			// 	),
+			// ));
+
+			// curl_exec($curl);
 
 			$response = array(
+				'access_key' => $access_key,
 				'status' => 'success',
-				'message' => 'Pendaftaran Berhasil. Silahkan login dengan akun anda!'
+				'message' => 'Pendaftaran Berhasil. Silahkan cek email anda untuk verifikasi akun!'
 			);
 			$this->output
 				->set_status_header(200)

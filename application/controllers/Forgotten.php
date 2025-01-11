@@ -49,9 +49,16 @@ class Forgotten extends CI_Controller
 				$this->email->from('rifkilhokseumawe2484@gmail.com', 'JMART APP');
 				$this->email->to($emailto);
 				$this->email->subject('JMART RESET PASSWORD');
-				$message = "<p>Kami mendengar bahwa Anda kehilangan kata sandi JMART Anda. Mohon maaf tentang hal tersebut!</p>";
-				$message .= "<p>Tapi jangan khawatir! Anda dapat menggunakan tombol berikut untuk mengatur ulang kata sandi Anda:</p>";
-				$message .= "<a href='" . site_url('forgotten/change_password/' . $reset_key) . "'>Reset Password</a><br>";
+				// $message = "<p>Kami mendengar bahwa Anda kehilangan kata sandi JMART Anda. Mohon maaf tentang hal tersebut!</p>";
+				// $message .= "<p>Tapi jangan khawatir! Anda dapat menggunakan tombol berikut untuk mengatur ulang kata sandi Anda:</p>";
+				// $message .= "<a href='" . site_url('forgotten/change_password/' . $reset_key) . "'>Reset Password</a><br>";
+
+
+				$data = array(
+					'reset_key' => $reset_key,
+				);
+
+				$message = $this->load->view('sample/email_forgot', $data, TRUE);
 				$this->email->message($message);
 
 				if (!$this->email->send()) {
@@ -91,12 +98,12 @@ class Forgotten extends CI_Controller
 				$this->load->view('vw_confirmation', $data);
 				$this->load->view('layouts/auth/footer');
 			} else {
-				$this->session->set_flashdata('pesan', 'Key Telah Berubah. Silahkan buat permintaan reset password yang baru.');
+				$this->session->set_flashdata('error', 'Key Telah Berubah. Silahkan buat permintaan reset password yang baru.');
 				redirect('forgotten');
 			}
 		} else {
 			$this->session->set_flashdata('pesan', 'Key Telah Berubah. Silahkan buat permintaan reset password yang baru.');
-			echo "string";
+			redirect('forgotten');
 		}
 	}
 
@@ -107,7 +114,7 @@ class Forgotten extends CI_Controller
 		$reset_key = $this->input->post('access_key_forgotten');
 
 		if ($password != $password_baru) {
-			$this->session->set_flashdata('pesan', 'Password tidak sama');
+			$this->session->set_flashdata('error', 'Password tidak sama');
 			redirect($_SERVER['HTTP_REFERER']);
 		} else {
 			$data = array(
@@ -117,7 +124,7 @@ class Forgotten extends CI_Controller
 			$this->db->where('access_key_forgotten', $reset_key);
 			$this->db->update('tb_user', $data);
 
-			$this->session->set_flashdata('pesan', 'Password berhasil diubah!');
+			$this->session->set_flashdata('success_register', 'Password berhasil diubah!');
 			redirect('/');
 		}
 	}

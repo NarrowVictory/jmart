@@ -1,9 +1,17 @@
 <?php $this->load->view('layouts/kurir/head'); ?>
 <style>
    .title {
-      font-weight: 700;
-      margin-bottom: 0;
-      color: #2C406E;
+      color: #2F2F2F;
+   }
+
+   h6,
+   .h6 {
+      font-size: 1rem;
+   }
+
+   .h5,
+   h5 {
+      font-size: 1.125rem;
    }
 
    .avatar-md {
@@ -11,181 +19,272 @@
       width: 5rem;
    }
 
-   .fs-19 {
-      font-size: 19px;
+   .dz-order {
+      background-color: #FFF;
+      padding: 15px 15px;
+      box-shadow: 0 2px 4px 0 rgb(71 70 69 / 40%) !important;
+      margin-bottom: 15px;
+      border-radius: 0.25rem;
+      background-clip: border-box;
+      cursor: pointer;
+      transition: background-color 0.3s ease-in-out;
+      /* Efek transisi untuk perubahan warna latar belakang */
    }
 
-   .primary-link {
-      color: #314047;
-      -webkit-transition: all .5s ease;
-      transition: all .5s ease;
+   /* .dz-order:hover {
+      background-color: #f0f0f0;
+   } */
+
+   .dz-order .order-info,
+   .dz-order .order-detail {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
    }
 
-   a {
-      color: #02af74;
-      text-decoration: none;
+   .pe-2 {
+      padding-right: 0.5rem !important;
    }
 
-   .bookmark-post .favorite-icon a,
-   .job-box.bookmark-post .favorite-icon a {
-      background-color: #da3746;
-      color: #fff;
-      border-color: danger;
+   .dz-order .productId {
+      font-size: 12px;
+      color: #A131AD;
+      font-weight: bold;
    }
 
-   .favorite-icon a {
-      display: inline-block;
-      width: 30px;
-      height: 30px;
-      font-size: 18px;
-      line-height: 30px;
-      text-align: center;
-      border: 1px solid #eff0f2;
-      border-radius: 6px;
-      color: rgba(173, 181, 189, .55);
-      -webkit-transition: all .5s ease;
-      transition: all .5s ease;
+   .media-70 {
+      width: 70px;
+      min-width: 70px;
+      height: 70px;
    }
 
-
-   .candidate-list-box .favorite-icon {
-      position: absolute;
-      right: 22px;
-      top: 22px;
+   .dz-order .order-info,
+   .dz-order .order-detail {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
    }
 
-   .fs-14 {
+   .gap-5 {
+      gap: 3rem !important;
+   }
+
+   .dz-order .quantity {
       font-size: 14px;
+      font-weight: 700;
+      color: #2F2F2F;
    }
 
-   .fs-16 {
-      font-size: 14px;
-   }
-
-   .bg-soft-secondary {
-      background-color: rgba(116, 120, 141, .15) !important;
-      color: #74788d !important;
-   }
-
-   .mt-1 {
-      margin-top: 0.25rem !important;
-   }
-
-   .panel-order .row {
-      border-bottom: 1px solid #ccc;
-   }
-
-   .panel-order .row:last-child {
-      border: 0px;
-   }
-
-   .panel-order .row .col-md-1 {
-      text-align: center;
-      padding-top: 15px;
-   }
-
-   .panel-order .row .col-md-1 img {
-      width: 50px;
-      max-height: 50px;
-   }
-
-   .panel-order .row .row {
-      border-bottom: 0;
-   }
-
-   .panel-order .row .col-md-11 {
-      border-left: 1px solid #ccc;
-   }
-
-   .panel-order .row .row .col-md-12 {
-      padding-top: 7px;
-      padding-bottom: 7px;
-   }
-
-   .panel-order .row .row .col-md-12:last-child {
-      font-size: 11px;
-      color: #555;
-      background: #efefef;
-   }
-
-   .panel-order .btn-group {
-      margin: 0px;
-      padding: 0px;
-   }
-
-   .panel-order .card-body {
-      padding-top: 0px;
-      padding-bottom: 0px;
-   }
-
-   .panel-order .panel-deading {
+   .price {
       margin-bottom: 0;
+      color: #0D775E;
+      font-weight: 700;
    }
 
-   .img-thumbnail {
-      display: inline-block;
-      width: 100% \9;
-      max-width: 100%;
+   .dz-order .status {
+      display: flex;
+      align-items: center;
+   }
+
+   .dz-order .status .btn {
+      padding: 12px 18px;
+      font-size: 14px;
+      white-space: nowrap;
+      font-weight: 500;
+   }
+
+   .light.btn-success {
+      background-color: #e4f8ee;
+      border-color: #e4f8ee;
+      color: #43CD8B;
+   }
+
+   .link-p {
+      display: block;
+      min-height: 250px;
       height: auto;
-      padding: 4px;
-      line-height: 1.42857143;
-      background-color: #fff;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      -webkit-transition: all .2s ease-in-out;
-      -o-transition: all .2s ease-in-out;
-      transition: all .2s ease-in-out;
+      width: 100%;
+      max-width: 100%;
+      margin-right: auto;
+      margin-left: auto;
    }
 
-   .list {
-      padding-left: 0;
-      padding-right: 0
+   .mb-xxl {
+      margin-bottom: calc(75px + (100 - 75) * ((100vw - 320px) / (1920)));
    }
 
-   .list-item {
-      position: relative;
+   .order-detail .banner-box {
+      padding: 15px;
+      background-color: #0baf9a;
+      border-radius: 7px;
+   }
+
+   .media {
+      display: -webkit-box;
       display: -ms-flexbox;
       display: flex;
-      -ms-flex-direction: column;
-      flex-direction: column;
-      min-width: 0;
-      word-wrap: break-word
+      -webkit-box-align: center;
+      -ms-flex-align: center;
    }
 
-   .list-row .list-item {
-      -ms-flex-direction: row;
-      flex-direction: row;
+   .order-detail .banner-box .media img {
+      width: 40px;
+      height: 40px;
+   }
+
+   .order-detail .item-section .item-wrap .media .count {
+      display: flex;
+      -webkit-box-align: center;
       -ms-flex-align: center;
       align-items: center;
-      padding: .75rem .625rem
    }
 
-   .list-row .list-item>* {
-      padding-left: .625rem;
-      padding-right: .625rem
-   }
-
-   .avatar {
-      position: relative;
-      line-height: 1;
-      border-radius: 500px;
-      white-space: nowrap;
-      font-weight: 700;
-      border-radius: 100%;
+   .order-detail .item-section .item-wrap .media .count>span {
+      background-color: #0baf9a;
+      width: calc(26px + (32 - 26) * ((100vw - 320px) / (1920 - 320)));
+      height: calc(26px + (32 - 26) * ((100vw - 320px) / (1920 - 320)));
+      display: -webkit-box;
       display: -ms-flexbox;
       display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      color: #fff;
+      -webkit-box-pack: center;
       -ms-flex-pack: center;
       justify-content: center;
-      -ms-flex-align: center;
-      align-items: center;
-      -ms-flex-negative: 0;
-      flex-shrink: 0;
-      border-radius: 500px;
-      box-shadow: 0 5px 10px 0 rgba(50, 50, 50, .15)
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      border-radius: 5px;
    }
 
-   .no-wrap {
-      white-space: nowrap
+   @media only screen and (max-width: 375px) {
+      .order-detail .item-section .item-wrap .media .media-body h4 {
+         width: 136px;
+         font-weight: 600;
+      }
+   }
+
+   .order-detail .item-section .item-wrap .media .media-body h4 {
+      margin-top: -5px;
+      font-weight: 600;
+      overflow: hidden;
+      margin-bottom: 0px;
+      margin-left: 20px;
+   }
+
+   .order-detail .item-section .item-wrap .media .media-body span {
+      display: block;
+      margin-bottom: -2px;
+   }
+
+   .order-detail .item-section .item-wrap .media>span {
+      margin-left: auto;
+   }
+
+   .order-detail .item-section .item-wrap .media:not(:first-of-type) {
+      border-top: 1px solid #f1f1f1;
+   }
+
+   .order-detail .item-section .item-wrap .media {
+      padding: 15px;
+   }
+
+   .content-color {
+      color: #777;
+   }
+
+   .order-detail .order-summary ul li {
+      padding: 2px 0;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+   }
+
+   .order-history .order-box {
+      background-color: white;
+      padding: 15px;
+      border-radius: 10px;
+   }
+
+   .order-history .order-box .media {
+      -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+   }
+
+   .order-history .order-box .media .media-body img {
+      width: calc(75px + (100 - 75) * ((100vw - 320px) / (1920 - 320)));
+      height: calc(75px + (100 - 75) * ((100vw - 320px) / (1920 - 320)));
+      border-radius: 10px;
+   }
+
+   .order-history .order-box .bottom-content {
+      margin-top: 15px;
+      padding-top: 10px;
+      border-top: 1px solid #f1f1f1;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+   }
+
+   .order-history .order-box .bottom-content .rating {
+      display: none;
+   }
+
+   .rating {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      gap: 4px;
+   }
+
+   .order-history .order-box .media .content-box h2 {
+      font-weight: 600;
+      margin-bottom: 3px;
+   }
+
+   .order-history .order-box .media .content-box p {
+      margin-bottom: 3px;
+      width: calc(180px + (245 - 180) * ((100vw - 320px) / (1920 - 320)));
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+   }
+
+   .title-color {
+      color: #222;
+   }
+
+   .font-sm {
+      font-size: calc(14px + (16 - 14) * ((100vw - 320px) / (1920 - 320))) !important;
+   }
+
+   .content-color {
+      color: #777;
+   }
+
+   .font-xs {
+      font-size: calc(13px + (14 - 13) * ((100vw - 320px) / (1920 - 320))) !important;
    }
 </style>
 <?php $this->load->view('layouts/kurir/header'); ?>
@@ -215,70 +314,166 @@
          </div>
       </div>
       <div class="row mt-3">
-         <div class="col-12">
-            <div class="row">
-               <div class="card">
-                  <div class="card-header">
-                     <h5 class="fw-bold card-title">Histori Pemesanan</h5>
-                  </div>
-                  <div class="card-body" style="padding-top: 0px;padding-bottom: 0px;padding: 15px;">
-                     <div class="page-content page-container" id="page-content">
-                        <div class="padding">
-                           <div class="row">
-                              <div class="col-sm-12">
-                                 <div class="list list-row block">
-                                    <?php foreach ($pesanan as $key => $value) : ?>
-                                       <?php
-                                       $items = $this->db->select('*')->from('tb_pesanan_detail')->where('id_pesanan', $value->id_pesanan)->get()->num_rows();
-                                       ?>
-                                       <div class="list-item" data-id="19">
-                                          <div><a href="#" data-abc="true"><span class="w-48 avatar gd-warning">S</span></a></div>
-                                          <div class="flex">
-                                             <a href="#" class="item-author text-color" data-abc="true">
-                                                #<?= $value->id_pesanan ?> | <?= $value->metode_bayar ?>
-                                             </a>
-                                             <div class="col-md-12 fs-4">Order Dibuat pada: <b><?= date('d/M/Y H:i:s', strtotime($value->tgl_pesanan)) ?></b> oleh <a href="#"><?= $value->nama_member ?> </a> dan Selesai pada <b><?= date('d/M/Y H:i:s') ?></b></div>
-                                          </div>
-                                          <div class="no-wrap">
-                                             <div class="item-date text-muted text-sm d-none d-md-block">
-                                                <label class="badge bg-success text-white"><?= $value->status_pesanan ?></label>
-                                             </div>
-                                          </div>
-                                       </div>
-                                    <?php endforeach ?>
-                                 </div>
-                              </div>
+         <h5 class="fw-bold card-title">Histori Pemesanan</h5>
+         <div class="card">
+            <div class="card-body p-0 pt-0 pb-0 pl-1 pr-1">
+               <main class="main-wrap order-history mb-xxl">
+                  <?php foreach ($pesanan as $key => $value) : ?>
+                     <?php
+                     $items = $this->db->select('*')->from('tb_pesanan_detail')->where('id_pesanan', $value->id_pesanan)->get()->num_rows();
+                     ?>
+                     <div style="cursor: pointer !important;" class="order-box border-bottom" data-bs-toggle="modal" data-bs-target="#orderDetailModal<?= $value->id_pesanan ?>">
+                        <div class="media">
+                           <a href="javascript::void" class="content-box">
+                              <h2 class="font-sm title-color">ID: #<?= $value->id_pesanan ?> , Dt: <?= $value->tgl_diselesaikan ?></h2>
+                              <p class="font-xs content-color fw-bold fs-6">
+                                 <?= $value->nama_member ?>
+                              </p>
+                              <span class="content-color font-xs">Total: <span class="text-success fw-bold">Rp. <?= number_format($value->grand_total) ?></span>, Items: <span class="text-success fw-bold"><?= $items ?></span></span>
+                           </a>
+                           <div class="media-body">
+                              <img src="https://themes.pixelstrap.com/fastkart-app/assets/images/map/map.jpg" alt="map">
                            </div>
                         </div>
                      </div>
-                     <?php if (count($pesanan) <= 0) : ?>
-                        <div class="empty">
-                           <div class="empty-header">404</div>
-                           <p class="empty-title">Oops… Belum Ada Pesanan yang diselesaikan</p>
-                           <p class="empty-subtitle text-secondary">
-                              We are sorry but the page you are looking for was not found
-                           </p>
-                           <div class="empty-action">
-                              <a href="<?= base_url('home') ?>" class="btn btn-primary">
-                                 <!-- Download SVG icon from http://tabler-icons.io/i/arrow-left -->
-                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                    <path d="M5 12l14 0"></path>
-                                    <path d="M5 12l6 6"></path>
-                                    <path d="M5 12l6 -6"></path>
-                                 </svg>
-                                 Kembali Ke Home
-                              </a>
-                           </div>
-                        </div>
-                     <?php endif ?>
-                  </div>
-               </div>
+                  <?php endforeach ?>
+               </main>
             </div>
          </div>
       </div>
    </div>
 </section>
+
+<?php foreach ($pesanan as $key => $value) : ?>
+   <div class="modal fade" id="orderDetailModal<?= $value->id_pesanan ?>" tabindex="-1" aria-labelledby="orderDetailModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable modal-lg">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title">Detail Pesanan</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body">
+               <main class="main-wrap order-detail mb-xxl">
+                  <!-- Banner Start -->
+                  <section class="pt-0">
+                     <div class="banner-box bg-custom">
+                        <div class="row g-0 align-items-center">
+                           <div class="col-md-3 col-3">
+                              <img class="img-fluid" src="https://themes.pixelstrap.com/fastkart-app/assets/icons/svg/box.svg" alt="box" style="width: 100%; max-width: 70px;">
+                           </div>
+                           <div class="col-md-9 col-9">
+                              <div class="media-body text-white">
+                                 <span class="font-sm">Order ID: #<?= $value->id_pesanan ?></span>
+                                 <h2>Order Selesai</h2>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </section>
+
+                  <!-- Banner End -->
+
+                  <!-- Item Section Start -->
+                  <section class="item-section p-0">
+                     <h3 class="text-success mt-3 fw-bold font-md">Items:</h3>
+
+                     <div class="item-wrap">
+                        <?php
+                        $detail = $this->db->select('*')->from('tb_pesanan_detail')->join('tb_barang', 'tb_barang.id_brg = tb_pesanan_detail.id_brg')->where('id_pesanan', $value->id_pesanan)->get()->result_array();
+                        ?>
+                        <?php foreach ($detail as $key => $dtl) : ?>
+                           <a href="javascript::void" class="media">
+                              <div class="count">
+                                 <span class="font-sm"><?= $dtl['jumlah_jual'] ?></span>
+                              </div>
+                              <div class="media-body">
+                                 <h4 class="title-color font-sm"><?= $dtl['nama_barang'] ?></h4>
+                                 <span class="content-color font-sm" style="margin-left: 20px;">
+                                    <?= $dtl['harga_saat_ini'] ?>
+                                 </span>
+                              </div>
+                              <span class="title-color font-md"><?= number_format($dtl['harga_saat_ini'] * $dtl['jumlah_jual']) ?></span>
+                           </a>
+                        <?php endforeach ?>
+                     </div>
+                  </section>
+                  <!-- Item Section End -->
+
+                  <!-- Order Summary Section Start -->
+                  <section class="order-summary p-0">
+                     <h3 class="text-success fw-bold mt-3 font-md">Payment Details</h3>
+                     <!-- Product Summary Start -->
+                     <ul>
+                        <li>
+                           <span>Sub Total</span>
+                           <span><?= $value->grand_total - $value->ongkos_kirim ?></span>
+                        </li>
+
+                        <li>
+                           <span>Ongkos Kirim</span>
+                           <span class="font-theme"><?= $value->ongkos_kirim ?></span>
+                        </li>
+
+                        <li>
+                           <span>Total Amount</span>
+                           <span><?= $value->grand_total ?></span>
+                        </li>
+                     </ul>
+                     <!-- Product Summary End -->
+                  </section>
+                  <!-- Order Summary Section End -->
+
+                  <!-- Address Section Start -->
+                  <?php
+                  $alamat = $this->db->select('*')->from('tb_user_alamat')->join('tb_desa', 'tb_desa.id_desa = tb_user_alamat.id_desa')->join('tb_kecamatan', 'tb_kecamatan.id_kecamatan = tb_desa.id_kecamatan')->join('tb_kabupaten', 'tb_kabupaten.id_kabupaten = tb_kecamatan.id_kabupaten')->join('tb_provinsi', 'tb_provinsi.id_provinsi = tb_kabupaten.id_provinsi')->where('id_user', $value->id_user)->where('set_default', 'Main')->get()->row_array();
+                  ?>
+                  <section class="address-section p-0">
+                     <h3 class="text-success mt-3 fw-bold font-md">Address</h3>
+
+                     <div class="address">
+                        <table style="border-collapse: collapse;" class="border-0 mt-3">
+                           <tr>
+                              <td width="80"><strong>Nama</strong></td>
+                              <td width="15">:</td>
+                              <td class="fs-4"><?= $alamat['nama_penerima'] ?></td>
+                           </tr>
+                           <tr>
+                              <td><strong>Email</strong></td>
+                              <td>:</td>
+                              <td class="fs-4"><?= $value->email_member ?></td>
+                           </tr>
+                           <tr>
+                              <td><strong>Kontak</strong></td>
+                              <td>:</td>
+                              <td class="fs-4"><?= $alamat['kontak_penerima'] ?></td>
+                           </tr>
+                           <tr>
+                              <td><strong>Alamat</strong></td>
+                              <td>:</td>
+                              <td class="fs-4">
+                                 <?= $alamat['nama_desa'] ?>, <?= $alamat['nama_kecamatan'] ?>, <?= $alamat['nama_kabupaten'] ?>, <?= $alamat['nama_provinsi'] ?>, ID | <?= $alamat['kode_pos'] ?>
+                              </td>
+                           </tr>
+                        </table>
+                     </div>
+                  </section>
+                  <!-- Address Section End -->
+
+                  <!-- Payment Method Section Start -->
+                  <section class="payment-method p-0">
+                     <h3 class="text-success mt-3 fw-bold font-md">Metode Pembayaran</h3>
+                     <span class="font-sm title-color" style="text-transform: capitalize;"><?= $value->metode_bayar ?></span>
+                  </section>
+                  <!-- Payment Method Section End -->
+               </main>
+            </div>
+         </div>
+      </div>
+   </div>
+
+<?php endforeach ?>
+
 <div class="row">
    <br><br><br><br>
 </div>
@@ -420,16 +615,13 @@
          legend: {
             show: true,
             position: 'bottom',
-            offsetY: 12,
-            markers: {
-               width: 10,
-               height: 10,
-               radius: 100,
-            },
-            itemMargin: {
-               horizontal: 8,
-               vertical: 8
-            },
+         },
+         title: {
+            text: 'Status Pesanan',
+            align: 'center',
+            style: {
+               color: '#444'
+            }
          },
          tooltip: {
             fillSeriesColor: false

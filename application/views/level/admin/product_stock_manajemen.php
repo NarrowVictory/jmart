@@ -15,82 +15,53 @@
         background: #626976 !important;
     }
 
+    .select2-container .select2-selection--single .select2-selection__rendered {
+        display: block;
+        width: 100%;
+        padding: 0.5625rem 0.75rem;
+        font-family: var(--tblr-font-sans-serif);
+        font-size: .875rem;
+        font-weight: 400;
+        line-height: 1.4285714286;
+        color: var(--tblr-body-color);
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-color: var(--tblr-bg-forms);
+        background-clip: padding-box;
+        border: var(--tblr-border-width) solid var(--tblr-border-color);
+        border-radius: var(--tblr-border-radius);
+        box-shadow: var(--tblr-box-shadow-input);
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    }
+
+    .select2-container--default .select2-selection--single {
+        background-color: #fff;
+        border: none;
+        border-radius: 4px;
+    }
+
     .dataTables_wrapper .row:first-child {
-        padding-top: 12px;
+        padding-top: 20px;
         padding-bottom: 12px;
-        background-color: #EFF3F8;
+        padding-left: 50px;
+        padding-right: 30px;
     }
 
     .dataTables_wrapper .row:last-child {
-        border-bottom: 1px solid #e0e0e0;
-        padding-top: 12px;
+        padding-top: 20px;
         padding-bottom: 12px;
-        background-color: #EFF3F8;
-    }
-
-    .dataTables_wrapper .row {
-        margin: 0 !important;
-    }
-
-    div.dataTables_wrapper div.dataTables_length label {
-        font-weight: normal;
-        text-align: left;
-        white-space: nowrap;
+        padding-left: 50px;
+        padding-right: 30px;
     }
 
     div.dataTables_wrapper div.dataTables_filter input {
-        margin-left: 0.5em;
-        display: inline-block;
-        width: auto;
+        padding: 14px 6px;
     }
 
-    .form-control-sm {
-        width: 125px;
-        height: 25px;
-        line-height: 25px;
-        -webkit-box-sizing: content-box;
-        -moz-box-sizing: content-box;
-        box-sizing: content-box;
-        padding-right: 40px;
-    }
-
-    .form-select-sm {
-        width: 125px;
-        height: 25px;
-        line-height: 25px;
-        -webkit-box-sizing: content-box;
-        -moz-box-sizing: content-box;
-        box-sizing: content-box;
-        padding-right: 40px;
-    }
-
-    .table-header {
-        background-color: #307ECC;
-        color: #FFF;
-        font-size: 14px;
-        line-height: 50px;
-        padding-left: 12px;
-        margin-bottom: 1px;
-    }
-
-    div.dataTables_wrapper div.dataTables_filter input {
-        margin-bottom: 0 !important;
-        margin: 0 8px;
-    }
-
-    div.dataTables_wrapper div.dataTables_length label {
-        margin-bottom: 0 !important;
-        margin: 0 8px;
-    }
-
-    div.dataTables_wrapper div.dataTables_info {
-        margin-bottom: 0 !important;
-        margin: 0 8px;
-    }
-
-    div.dataTables_wrapper div.dataTables_paginate {
-        margin-bottom: 0 !important;
-        margin: 0 8px;
+    div.dataTables_wrapper div.dataTables_length select {
+        padding: 10px 6px;
+        width: 70px;
     }
 
     .active>.page-link,
@@ -105,167 +76,281 @@
     .table>tbody>tr:hover {
         background-color: #F5F5F5;
     }
-
-    .card .table {
-        box-shadow: none !important;
-    }
-
-    .rating .star {
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-pack: center;
-        -ms-flex-pack: center;
-        justify-content: center;
-        gap: 3px;
-        font-size: 10px;
-    }
-
-    .rating .star .starred {
-        color: #F0C434;
-    }
 </style>
 <?php $this->load->view('layouts/admin/header'); ?>
+<div class="page-header d-print-none">
+    <div class="container-xl">
+        <div class="row g-2 align-items-center">
+            <div class="col">
+                <h2 class="page-title">
+                    Detail Produk
+                </h2>
+            </div>
+        </div>
+        <div class="row align-items-center mt-3">
+            <div class="col">
+                <div class="btn-group">
+                    <a href="<?= base_url('product') ?>" class="btn btn-primary me-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-back-up" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M9 13l-4 -4l4 -4m-4 4h11a4 4 0 0 1 0 8h-1"></path>
+                        </svg>
+                        Kembali
+                    </a>
+                    <button class="btn btn-primary dropdown-toggle text-uppercase" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-dots-vertical" width="40" height="40" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                            <path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                            <path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                        </svg>Aksi
+                    </button>
+                    <ul class="dropdown-menu bg-secondary">
+                        <li>
+                            <a href="#" class="dropdown-item small text-white">
+                                Export Excel
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="dropdown-item small text-white delete" data-id="77">
+                                Export PDF
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="page-body">
     <div class="container-xl">
-        <div class="mx-auto text-center justify-content-center">
-            <a href="<?= base_url('product') ?>" class="btn btn-md mb-2 btn-warning"> <i class="fa fa-arrow-left fa-fw"></i> <span class="hidden-sm hidden-xs">Kembali</span> </a>
-            <a href="http://simaset.id/public/admin/stock_persediaan/stock_masuk_pdf/BR000001" class="btn btn-flat btn-md mb-2 btn-danger"> <i class="fa fa-file-pdf fa-fw"></i> <span class="hidden-sm hidden-xs">Export PDF</span> </a>
-            <a href="http://simaset.id/public/admin/stock_persediaan/stock_masuk_excel/BR000001" class="btn btn-flat btn-md mb-2 btn-success"> <i class="fa fa-file-excel fa-fw"></i> <span class="hidden-sm hidden-xs">Export Excel</span> </a>
-        </div>
-        <div class="row mb-2">
-            <div class="col-12">
-                <div class="card">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <div class="card mb-3">
+                    <div class="card-header border-0 pb-0">
+                        <h4 class="card-title text-muted text-uppercase">
+                            Detail Informasi Produk
+                        </h4>
+                    </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6 col-sm-6 mt-5">
-                                <h3 class="box-title m-t-40">General Info</h3>
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <tbody>
-                                            <tr>
-                                                <td width="200">Nama Barang</td>
-                                                <td> D'KING GOLDENMOON 15G </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Barcode</td>
-                                                <td> 8997232050700 </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Nama Supplier</td>
-                                                <td> </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Stock</td>
-                                                <td> 31 Pcs </td>
-                                            </tr>
-                                            <tr>
-                                                <td>HPP Barang</td>
-                                                <td> Rp. 1,000 </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Markup Barang</td>
-                                                <td> 100 % </td>
-                                            </tr>
-                                            <tr>
-                                                <td>PPN</td>
-                                                <td> Ya </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Harga Jual Barang</td>
-                                                <td> Rp. 2,000 </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-sm-6 mt-5">
-                                <h3 class="box-title m-t-40">Promo Info</h3>
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <tbody>
-                                            <tr>
-                                                <td width="200">Promo</td>
-                                                <td> On </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Harga Promo</td>
-                                                <td> Rp. 1,800 </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="col-lg-3 col-md-4 col-xs-4 align-middle">
+                                            Nama Barang
+                                        </th>
+                                        <td colspan="4">
+                                            <?= $barang['nama_barang'] ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="align-middle">
+                                            Nama Kategori Barang
+                                        </th>
+                                        <td colspan="4">
+                                            <?= $barang['nama_kategori_brg'] ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="align-middle">
+                                            Barcode
+
+                                        </th>
+                                        <td colspan="4">
+                                            <?= $barang['barcode'] ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="align-middle">
+                                            Stok Barang
+                                        </th>
+                                        <td colspan="4">
+                                            <?= $barang['stock_brg'] . " " . $barang['nama_satuan'] ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="align-middle">
+                                            Deskripsi Singkat
+                                        </th>
+                                        <td colspan="4">
+                                            <?= $barang['description'] == "" ? "Tidak ada deskripsi" : $barang['description'] ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="align-middle" rowspan="2">
+                                            Rincian Harga
+                                        </th>
+                                        <th class="align-middle">
+                                            HPP Barang
+                                        </th>
+                                        <th class="col-3 align-middle">
+                                            Markup Barang
+                                        </th>
+                                        <th class="align-middle">
+                                            PPN
+                                        </th>
+                                        <th class="align-middle">
+                                            Harga Jual Barang
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Rp. <?= number_format($barang['hpp_barang']) ?>
+                                        </td>
+                                        <td>
+                                            <?= $barang['markup_barang'] ?>%
+                                        </td>
+                                        <td>
+                                            <?= $barang['ppn_barang'] == "Y" ? "10" : "0" ?>%
+                                        </td>
+                                        <td>
+                                            Rp. <?= number_format($barang['harga_jual_barang']) ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="align-middle" rowspan="2">
+                                            Rincian Promosi
+                                        </th>
+                                        <th colspan="2" class="align-middle">
+                                            Promo Aktif?
+                                        </th>
+                                        <th colspan="1" class="align-middle">
+                                            Persentase Promo
+                                        </th>
+                                        <th colspan="1" class="align-middle">
+                                            Harga Promo
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <?= $barang['promo_brg'] == "On" ? "<span class=\"badge bg-success-lt\">Aktif</span>" : "<span class=\"badge bg-orange-lt\">Tidak</span>" ?>
+                                        </td>
+                                        <td colspan="1">
+                                            <?= $barang['promo_brg'] == "On" ? "<span class='text-success fw-bold'>" . number_format(($barang['harga_jual_barang'] - $barang['harga_promo']) / ($barang['harga_jual_barang']), 2) * 100 . "%</span>" : "" ?>
+                                        </td>
+                                        <td colspan="1">
+                                            <?= $barang['promo_brg'] == "On" ? "<span class='text-success fw-bold'>Rp. " . number_format($barang['harga_promo']) . "</span>" : "" ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="align-middle" rowspan="12">
+                                            Gambar
+                                        </th>
+                                        <th colspan="4" class="align-middle">
+                                            Gambar
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">
+                                            <?php
+                                            $gambarSrc = $barang['gambar_barang'] == "https://dodolan.jogjakota.go.id/assets/media/default/default-product.png"
+                                                ? $barang['gambar_barang']
+                                                : base_url('public/template/upload/barang/' . $barang['gambar_barang']);
+
+                                            $gambar = "<img src='" . $gambarSrc . "' style='border: 1px solid #ddd; padding: 5px; height: 100px;'>";
+                                            echo $gambar;
+                                            ?>
+                                        </td>
+                                    </tr>
+                                </thead>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- Column -->
         </div>
+        <form action="" class="form-inline">
+            <div class="row align-items-center">
+                <div class="form-group mb-2 col-auto">
+                    <label for="staticEmail2" class="sr-only">Tipe Manajemen</label>
+                    <select style="width:230px !important;border-radius:0px !important" required name="tipe_filter" id="tipe_filter" class="form-control">
+                        <option value="">--- Pilih Tipe Manajemen ---</option>
+                        <option value="stock_awal">Stock Awal</option>
+                        <option value="stock_masuk">Stock Masuk</option>
+                        <option value="stock_keluar">Stock Keluar</option>
+                        <option value="stock_rusak">Stock Rusak</option>
+                        <option value="stock_opname">Stock Hilang</option>
+                    </select>
+                </div>
+                <div class="form-group mb-2 col-auto">
+                    <label for="staticEmail2" class="sr-only">Unit Kerja</label>
+                    <?php
+                    $current_month = date('m'); // Ambil bulan sekarang dalam format angka (01-12)
+
+                    // Daftar nama bulan
+                    $month_names = [
+                        '00' => "...",
+                        '01' => 'Januari',
+                        '02' => 'Februari',
+                        '03' => 'Maret',
+                        '04' => 'April',
+                        '05' => 'Mei',
+                        '06' => 'Juni',
+                        '07' => 'Juli',
+                        '08' => 'Agustus',
+                        '09' => 'September',
+                        '10' => 'Oktober',
+                        '11' => 'November',
+                        '12' => 'Desember'
+                    ];
+                    ?>
+
+                    <!-- Tampilkan opsi dropdown -->
+                    <select style="width:250px !important;border-radius:0px !important" required name="cmbBulan" id="cmbBulan" class="form-control">
+                        <?php
+                        foreach ($month_names as $month_num => $month_name) {
+                            echo '<option value="' . $month_num . '"';
+                            if ($month_num == $current_month) {
+                                echo ' selected';
+                            }
+                            echo '>' . $month_name . '</option>';
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="form-group mb-2 p-1 mr-1 col-auto">
+                    <label for="inputPassword2" class="sr-only">Password</label>
+                    <?php
+                    $current_year = date('Y');
+                    ?>
+                    <select style="width:100px !important;border-radius:0px !important" required name="cmbTahun" id="cmbTahun" class="form-control">
+                        <option value="" selected>Pilih Tahun</option>
+                        <?php for ($year = $current_year; $year >= $current_year - 4; $year--) : ?>
+                            <option value="<?php echo $year; ?>" <?php echo ($year == $current_year) ? 'selected' : ''; ?>><?php echo $year; ?></option>
+                        <?php endfor; ?>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button id="btn-filter" style="border-radius: 3px !important;" type="button" class="btn btn-info mb-2">Filter Data</button>
+                    <button id="btn-excel" style="border-radius: 3px !important;" type="button" class="btn btn-success mb-2">Cetak Excel</button>
+                </div>
+            </div>
+        </form>
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header" style="background: #5090C1;border-color: #5090C1;color: white;">
-                        <i class="fa fa-chart-bar"></i> Riwayat Stock Barang Masuk
-                    </div>
-                    <div class="card-body">
-                        <form action="" class="form-inline" style="padding-top: 12px; padding-bottom: 12px; background-color: #EFF3F8; background: #f9f9f9; margin: -20px -20px 20px; padding: 10px;border-bottom: 1px solid #dbdee0;">
-                            <div class="row align-items-center" style="margin-left: 10px;">
-                                <div class="form-group mb-2 p-1 col-auto">
-                                    <label for="staticEmail2" class="sr-only">Unit Kerja</label>
-                                    <select style="width:auto !important" required name="cmbBulan" class="form-control">
-                                        <option value='00'>....</option>
-                                        <option value='01'>Januari</option>
-                                        <option value='02'>Februari</option>
-                                        <option value='03'>Maret</option>
-                                        <option value='04'>April</option>
-                                        <option value='05'>Mei</option>
-                                        <option value='06'>Juni</option>
-                                        <option value='07'>Juli</option>
-                                        <option value='08'>Agustus</option>
-                                        <option value='09'>September</option>
-                                        <option value='10'>Oktober</option>
-                                        <option value='11' selected>November</option>
-                                        <option value='12'>Desember</option>
-                                    </select>
-                                </div>
-                                <div class="form-group mb-2 p-1 mr-1 col-auto">
-                                    <label for="inputPassword2" class="sr-only">Password</label>
-                                    <select style="width:auto !important" required name="cmbTahun" class="form-control">
-                                        <option value="2020">2020</option>
-                                        <option value="2021">2021</option>
-                                        <option value="2022">2022</option>
-                                        <option selected value="2023">2023</option>
-                                    </select>
-                                </div>
-                                <div class="col-auto">
-                                    <button type="submit" class="btn btn-info mb-2">Filter Data</button>
-                                </div>
-                            </div>
-                        </form>
-
+                    <div class="card-status-top bg-info"></div>
+                    <div class="card-body p-3">
                         <div class="row">
                             <div class="col-12">
                                 <div class="table-responsive">
-                                    <table class="table table-hover table-striped my-table table-bordered" id="example2">
+                                    <table class="table table-hover table-sm text-nowrap" id="dataRiwayat" style="width: 100%;">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>Tanggal Pembelian</th>
-                                                <th>Product Info</th>
-                                                <th>Jumlah Beli</th>
-                                                <th>Harga Beli</th>
-                                                <th>SubTotal</th>
+                                                <th>Keterangan</th>
+                                                <th>Tanggal</th>
+                                                <th>Jumlah</th>
+                                                <th>Tipe</th>
+                                                <th>Stock Sebelum</th>
+                                                <th>Stock Saat Ini</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -282,6 +367,66 @@
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $('#dataRiwayat').DataTable({
+        ordering: true,
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": "<?php echo base_url('product/stockintegrasi_json'); ?>",
+            "type": "POST",
+            data: function(d) {
+                d.id = <?= $barang['id_brg'] ?>;
+                d.filter = $("#tipe_filter").val();
+                d.bulan = $("#cmbBulan").val();
+                d.tahun = $("#cmbTahun").val();
+            }
+        },
+        columns: [{
+                data: "0",
+                className: "text-center"
+            },
+            {
+                data: "1"
+            },
+            {
+                data: "2",
+                className: "text-left"
+            },
+            {
+                data: "3",
+                className: "text-center align-middle"
+            },
+            {
+                data: "4",
+                className: "text-left align-middle"
+            },
+            {
+                data: "5",
+                className: "text-center align-middle"
+            },
+            {
+                data: "6",
+                className: "text-center align-middle"
+            },
+        ]
+    });
+
+    $('#btn-filter').click(function() {
+        $('#dataRiwayat').DataTable().ajax.reload();
+    });
+
+    $('#btn-excel').click(function() {
+        var id = <?= $barang['id_brg'] ?>;
+        var filter = $("#tipe_filter").val();
+        var bulan = $("#cmbBulan").val();
+        var tahun = $("#cmbTahun").val();
+
+        var url = "<?php echo base_url('product/export_stockintegrasi_excel'); ?>";
+        window.location.href = url + "?id=" + id + "&filter=" + filter + "&bulan=" + bulan + "&tahun=" + tahun;
+    });
+
+</script>
 </body>
 
 </html>

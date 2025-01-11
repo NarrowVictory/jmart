@@ -66,30 +66,97 @@
         border-bottom: 0.4rem solid #2F5596;
     }
 
-
-    .list-group li {
-        margin-bottom: 12px;
+    .notification-list .list-items {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        margin: 0 -15px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     }
 
-    .list li {
-        list-style: none;
-        padding: 10px;
-        border: 1px solid #e3dada;
-        border-radius: 5px;
-        background: #fff;
+    .notification-list>ul li {
+        position: relative;
     }
 
-    .checkicon {
-        color: green;
-        font-size: 19px;
+    .pull_delete {
+        position: relative;
+        min-width: calc(100% + 90px) !important;
     }
 
-    .date-time {
-        font-size: 12px;
+    .media {
+        display: flex;
+        align-items: center;
     }
 
-    .profile-image img {
-        margin-left: 3px;
+    .media-60 {
+        width: 60px;
+        min-width: 60px;
+        height: 60px;
+    }
+
+    .m-r10 {
+        margin-right: 10px;
+    }
+
+    .notification-list .list-items .media img {
+        border-radius: 20px;
+    }
+
+    .media img {
+        width: 100%;
+        min-width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    img {
+        border-style: none;
+        height: auto;
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    .notification-list .list-items .list-content .title {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+
+    .title {
+        color: #000;
+        font-weight: bold;
+    }
+
+    .dz-total-area.fixed {
+        width: 100%;
+        background-color: #FFFAF3;
+    }
+
+    .dz-total-area {
+        padding: 15px 15px 15px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .dz-total-area .total-prize {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 5px;
+    }
+
+    .dz-total-area .total-prize>li {
+        font-size: 18px;
+    }
+
+    .dz-total-area .total-prize .prize {
+        font-weight: 700;
+    }
+
+    .dz-total-area .dz-text {
+        display: flex;
+        align-items: center;
+        font-size: 15px;
+        font-weight: 500;
+        color: #159E42;
+        gap: 6px;
     }
 </style>
 <?php $this->load->view('layouts/kurir/header'); ?>
@@ -124,58 +191,40 @@
 
 <section class="mt-3 mb-4">
     <div class="row">
-        <div class="container">
-            <ul class="list list-inline">
+        <div class="dz-list notification-list">
+            <ul style="background-color:#FFFAF3">
                 <?php foreach ($list as $key => $value) : ?>
+                    <?php
+                    $items = $this->db->select('*')->from('tb_pesanan_detail')->where('id_pesanan', $value['id_pesanan'])->get()->num_rows();
+                    ?>
                     <a href="<?= base_url('misi/detail/' . $value['id_pesanan']) ?>" style="text-decoration: none;color:black">
-                        <li class="d-flex justify-content-between" style="margin-bottom: 5px;">
-                            <div class="d-flex flex-row align-items-center">
-                                <img class="rounded-circle" src="https://i.imgur.com/wwd9uNI.jpg" width="30">
-                                <div class="ml-2" style="margin-left: 10px !important;">
-                                    <h4 class="mb-0">Muhammad Rifki Kardawi</h4>
-                                    <div class="d-flex flex-row mt-1 text-black-50 date-time">
-                                        <div>
-                                            <i class="fa fa-dot-circle-o text-success"></i>
-                                            <span class="fs-4 text-success" style="margin-left: 2px !important;">Active</span>
-                                        </div>
-                                        <div style="margin-left: 5px !important;">
-                                            <i class="fa fa-clock-o"></i>
-                                            <span class="fs-4"><?= date('d/M/Y H:i:s', strtotime($value['tgl_pesanan'])) ?></span>
-                                        </div>
-                                    </div>
+                        <li class="list-items pull_delete" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#detailPesananModal<?= $value['id_pesanan'] ?>">
+                            <div class=" media">
+                                <div class="media-60 m-r10">
+                                    <img src="<?= base_url('public/template/upload/user/' . $value['avatar']) ?>" alt="">
+                                </div>
+                                <div class="list-content">
+                                    <h5 class="title"> <?= $value['nama_member'] . " <span class=\"text-success\">(" . $items . " barang)</span>" ?></h5>
+                                    <span class="date"><?= date('d F Y H:i:s', strtotime($value['tgl_pesanan'])) ?></span>
                                 </div>
                             </div>
-                            <div class="d-flex flex-row align-items-center">
-                                <div class="d-flex flex-column fw-bold" style="margin-right: 2px;">
-                                    Rp 50,000
-                                </div>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(192, 192, 192, 1)">
-                                    <path d="M10.061 19.061 17.121 12l-7.06-7.061-2.122 2.122L12.879 12l-4.94 4.939z"></path>
-                                </svg>
-                            </div>
+                            <i class="pd_btn"></i>
                         </li>
                     </a>
                 <?php endforeach ?>
-
-                <?php if (count($list) <= 0) : ?>
-                    <div class="empty">
-                        <div class="empty-header">404</div>
-                        <p class="empty-title">Oops… Belum Ada Misi Tersedia</p>
-                        <div class="empty-action">
-                            <a href="<?= base_url('home') ?>" class="btn btn-primary">
-                                <!-- Download SVG icon from http://tabler-icons.io/i/arrow-left -->
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                    <path d="M5 12l14 0"></path>
-                                    <path d="M5 12l6 6"></path>
-                                    <path d="M5 12l6 -6"></path>
-                                </svg>
-                                Kembali Ke Home
-                            </a>
+            </ul>
+            <?php if (count($list) <= 0) : ?>
+                <div class="empty">
+                    <div class="empty-action">
+                        <div class="text-center">
+                            <img src="https://i.imgur.com/dCdflKN.png" width="100" height="100" class="img-fluid">
+                            <h3 class="mb-0"><strong>Empty</strong></h3>
+                            <h4 class="mb-1">Tidak ada Misi saat ini</h4>
+                            <a href="<?= base_url('home') ?>" class="btn btn-primary cart-btn-transform m-3" data-abc="true">Kembali ke Home</a>
                         </div>
                     </div>
-                <?php endif ?>
-            </ul>
+                </div>
+            <?php endif ?>
         </div>
     </div>
 </section>

@@ -25,6 +25,10 @@
         padding: 2px 5px;
         cursor: pointer;
     }
+
+    .blue {
+        color: #428bca !important;
+    }
 </style>
 <?php $this->load->view('layouts/admin/header'); ?>
 <!-- CONTAIN DISINI -->
@@ -33,7 +37,7 @@
         <div class="row g-2 align-items-center">
             <div class="col">
                 <h2 class="page-title">
-                    Import Product
+                    Import Barang
                 </h2>
             </div>
         </div>
@@ -42,7 +46,7 @@
 <div class="page-body">
     <div class="container-xl">
         <div class="row mb-3">
-            <div class="col-md-12 col-lg-12">
+            <div class="col-md-6">
                 <?php if ($this->session->flashdata('success_message')) : ?>
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         <?= $this->session->flashdata('success_message') ?>
@@ -58,117 +62,79 @@
                 <?php endif ?>
 
                 <div class="card" style="margin-top: -5px !important;">
-                    <div class="card-header">
-                        <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
-                            <li class="nav-item">
-                                <a href="#tabs-home-ex2" class="nav-link active" data-bs-toggle="tab"><svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);">
-                                        <path d="M11 15h2V9h3l-4-5-4 5h3z"></path>
-                                        <path d="M20 18H4v-7H2v7c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2v-7h-2v7z"></path>
-                                    </svg> Import Barang</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#tabs-profile-ex2" class="nav-link" data-bs-toggle="tab"><svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);">
-                                        <path d="M4 5h13v7h2V5c0-1.103-.897-2-2-2H4c-1.103 0-2 .897-2 2v12c0 1.103.897 2 2 2h8v-2H4V5z"></path>
-                                        <path d="m8 11-3 4h11l-4-6-3 4z"></path>
-                                        <path d="M19 14h-2v3h-3v2h3v3h2v-3h3v-2h-3z"></path>
-                                    </svg> Import Gambar</a>
-                            </li>
-                            <li class="nav-item ms-auto">
-                                <a href="#tabs-settings-ex2" class="nav-link" title="Settings" data-bs-toggle="tab"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                        <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
-                                        <circle cx="12" cy="12" r="3" />
-                                    </svg>
-                                </a>
-                            </li>
-                        </ul>
+                    <div class="card-header text-center" style="padding: 0.5rem 1rem;margin-bottom: 0;background: #f7f7f8;border-bottom: 1px solid rgba(0, 0, 0, .125);border-radius: calc(0.25rem - 1px) calc(0.25rem - 1px) 0 0;">
+                        <h2 style="font-size: 16px;line-height: 16px;font-weight: 700;font-family: ubuntu,sans-serif;float: left;padding: 10px 0;margin: 0 0 0 20px;" class="blue"><i style="border-right: 1px solid #dbdee0;padding: 12px 0;height: 40px;width: 40px;display: inline-block;text-align: center;margin: -10px 20px -10px -20px;font-size: 16px;" class="fa fa-upload"></i>Import Barang</h2>
                     </div>
                     <div class="card-body">
-                        <div class="tab-content">
-                            <div class="tab-pane active show" id="tabs-home-ex2">
-                                <h4>Import Barang</h4>
-                                <div class="text-center justify-content-center">
-                                    <form action="<?= base_url('product/simpan_import') ?>" method="POST" enctype="multipart/form-data">
-                                        <div class="col-6 mb-3 d-flex">
-                                            <input name="file_excel" id="file_excel" type="file" class="form-control" style="flex: 1;" accept=".xls,.xlsx,.csv">
-                                            <button type="submit" class="btn btn-primary ms-2">Unggah Data</button>
-                                        </div>
-                                    </form>
-                                </div>
+                        <form action="<?= base_url('product/simpan_import') ?>" method="POST" enctype="multipart/form-data">
+                            <div class="form-group mb-3">
+                                <label for="path_absolute" class="form-label required">Path Absolute</label>
+                                <input name="path_absolute" id="path_absolute" type="text" class="form-control" style="flex: 1;" placeholder="Masukan Path Absolute Anda" required>
                             </div>
-                            <div class="tab-pane" id="tabs-profile-ex2">
-                                <h4>Import Gambar</h4>
-                                <div class="text-center justify-content-center">
-                                    <form action="<?= base_url('product/simpan_gambar') ?>" method="post" id="imageUploadForm" enctype="multipart/form-data">
-                                        <div class="col-6 mb-3 d-flex">
-                                            <input type="file" class="form-control" style="flex: 1;" id="imageInput" name="imageInput[]" accept=".jpg,.jpeg" multiple>
-                                            <button type="submit" class="btn btn-primary ms-2">Unggah Gambar</button>
-                                        </div>
-                                    </form>
-
-                                    <div id="imagePreview" class="image-container">
-                                        <!-- Container untuk menampilkan gambar terpilih -->
-                                    </div>
-                                </div>
+                            <div class="form-group mb-3">
+                                <label for="file_excel" class="form-label required">Import Excel</label>
+                                <input name="file_excel" id="file_excel" type="file" class="form-control" style="flex: 1;" accept=".xls,.xlsx,.csv">
                             </div>
-                            <div class="tab-pane" id="tabs-settings-ex2">
-                                <h4>Settings tab</h4>
-                                <p class="text-secondary">
-                                    <img src="https://tmuk00294.foliopos.com/v2/assets/img/import-product-template.jpg" alt="">
-                                </p>
-                                <div class="text-center justify-content-center">
-                                    <button class="btn btn-primary">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-import" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                                            <path d="M5 13v-8a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2h-5.5m-9.5 -2h7m-3 -3l3 3l-3 3"></path>
-                                        </svg>
-                                        Unduh Template
-                                    </button>
-                                </div>
-                                <div class="card-title mt-2">Cara penggunaan template "Import Produk"</div>
-                                <ol class="mb-2">
-                                    <li class="mb-15">Isi kolom-kolom yang wajib diisi, yang berwarna merah muda, yaitu:
-                                        <ol type="i">
-                                            <li>Nama Produk </li>
-                                            <li>HPP (Harga Pokok Penjualan)</li>
-                                            <li>Harga Jual Sebelum Pajak</li>
-                                            <li>Harga Jual Setelah Pajak</li>
-                                        </ol>
-                                    </li>
-                                    <li class="mb-15">Kolom yang berwarna abu-abu tidak wajib diisi, yaitu:
-                                        <ol type="i">
-                                            <li>Kategori </li>
-                                            <li>Pajak (Isi angka dan tanda %. Contoh: 10%)</li>
-                                            <li>Stok</li>
-                                            <li>Pemasok </li>
-                                        </ol>
-                                    </li>
-                                    <li class="mb-15">Jika produk Anda mempunyai barcode:
-                                        <ol type="i">
-                                            <li>Isi kolom barcode dengan angka, huruf atau kombinasi keduanya</li>
-                                            <li>Isian barcode harus unik</li>
-                                        </ol>
-                                    </li>
-                                    <li class="mb-15">Jika produk Anda mempunyai varian:
-                                        <ol type="i">
-                                            <li>Anda dapat mengisi kolom Ukuran atau Warna</li>
-                                            <li>Isi mulai dari varian yang terkecil hingga terbesar, contohnya; S, M, L, XL</li>
-                                        </ol>
-                                    </li>
-                                    <li>Jika usaha Anda merupakan Minimarket,
-                                        <ol type="i">
-                                            <li>Jangan gunakan (kosongkan) kolom Ukuran dan Warna</li>
-                                            <li>Masukkan nama produk beserta ukurannya di kolom Nama Produk</li>
-                                            <li>Contoh 1: Aqua 300ml, Aqua 600ml dan Aqua 1000ml</li>
-                                            <li>Contoh 2: Bebelac 400gr Rasa Madu, Bebelac 400gr, Rasa Vanilla</li>
-                                        </ol>
-                                    </li>
-                                </ol>
+                            <div class="form-group mb-3">
+                                <button type="submit" class="btn w-100 btn-primary">Unggah Data</button>
                             </div>
-                        </div>
+                        </form>
                     </div>
-                    <div class="card-footer">** S&K Applikasi</div>
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-12">
+                <div class="card mt-3">
+                    <div class="card-header" style="padding: 0.5rem 1rem;margin-bottom: 0;background: #f7f7f8;border-bottom: 1px solid rgba(0, 0, 0, .125);border-radius: calc(0.25rem - 1px) calc(0.25rem - 1px) 0 0;">
+                        <h2 style="font-size: 16px;line-height: 16px;font-weight: 700;font-family: ubuntu,sans-serif;float: left;padding: 10px 0;margin: 0 0 0 20px;" class="blue"><i style="border-right: 1px solid #dbdee0;padding: 12px 0;height: 40px;width: 40px;display: inline-block;text-align: center;margin: -10px 20px -10px -20px;font-size: 16px;" class="fa fa-chart-bar"></i>Syarat dan Ketentuan</h2>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-secondary">
+                            <img src="https://tmuk00294.foliopos.com/v2/assets/img/import-product-template.jpg" alt="">
+                        </p>
+                        <div class="text-center justify-content-center">
+                            <button onclick="location.href='<?= base_url('public/template/upload/barang/sample.xls') ?>'" class="btn btn-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-import" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+                                    <path d="M5 13v-8a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2h-5.5m-9.5 -2h7m-3 -3l3 3l-3 3"></path>
+                                </svg>
+                                Unduh Template
+                            </button>
+                        </div>
+                        <div class="card-title mt-2">Cara penggunaan template "Import Produk"</div>
+                        <ol>
+                            <li>Download Template yang telah disediakan.</li>
+                            <li>Buatkan Satu Folder Khusus untuk menampung data barang</li>
+                            <span>
+                                <img src="<?= base_url('public/template/upload/sample/sample1.jpg') ?>" alt="" srcset="">
+                            </span>
+                            <small class="d-block text-center">Gambar 1 Buat Folder</small>
+                            <li>Simpan Semua Daftar Gambar yang mau ditambahkan</li>
+                            <li>Tambahkan Data barang yang mau diimport dan sesuaikan dengan field yang ada pada template</li>
+                            <span>
+                                <img src="<?= base_url('public/template/upload/sample/sample2.jpg') ?>" alt="" srcset="">
+                            </span>
+                            <small class="d-block text-center">Gambar 2 Download File dan Gambar</small>
+                            <li>Tambahkan Isian Field yang ingin di import, serta pada bagian gambar tambahkan hyperlink ke gambar terkait, atau dengan menekan Ctrl+K</li>
+                            <span>
+                                <img src="<?= base_url('public/template/upload/sample/sample5.jpg') ?>" alt="" srcset="">
+                            </span>
+                            <small class="d-block text-center">Gambar 3 Field Uploads</small>
+                            <li>Copy Path dari Folder Anda sebagai Path Absolut</li>
+                            <span>
+                                <img src="<?= base_url('public/template/upload/sample/sample3.jpg') ?>" alt="" srcset="">
+                            </span>
+                            <small class="d-block text-center">Gambar 4 Copy Path Absoulte</small>
+                            <li>Pastekan ke Halaman Import</li>
+                            <span>
+                                <img src="<?= base_url('public/template/upload/sample/sample4.jpg') ?>" alt="" srcset="">
+                            </span>
+                            <small class="d-block text-center">Gambar 5 Pastekan ke Halaman Import</small>
+                            <li>Import dan Tunggu Proses Hingga Selesai.</li>
+                            <li><strong>Syarat dan Ketentuan:</strong><br>Jika path absoulte yang anda masukkan tidak ditemukan, maka gambar akan di generate secara default. Jadi harap test upload file sample dulu.</li>
+                        </ol>
+                    </div>
+                    <div class="card-footer"></div>
                 </div>
 
             </div>
@@ -176,39 +142,6 @@
     </div>
 </div>
 <?php $this->load->view('layouts/admin/footer'); ?>
-<script>
-    document.getElementById("imageInput").addEventListener("change", function() {
-        var previewContainer = document.getElementById("imagePreview");
-
-        var files = this.files;
-        for (var i = 0; i < files.length; i++) {
-            var file = files[i];
-            var reader = new FileReader();
-
-            reader.onload = function(e) {
-                var imageItem = document.createElement("div");
-                imageItem.classList.add("image-item");
-
-                var img = document.createElement("img");
-                img.src = e.target.result;
-
-                var deleteButton = document.createElement("div");
-                deleteButton.classList.add("image-delete");
-                deleteButton.textContent = "Hapus";
-
-                deleteButton.addEventListener("click", function() {
-                    imageItem.remove(); // Hapus gambar dari tampilan
-                });
-
-                imageItem.appendChild(img);
-                imageItem.appendChild(deleteButton);
-                previewContainer.appendChild(imageItem);
-            };
-
-            reader.readAsDataURL(file);
-        }
-    });
-</script>
 </body>
 
 </html>

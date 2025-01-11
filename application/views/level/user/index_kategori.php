@@ -69,10 +69,10 @@
 	}
 
 	.product-box .product-box-img .cart-box .cart-bag {
-		background-color: rgba(18, 38, 54, 1);
+		background-color: #DFE8E3;
 		border-radius: 100%;
-		height: 28px;
-		width: 28px;
+		width: 32px;
+		height: 32px;
 		display: -webkit-box;
 		display: -ms-flexbox;
 		display: flex;
@@ -84,7 +84,7 @@
 		align-items: center;
 	}
 
-	.product-box .product-box-detail h4 {
+	.product-box .product-box-detail h6 {
 		color: rgba(18, 38, 54, 1);
 		font-weight: 500;
 		line-height: 1.5;
@@ -139,6 +139,28 @@
 	.fw-semibold {
 		font-weight: 600 !important;
 	}
+
+	.loading-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(255, 255, 255, 0.8);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 9999;
+	}
+
+	.loading-spinner {
+		text-align: center;
+	}
+
+	.loading-spinner i {
+		font-size: 24px;
+		margin-bottom: 10px;
+	}
 </style>
 <?php $this->load->view('layouts/user/header'); ?>
 <nav class="navbar navbar--show navbar-expand-lg navbar-light" style="background: #2F5596 !important;">
@@ -171,34 +193,17 @@
 	</div>
 </div>
 
-<section class="mt-4 mb-4">
+<div id="loading" class="loading-overlay" style="display: none;">
+	<div class="loading-spinner">
+		<i class="fa fa-spinner fa-spin"></i>
+		Loading...
+	</div>
+</div>
+
+<section class="mt-2 mb-4">
 	<div class="container">
 		<div class="row">
-			<?php foreach ($barang as $key => $value) : ?>
-				<div class="col-6 mb-3">
-					<div class="product-box">
-						<div class="product-box-img">
-							<a href="shop.html"> <img class="img" src="<?= $value['gambar_barang'] ?>" alt="p10"></a>
-
-							<div class="cart-box">
-								<a href="cart.html" class="cart-bag">
-									<img class="outline-icon" src="https://themes.pixelstrap.com/fuzzy/assets/images/svg/like-fill.svg" alt="like">
-								</a>
-							</div>
-						</div>
-						<div class="like-btn animate">
-							-8.5%
-						</div>
-						<div class="product-box-detail">
-							<h4 style="font-size: 14px;margin-bottom: 0;"><?= $value['nama_barang'] ?></h4>
-							<div class="d-flex justify-content-between gap-3">
-								<h5 style="line-height: 1.2;margin-bottom: 0;"><?= $value['nama_kategori_brg'] ?></h5>
-								<h3 class="fw-semibold">RP. <?= number_format($value['harga_jual_barang']) ?></h3>
-							</div>
-						</div>
-					</div>
-				</div>
-			<?php endforeach ?>
+			<div id="barang-container" class="row"></div>
 		</div>
 	</div>
 </section>
@@ -209,6 +214,136 @@
 
 <?php $this->load->view('layouts/user/menu'); ?>
 <?php $this->load->view('layouts/user/footer'); ?>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+	$(document).ready(function() {
+		var page = 1; // Halaman awal
+		var isLoading = false; // Status untuk memeriksa apakah sedang dalam proses pengambilan data
+		var id = "<?= $id ?>";
+		// Fungsi untuk memuat barang dengan AJAX
+		function loadBarang() {
+			if (isLoading) {
+				return; // Jangan lakukan pengambilan data jika sedang dalam proses pengambilan data sebelumnya
+			}
+
+			isLoading = true;
+
+			$.ajax({
+				url: '<?= base_url('home/load_kategori') ?>', // Ganti dengan URL ke fungsi controller Anda
+				type: 'GET',
+				data: {
+					page: page,
+					id: id
+				},
+				dataType: 'json',
+				beforeSend: function() {
+					$('#loading').show();
+				},
+				success: function(response) {
+					// Jika data berhasil diambil
+					if (response.barang.length > 0) {
+						// Loop melalui hasil respons dan tampilkan barang
+						$.each(response.barang, function(index, value) {
+							var html = `
+                    <div class="col-6 col-lg-6 col-md-6 col-sm-6 d-flex">
+                        <div class="card w-100 my-2 shadow-2-strong">
+                            <img src="<?= base_url('public/template/upload/barang/') ?>${value.gambar_barang}" class="card-img-top mt-3" style="height:120px;width:auto;object-fit:contain;">
+                            <div class="card-body d-flex flex-column">
+                                <p class="card-text mb-0 fs-5 ellipsis" style="font-weight: 400;">${value.nama_barang}</p>`;
+
+							if (value.promo_brg == 'On') {
+								html += `
+                                <h4 class="fw-bold mb-1 me-1">RP. ${value.harga_promo}</h4>
+                                <div class="d-flex mb-0">
+                                    <p class="fs-5 mb-1"><span class="badge bg-danger text-white me-2">${((value.harga_jual_barang - value.harga_promo) / value.harga_jual_barang * 100).toFixed(2)}%</span></p>
+                                    <p class="fs-5 text-muted mb-1"><del>Rp. ${value.harga_jual_barang}</del></p>
+                                </div>`;
+							} else {
+								html += `<h4 class="fw-bold mb-1 me-1">RP. ${value.harga_jual_barang}</h4>`;
+							}
+
+							html += `
+                                <p class="mb-2 fs-5 text-dark" style="font-weight: 500;">
+                                    ${value.jumlah_jual} Terjual
+                                </p>
+                                <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
+                                    <a onclick="add_keranjang(${value.id_brg})" data-idproduk="${value.id_brg}" href="javascript:void(0)" class="btn btn-primary shadow-0 me-1">+ Keranjang</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+
+							// Tambahkan HTML barang ke kontainer
+							$('#barang-container').append(html);
+						});
+
+						page++; // Pindah ke halaman berikutnya
+					}
+				},
+				complete: function() {
+					isLoading = false;
+					$("#loading").hide();
+					// Setelah selesai pengambilan data, atur status menjadi false
+				},
+				error: function(xhr, status, error) {
+					console.error(xhr.responseText);
+				}
+			});
+		}
+
+
+		// Panggil fungsi untuk memuat barang pada saat halaman dimuat
+		loadBarang();
+
+		// Fungsi untuk menangani event scroll
+		$(window).scroll(function() {
+			// Jika user telah mencapai bagian bawah halaman
+			if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+				// Panggil fungsi untuk memuat barang lagi
+				loadBarang();
+			}
+		});
+	});
+
+	function add_keranjang(idProduk) {
+		var data = {
+			idProduk: idProduk
+		};
+
+		$.ajax({
+			url: '<?= base_url('keranjang/add') ?>', // Ganti dengan URL endpoint Anda
+			type: 'POST', // Metode HTTP yang digunakan (POST, GET, dll.)
+			data: data, // Data yang dikirim ke server
+			success: function(response) {
+				if (response.success == true) {
+					Swal.fire({
+						title: 'Success!',
+						text: response.msg,
+						type: 'success',
+						customClass: {
+							confirmButton: 'btn btn-success'
+						},
+						buttonsStyling: false
+					});
+				} else {
+					Swal.fire({
+						title: 'Error!',
+						text: response.msg,
+						type: 'error',
+						customClass: {
+							confirmButton: 'btn btn-danger'
+						},
+						buttonsStyling: false
+					});
+				}
+			},
+			error: function(request, status, error) {
+				alert(request.responseText);
+			},
+		});
+	}
+</script>
 </body>
 
 </html>

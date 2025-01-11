@@ -169,7 +169,18 @@ class Keranjang extends CI_Controller
 		$selectedProductsArray = explode(',', $selectedProductsParam);
 		// var_dump($selectedProductsArray);die();
 		$data['keranjang'] = $this->M_Crud->all_data('tb_keranjang')->join('tb_barang', 'tb_barang.id_brg = tb_keranjang.id_brg')->join('tb_kategori', 'tb_barang.id_kategori_brg = tb_kategori.id_kategori_brg')->where_in('id_keranjang', $selectedProductsArray)->get()->result_array();
-		$data['total'] = $this->db->select_sum('(harga_promo * jumlah)', 'total_harga')->from('tb_keranjang')->join('tb_barang', 'tb_barang.id_brg = tb_keranjang.id_brg')->where_in('id_keranjang', $selectedProductsArray)->get()->row_array();
+		$data['total'] = $this->db
+			->select_sum('(CASE 
+        WHEN tb_barang.grosir_brg = "On" AND tb_keranjang.jumlah BETWEEN tb_barang.rentang_awal AND tb_barang.rentang_akhir THEN tb_barang.harga_grosir
+        WHEN tb_barang.promo_brg = "On" THEN tb_barang.harga_promo
+        ELSE tb_barang.harga_jual_barang END * tb_keranjang.jumlah)', 'total_harga')
+			->from('tb_keranjang')
+			->join('tb_barang', 'tb_barang.id_brg = tb_keranjang.id_brg')
+			->where_in('id_keranjang', $selectedProductsArray)
+			->get()
+			->row_array();
+
+
 		$data['alamat'] = $this->M_Crud->all_data('tb_user_alamat')->join('tb_desa', 'tb_desa.id_desa = tb_user_alamat.id_desa')->join('tb_kecamatan', 'tb_kecamatan.id_kecamatan = tb_desa.id_kecamatan')->join('tb_kabupaten', 'tb_kabupaten.id_kabupaten = tb_kecamatan.id_kabupaten')->join('tb_provinsi', 'tb_provinsi.id_provinsi = tb_kabupaten.id_provinsi')->where('id_user', $id)->where('set_default', 'Main')->get()->row_array();
 		$nama = $this->M_Crud->show('tb_user', ['id_user' => $id])->row_array();
 

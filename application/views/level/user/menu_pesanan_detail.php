@@ -271,7 +271,7 @@
 				<div class="text-start mb-2">
 					<span class="fw-bold">Keterangan: </span><br>
 					<span class=" text-dark">
-						Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem eius, libero, quisquam quos iste fugiat maxime adipisci, porro ab aut obcaecati aperiam labore! Ullam quam maxime odit laborum, tenetur fugit?
+						<?= $detail['keterangan_pesanan'] ?>
 					</span>
 				</div>
 			</div>

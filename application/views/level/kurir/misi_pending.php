@@ -1,40 +1,5 @@
 <?php $this->load->view('layouts/kurir/head'); ?>
 <style>
-    ul.timeline {
-        list-style-type: none;
-        position: relative;
-        padding-left: 40px;
-    }
-
-    ul.timeline:before {
-        content: ' ';
-        background: #d4d9df;
-        display: inline-block;
-        position: absolute;
-        left: 29px;
-        width: 2px;
-        height: 100%;
-        z-index: 2;
-    }
-
-    ul.timeline>li {
-        margin: 20px 20px 20px 20px;
-        padding-left: 10px;
-    }
-
-    ul.timeline>li:before {
-        content: ' ';
-        background: white;
-        display: inline-block;
-        position: absolute;
-        border-radius: 50%;
-        border: 3px solid #22c0e8;
-        left: 20px;
-        width: 20px;
-        height: 20px;
-        z-index: 2;
-    }
-
     .navbar__left {
         width: 4rem;
         z-index: 2;
@@ -66,135 +31,110 @@
         border-bottom: 0.4rem solid #2F5596;
     }
 
-    .order-table {
+    .notification-list .list-items {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        margin: 0 -15px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .notification-list>ul li {
+        position: relative;
+    }
+
+    .pull_delete {
+        position: relative;
+        min-width: calc(100% + 90px) !important;
+    }
+
+    .media {
+        display: flex;
+        align-items: center;
+    }
+
+    .media-60 {
+        width: 60px;
+        min-width: 60px;
+        height: 60px;
+    }
+
+    .m-r10 {
+        margin-right: 10px;
+    }
+
+    .notification-list .list-items .media img {
+        border-radius: 20px;
+    }
+
+    .media img {
         width: 100%;
-        border-collapse: collapse;
-    }
-
-    .order-table th,
-    .order-table td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid #dee2e6;
-    }
-
-    .order-table td {
-        background-color: white !important;
-        color: #667382;
-    }
-
-    .order-image {
-        max-width: 25px;
-        max-height: 25px;
-        border-radius: 50%;
+        min-width: 100%;
+        height: 100%;
         object-fit: cover;
     }
 
-    /* Gaya Tambahan */
-    table.table-hover tbody tr:hover td {
-        cursor: pointer;
+    img {
+        border-style: none;
+        height: auto;
+        max-width: 100%;
+        vertical-align: middle;
     }
 
-    #order-heading {
-        background-color: #edf4f7;
-        position: relative;
-        border-top-left-radius: 25px;
-        max-width: 800px;
-        padding-top: 20px;
+    .notification-list .list-items .list-content .title {
+        font-size: 18px;
+        margin-bottom: 5px;
     }
 
-    #order-heading .text-uppercase {
-        font-size: 0.9rem;
-        color: #777;
-        font-weight: 600;
+    .title {
+        color: #000;
+        font-weight: bold;
     }
 
-    #order-heading .h4 {
-        font-weight: 600;
+    .dz-total-area.fixed {
+        width: 100%;
+        background-color: #FFFAF3;
     }
 
-    #order-heading .h4+div p {
-        font-size: 0.8rem;
-        color: #777;
+    .dz-total-area {
+        padding: 15px 15px 15px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     }
 
-    .close {
-        padding: 10px 15px;
-        background-color: #777;
-        border-radius: 50%;
-        position: absolute;
-        right: -15px;
-        top: -20px;
+    .dz-total-area .total-prize {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 5px;
     }
 
-    .wrapper {
-        padding: 0px 50px 50px;
-        border-bottom-left-radius: 25px;
-        border-bottom-right-radius: 25px;
+    .dz-total-area .total-prize>li {
+        font-size: 18px;
     }
 
-    .list div b {
-        font-size: 0.8rem;
-    }
-
-    .list .order-item {
-        font-weight: 600;
-        color: #6db3ec;
-    }
-
-    .list:hover {
-        background-color: #f4f4f4;
-        cursor: pointer;
-        border-radius: 5px;
-    }
-
-    label {
-        margin-bottom: 0;
-        padding: 0;
-        font-weight: 900;
-    }
-
-    .price {
-        color: #5cb99a;
+    .dz-total-area .total-prize .prize {
         font-weight: 700;
     }
 
-    p.text-justify {
-        font-size: 0.9rem;
-        margin: 0;
+    .dz-total-area .dz-text {
+        display: flex;
+        align-items: center;
+        font-size: 15px;
+        font-weight: 500;
+        color: #159E42;
+        gap: 6px;
     }
 
-    .row {
-        margin: 0px;
+    .table tbody td.item img {
+        width: 30px;
+        height: 30px;
+        object-fit: contain;
+        margin-right: 10px;
     }
 
-    .subscriptions {
-        border: 1px solid #ddd;
-        border-left: 5px solid #ffa500;
-        padding: 10px;
-    }
-
-    .subscriptions div {
-        font-size: 0.9rem;
-    }
-
-    @media(max-width: 425px) {
-        .wrapper {
-            padding: 20px;
-        }
-
-        body {
-            font-size: 0.85rem;
-        }
-
-        .subscriptions div {
-            padding-left: 5px;
-        }
-
-        img+label {
-            font-size: 0.75rem;
-        }
-
+    .table tbody td.item {
+        font-family: 'Dancing Script', cursive;
+        font-weight: 900;
+        text-align: left;
     }
 </style>
 <?php $this->load->view('layouts/kurir/header'); ?>
@@ -229,50 +169,39 @@
 
 <section class="mt-3 mb-4">
     <div class="row">
-        <div class="table-responsive">
-            <table class="table table-hover order-table text-nowrap">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Pemesan</th>
-                        <th>Tanggal</th>
-                        <th>Items</th>
-                        <th>Total Bayar</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($pending as $key => $value) : ?>
-                        <!-- Data pesanan akan ditampilkan di sini -->
-                        <?php
-                        $items = $this->db->select('*')->from('tb_pesanan_detail')->where('id_pesanan', $value['id_pesanan'])->get()->num_rows();
-                        ?>
-                        <tr class="order-row" data-bs-toggle="modal" data-bs-target="#detailPesananModal<?= $value['id_pesanan'] ?>">
-                            <td class="align-middle text-center">
-                                <img src="https://cdn-icons-png.flaticon.com/512/1144/1144760.png" alt="Gambar Pemesan" class="order-image">
-                            </td>
-                            <td>
-                                <?= $value['nama_member'] ?>
-                            </td>
-                            <td><?= date('d/m/Y H:i:s', strtotime($value['tgl_pesanan'])) ?></td>
-                            <td class="text-nowrap"><?= $items ?> Items</td>
-                            <td class="text-nowrap">Rp. <?= number_format($value['grand_total']) ?></td>
-                        </tr>
-                    <?php endforeach ?>
-                    <?php if (count($pending) <= 0) : ?>
-                        <tr>
-                            <td colspan="5" class="text-center">Data Tidak Tersedia</td>
-                        </tr>
-                    <?php endif ?>
-                    <!-- Anda dapat menambahkan lebih banyak data pesanan di sini -->
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="4" class="text-end fw-bold">Total Harga</td>
-                        <td>Rp. 0</td>
-                    </tr>
-                </tfoot>
-            </table>
+        <div class="dz-list notification-list">
+            <ul style="background-color:#FFFAF3">
+                <?php foreach ($pending as $key => $value) : ?>
+                    <?php
+                    $items = $this->db->select('*')->from('tb_pesanan_detail')->where('id_pesanan', $value['id_pesanan'])->get()->num_rows();
+                    ?>
+                    <li class="list-items pull_delete" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#detailPesananModal<?= $value['id_pesanan'] ?>">
+                        <div class=" media">
+                            <div class="media-60 m-r10">
+                                <img src="<?= base_url('public/template/upload/user/' . $value['avatar']) ?>" alt="">
+                            </div>
+                            <div class="list-content">
+                                <h5 class="title"> <?= $value['nama_member'] . " <span class=\"text-success\">(" . $items . " barang)</span>" ?></h5>
+                                <span class="date"><?= date('d F Y H:i:s', strtotime($value['tgl_pesanan'])) ?></span>
+                            </div>
+                        </div>
+                        <i class="pd_btn"></i>
+                    </li>
+                <?php endforeach ?>
+            </ul>
         </div>
+        <?php if (count($pending) <= 0) : ?>
+            <div class="empty">
+                <div class="empty-action">
+                    <div class="text-center">
+                        <img src="https://i.imgur.com/dCdflKN.png" width="100" height="100" class="img-fluid">
+                        <h3 class="mb-0"><strong>Empty</strong></h3>
+                        <h4 class="mb-1">Tidak ada pesanan Baru saat ini</h4>
+                        <a href="<?= base_url('home') ?>" class="btn btn-primary cart-btn-transform m-3" data-abc="true">Kembali ke Home</a>
+                    </div>
+                </div>
+            </div>
+        <?php endif ?>
     </div>
 </section>
 
@@ -283,91 +212,88 @@
 <?php foreach ($pending as $key => $value) : ?>
     <div class="modal fade" id="detailPesananModal<?= $value['id_pesanan'] ?>">
         <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Detail Pesanan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" style="max-height: calc(100vh - 200px);overflow-y: auto;">
-                    <div class="d-flex flex-column justify-content-center align-items-center" id="order-heading">
-                        <div class="text-uppercase">
-                            <p>Order detail</p>
-                        </div>
-                        <div class="h4"><?= date('l - M d, Y', strtotime($value['tgl_pesanan'])) ?></div>
-                        <div class="pt-1">
-                            <p>Order #<?= $value['id_pesanan'] ?> saat ini <b class="text-dark"> <?= $value['status_pesanan'] ?></b></p>
-                        </div>
+            <div class="modal-content" style="background:#fafbfc !important">
+                <div class="modal-body pt-4 pb-2 px-4" style="max-height: calc(100vh - 200px);overflow-y: auto;">
+                    <div class="text-center mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon-tabler icon-tabler-info-square-rounded-filled text-info" width="45" height="45" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M12 2l.642 .005l.616 .017l.299 .013l.579 .034l.553 .046c4.687 .455 6.65 2.333 7.166 6.906l.03 .29l.046 .553l.041 .727l.006 .15l.017 .617l.005 .642l-.005 .642l-.017 .616l-.013 .299l-.034 .579l-.046 .553c-.455 4.687 -2.333 6.65 -6.906 7.166l-.29 .03l-.553 .046l-.727 .041l-.15 .006l-.617 .017l-.642 .005l-.642 -.005l-.616 -.017l-.299 -.013l-.579 -.034l-.553 -.046c-4.687 -.455 -6.65 -2.333 -7.166 -6.906l-.03 -.29l-.046 -.553l-.041 -.727l-.006 -.15l-.017 -.617l-.004 -.318v-.648l.004 -.318l.017 -.616l.013 -.299l.034 -.579l.046 -.553c.455 -4.687 2.333 -6.65 6.906 -7.166l.29 -.03l.553 -.046l.727 -.041l.15 -.006l.617 -.017c.21 -.003 .424 -.005 .642 -.005zm0 9h-1l-.117 .007a1 1 0 0 0 0 1.986l.117 .007v3l.007 .117a1 1 0 0 0 .876 .876l.117 .007h1l.117 -.007a1 1 0 0 0 .876 -.876l.007 -.117l-.007 -.117a1 1 0 0 0 -.764 -.857l-.112 -.02l-.117 -.006v-3l-.007 -.117a1 1 0 0 0 -.876 -.876l-.117 -.007zm.01 -3l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007z" stroke-width="0" fill="currentColor"></path>
+                        </svg>
+                        <h2 id="modal-title" class="mt-2">Detail Pesanan</h2>
                     </div>
-                    <div class="bg-white mt-2">
-                        <div class="table-responsive">
-                            <table class="table table-borderless">
-                                <tbody>
+                    <div class="dz-total-area fixed">
+                        <ul class="total-prize mb-0" style="list-style: none;padding-left: 0rem;">
+                            <li class="name">Subtotal</li>
+                            <li class="prize">Rp. <?= number_format($value['grand_total']) ?></li>
+                        </ul>
+                        <ul class="total-prize mb-0" style="list-style: none;padding-left: 0rem;">
+                            <li class="name">Ongkos Kirim</li>
+                            <li class="prize">Rp. <?= number_format($value['ongkos_kirim']) ?></li>
+                        </ul>
+                        <ul class="total-prize mb-0" style="list-style: none;padding-left: 0rem;">
+                            <li class="name">Total Semua</li>
+                            <li class="prize">Rp. <?= number_format($value['grand_total'] + $value['ongkos_kirim']) ?></li>
+                        </ul>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table activitites" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-uppercase header">Item</th>
+                                    <th scope="col" class="text-uppercase">Jumlah</th>
+                                    <th scope="col" class="text-uppercase">Harga Satuan</th>
+                                    <th scope="col" class="text-uppercase">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $brg = $this->db->select('*')->from('tb_pesanan_detail')->join('tb_barang', 'tb_barang.id_brg = tb_pesanan_detail.id_brg')->where('id_pesanan', $value['id_pesanan'])->get()->result_array();
+                                ?>
+                                <?php foreach ($brg as $key => $b) : ?>
+                                    <?php
+                                    $gambar = $b['gambar_barang'] == "default.png" ? "<img width=\"auto\" height=\"50\" style='\border-radius: 3px;' src='" . base_url('public/template/upload/barang/' . $b['gambar_barang']) . "'>" : "<img width=\"auto\" height=\"50\" style='\border-radius: 3px;' src='" . base_url('public/template/upload/barang/' . $b['gambar_barang']) . "'>";
+                                    ?>
                                     <tr>
-                                        <th scope="row">Daftar Barang</th>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <hr style="margin-top: 0px;margin-bottom:10px">
-                        <?php
-                        $brg = $this->db->select('*')->from('tb_pesanan_detail')->join('tb_barang', 'tb_barang.id_brg = tb_pesanan_detail.id_brg')->where('id_pesanan', $value['id_pesanan'])->get()->result_array();
-                        ?>
-                        <?php foreach ($brg as $key => $b) : ?>
-                            <?php
-                            $gambar = $b['gambar_barang'] == "https://dodolan.jogjakota.go.id/assets/media/default/default-product.png" ? "<img width=\"auto\" height=\"50\" style='\border-radius: 3px;' src='" . $b['gambar_barang'] . "'>" : "<img width=\"auto\" height=\"50\" style='\border-radius: 3px;' src='" . base_url('public/template/upload/barang/' . $b['gambar_barang']) . "'>";
-                            ?>
-                            <table class="table">
-                                <tbody>
-                                    <tr>
-                                        <td style="width: 20%;">
-                                            <b><?= $b['jumlah_jual'] ?>x<?= $b['harga_saat_ini'] ?></b>
+                                        <td class="item">
+                                            <div class="d-flex">
+                                                <?= $gambar ?>
+                                                <div class="pl-2">
+                                                    <?= $b['nama_barang'] ?>
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td style="width: 10%;">
-                                            <?= $gambar ?>
-                                        </td>
-                                        <td style="width: 70%;" class="text-end">
-                                            <?= $b['nama_barang'] ?>
+                                        <td><?= $b['jumlah_jual'] ?></td>
+                                        <td><?= $b['harga_saat_ini'] ?></td>
+                                        <td class="font-weight-bold">
+                                            <?= $b['harga_saat_ini'] * $b['jumlah_jual'] ?>
                                         </td>
                                     </tr>
-                                </tbody>
-                            </table>
-                        <?php endforeach ?>
-                        <div class="pt-2 border-bottom mb-3"></div>
-                        <div class="d-flex justify-content-between pl-3">
-                            <div class="text-muted">Payment Method</div>
-                            <div class="ml-auto">
-                                <img src="https://www.freepnglogos.com/uploads/mastercard-png/mastercard-logo-logok-15.png" alt="" width="30" height="30">
-                                <label>Mastercard ******5342</label>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between pl-3">
-                            <div class="text-muted">Ongkos Kirim</div>
-                            <div class="ml-auto float-end">
-                                <label>Free</label>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between pl-3 py-3 mb-4 border-bottom">
-                            <div class="text-muted">
-                                Today's Total
-                            </div>
-                            <div class="ml-auto price">
-                                Rp. <?= number_format($value['grand_total']) ?>
-                            </div>
-                        </div>
-                        <div class="row border rounded p-1 my-3">
-                            <div class="col-md-12 py-3">
-                                <div class="d-flex flex-column align-items start">
-                                    <b>Alamat Pengiriman</b>
-                                    <p class="text-justify pt-2">James Thompson, 356 Jonathon Apt.220,</p>
-                                    <p class="text-justify">New York</p>
-                                </div>
-                            </div>
-                        </div>
+                                <?php endforeach ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-validasi" data-id_pesanan="<?= $value['id_pesanan'] ?>">Siap Dikirimkan</button>
+                <div class="modal-footer" style="border-top: 0 solid #e6e7e9 !important">
+                    <div class="w-100">
+                        <div class="row">
+                            <div class="col">
+                                <button type="button" class="btn w-100" data-bs-dismiss="modal">
+                                    Batalkan
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button data-id_pesanan="<?= $value['id_pesanan'] ?>" type="button" id="btn-submit" class="btn btn-primary btn-validasi w-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" id="btn-svg" class="icon icon-tabler icon-tabler-circle-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <circle cx="12" cy="12" r="9"></circle>
+                                        <path d="M9 12l2 2l4 -4"></path>
+                                    </svg>
+                                    <span id="btn-icon"></span>
+                                    <span id="btn-text">Siap Dikirimkan</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -400,6 +326,10 @@
                             text: response.msg,
                             icon: 'success',
                             confirmButtonText: 'Close'
+                        }).then(() => {
+                            setTimeout(function() {
+                                location.reload(); // ini akan memuat ulang halaman setelah 2 detik
+                            }, 2000);
                         });
                     } else {
                         Swal.fire({

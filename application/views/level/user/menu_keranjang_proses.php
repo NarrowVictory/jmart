@@ -180,7 +180,7 @@
          </div>
          <div class="card-body pt-0">
             <div class="table-responsive">
-               <table class="datatables-order-details table mb-3">
+               <table class="table mb-3">
                   <thead>
                      <tr>
                         <th class="fw-bold" width="80px">Gambar</th>
@@ -190,15 +190,34 @@
                   </thead>
                   <tbody>
                      <?php foreach ($keranjang as $key => $tmp) : ?>
-                        <?php
-                        $gambar = $tmp['gambar_barang'] == "https://dodolan.jogjakota.go.id/assets/media/default/default-product.png" ? "<img width=\"62\" height=\"62\" style=\"padding: 5px;\" style='\border-radius: 3px;' src='" . $tmp['gambar_barang'] . "'>" : "<img width=\"62\" height=\"62\" style=\"padding: 5px;\" style='\border-radius: 3px;' src='" . base_url('public/template/upload/barang/' . $tmp['gambar_barang']) . "'>";
-                        ?>
                         <tr>
                            <td>
-                              <?= $gambar ?>
+                              <img width="62" height="62" style="padding: 5px;" style='border-radius: 3px;' src="<?= base_url('public/template/upload/barang/' . $tmp['gambar_barang']) ?>">
                            </td>
                            <td style="font-size: 14px;">
-                              <?= "<span class='fw-bold'>" . $tmp['nama_barang'] . "</span><br>Rp. " . number_format($tmp['harga_promo']) . " | <del>Rp. " . number_format($tmp['harga_jual_barang']) . "</del>" ?>
+                              <?php
+                              // Cek apakah grosir aktif
+                              if ($tmp['grosir_brg'] == "On" && $tmp['jumlah'] >= $tmp['rentang_awal'] && $tmp['jumlah'] <= $tmp['rentang_akhir']) {
+                                 $harga_saat_ini = $tmp['harga_grosir']; // Gunakan harga grosir
+                                 $keterangan_grosir = "<br><small class='text-muted'>Harga grosir aktif untuk pembelian di atas " . $tmp['rentang_awal'] . " unit.</small>";
+                              } else {
+                                 // Gunakan harga promo jika promo aktif, jika tidak gunakan harga jual
+                                 $harga_saat_ini = $tmp['promo_brg'] == "On" ? $tmp['harga_promo'] : $tmp['harga_jual_barang'];
+                                 $keterangan_grosir = ""; // Tidak ada keterangan grosir
+                              }
+
+                              // Tampilkan harga
+                              if ($tmp['promo_brg'] == "On") {
+                                 echo "<span class='fw-bold text-primary'>" . $tmp['nama_barang'] . "</span><br>";
+                                 echo "<span class='text-success fw-bold'>Rp. " . number_format($harga_saat_ini) . "</span> ";
+                                 echo "| <del style=\"color: #BFC9DA !important;font-weight: 400 !important;\">Rp. " . number_format($tmp['harga_jual_barang']) . "</del>";
+                              } else {
+                                 echo "<span class='fw-bold text-primary'>" . $tmp['nama_barang'] . "</span><br>";
+                                 echo "<span class='text-success fw-bold'>Rp. " . number_format($harga_saat_ini) . "</span>";
+                              }
+                              // Tampilkan keterangan grosir jika ada
+                              echo $keterangan_grosir;
+                              ?>
                            </td>
                            <td class="text-center"><br>x<?= $tmp['jumlah'] ?></td>
                         </tr>
@@ -276,6 +295,7 @@
 <?php $this->load->view('layouts/user/footer'); ?>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://app-sandbox.duitku.com/lib/js/duitku.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
    $(document).ready(function() {
       const metodeBayar = $('#metode_bayar');
@@ -355,6 +375,7 @@
          var metode = $("#metode_bayar").val();
          var ongkos = $("#ongkos_kirim").val();
          var total = $("#total_biaya").val();
+         var keterangan = $("#keterangan_pesanan").val();
 
          if (jenis === "") {
             alert("Harap pilih jenis order sebelum melanjutkan!");
@@ -384,6 +405,7 @@
                   type: "POST",
                   data: {
                      keranjang: keranjangData,
+                     keterangan: keterangan,
                      metode: metode,
                      jenis: jenis,
                      ongkos: ongkos,

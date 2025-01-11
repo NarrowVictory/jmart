@@ -7,13 +7,14 @@ class Auth extends CI_Model
 		parent::__construct();
 	}
 
-	function register($username, $password, $nomor_induk, $nomor_wa)
+	function register($username, $password, $nomor_induk, $nomor_wa, $email_member)
 	{
 		$data_user = array(
 			'username' => $username,
 			'password' => password_hash($password, PASSWORD_DEFAULT),
 			'nomor_induk' => $nomor_induk,
 			'wa_member' => $nomor_wa,
+			'email_member' => $email_member,
 			'status_registrasi' => 'N',
 			'status_akun' => 'N',
 			'avatar' => 'default.jpg',
@@ -25,24 +26,52 @@ class Auth extends CI_Model
 
 	function login_user($username, $password)
 	{
-		// $query = $this->db->get_where('tb_user', array('username' => $username));
 		$query = $this->db->select('*')->from('tb_user')->where('username', $username)->or_where('wa_member', $username)->get();
+
 		if ($query->num_rows() > 0) {
 			$data_user = $query->row();
+
 			if (password_verify($password, $data_user->password)) {
-				$this->session->set_userdata('id_user', $data_user->id_user);
-				$this->session->set_userdata('username', $username);
-				$this->session->set_userdata('nama', $data_user->nama_member);
-				$this->session->set_userdata('level', $data_user->level);
-				$this->session->set_userdata('is_login', TRUE);
-				return TRUE;
+				if ($data_user->status_registrasi == "N") {
+					return "Account not activated";
+				} else {
+					$this->session->set_userdata('id_user', $data_user->id_user);
+					$this->session->set_userdata('username', $username);
+					$this->session->set_userdata('nama', $data_user->nama_member);
+					$this->session->set_userdata('level', $data_user->level);
+					$this->session->set_userdata('is_login', TRUE);
+					return "Login successful";
+				}
 			} else {
-				return FALSE;
+				return "Invalid password";
 			}
 		} else {
-			return FALSE;
+			return "User not found";
 		}
 	}
+
+	function login_kasir($username, $password)
+	{
+		$query = $this->db->select('*')->from('tb_kasir')->where('username', $username)->get();
+
+		if ($query->num_rows() > 0) {
+			$data_user = $query->row();
+
+			if (password_verify($password, $data_user->password)) {
+				$this->session->set_userdata('id_user', $data_user->id_kasir);
+				$this->session->set_userdata('username', $username);
+				$this->session->set_userdata('nama', $data_user->nama_kasir);
+				$this->session->set_userdata('level', "Kasir");
+				$this->session->set_userdata('is_login', TRUE);
+				return "Login successful";
+			} else {
+				return "Invalid password";
+			}
+		} else {
+			return "User not found";
+		}
+	}
+
 
 	function cek_login()
 	{

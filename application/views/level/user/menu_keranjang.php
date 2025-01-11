@@ -316,12 +316,9 @@
                               <label for="penanda<?= $key ?>"></label>
                            </div>
                            <div class="item-media media media-60" style="margin-right: 10px;">
-                              <?php
-                              $gambar = $tmp['gambar_barang'] == "https://dodolan.jogjakota.go.id/assets/media/default/default-product.png" ? "<img style='\border-radius: 3px;' src='" . $tmp['gambar_barang'] . "'>" : "<img style='\border-radius: 3px;' src='" . base_url('public/template/upload/barang/' . $tmp['gambar_barang']) . "'>";
-                              ?>
-                              <?= $gambar ?>
+                              <img style='border-radius: 3px;' src='<?= base_url('public/template/upload/barang/' . $tmp['gambar_barang']) ?>'>
                            </div>
-                           <div class="item-inner">
+                           <div class=" item-inner">
                               <div class="item-title-row">
                                  <div class="row align-items-center">
                                     <div class="col">
@@ -336,13 +333,26 @@
                               </div>
                               <div class="item-subtitle" style="margin-top: -25px;"><?= $tmp['nama_kategori_brg'] ?></div>
                               <div class="item-footer">
-                                 <div class="d-flex align-items-center">
-                                    <h4 class="fw-bold" data-id_minus="<?= $key ?>" id="harga_saat_ini<?= $key ?>">Rp. <?= number_format($tmp['harga_promo']) ?></h4>
-                                    &nbsp;&nbsp;
-                                    <del class="off-text">
-                                       <h5 style="color: #BFC9DA !important;font-weight: 400 !important;">Rp. <?= number_format($tmp['harga_jual_barang']) ?></h5>
-                                    </del>
-                                 </div>
+                                 <?php if ($tmp["promo_brg"] == "On") : ?>
+                                    <div class="d-flex align-items-center">
+                                       <h4 class="fw-bold text-success" data-id_minus="<?= $key ?>" id="harga_saat_ini<?= $key ?>">Rp. <?= number_format($tmp['harga_promo']) ?></h4>
+                                       &nbsp;&nbsp;
+                                       <del class="off-text">
+                                          <h5 style="color: #BFC9DA !important;font-weight: 400 !important;">Rp. <?= number_format($tmp['harga_jual_barang']) ?></h5>
+                                       </del>
+                                    </div>
+                                    <?php if ($tmp['grosir_brg'] == "On") : ?>
+                                       <small class="text-muted">Anda akan mendapatkan harga grosir Rp. <?= number_format($tmp['harga_grosir']) ?> untuk pembelian di atas <?= $tmp['rentang_awal'] ?> unit.</small>
+                                    <?php endif; ?>
+                                 <?php else : ?>
+                                    <div class="d-flex align-items-center">
+                                       <h4 class="fw-bold text-success" data-id_minus="<?= $key ?>" id="harga_saat_ini<?= $key ?>">Rp. <?= number_format($tmp['harga_jual_barang']) ?></h4>
+                                       &nbsp;&nbsp;
+                                    </div>
+                                    <?php if ($tmp['grosir_brg'] == "On") : ?>
+                                       <small class="text-muted">Anda akan mendapatkan harga grosir Rp. <?= number_format($tmp['harga_grosir']) ?> untuk pembelian di atas <?= $tmp['rentang_awal'] ?> unit.</small>
+                                    <?php endif; ?>
+                                 <?php endif; ?>
                               </div>
                               <div class="d-flex align-items-center qty-adjusment mb-4" style="margin-top: -20px;">
                                  <div class="input-group input-group-sm" style="box-shadow: none !important;">
@@ -351,8 +361,8 @@
                                           <path d="M5 11h14v2H5z"></path>
                                        </svg>
                                     </span>
-                                    <input data-id="<?= $key ?>" data-keranjang="<?= $tmp['id_keranjang'] ?>" value="<?= $tmp['jumlah'] ?>" min="1" type="number" class="form-control qty_barang" id="qty_barang<?= $key ?>">
-                                    <input type="hidden" id="harga_normal<?= $key ?>" value="<?= $tmp['harga_promo'] ?>">
+                                    <input data-id="<?= $key ?>" data-keranjang="<?= $tmp['id_keranjang'] ?>" value="<?= $tmp['jumlah'] ?>" min="1" type="text" class="form-control qty_barang" id="qty_barang<?= $key ?>">
+                                    <input type="hidden" id="harga_normal<?= $key ?>" value="<?= ($tmp['promo_brg'] == "On") ? $tmp['harga_promo'] : $tmp['harga_jual_barang'] ?>">
                                     <span class="input-group-text">
                                        <svg style="cursor: pointer;" class="bx bx-plus plus_qty" data-keranjang="<?= $tmp['id_keranjang'] ?>" data-id="<?= $key ?>" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;">
                                           <path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"></path>
@@ -543,7 +553,15 @@
 
          // Jika tidak ada checkbox yang dicentang
          if (selectedProducts.length === 0) {
-            alert("Silakan pilih minimal satu produk sebelum checkout.");
+            Swal.fire({
+               title: 'Error!',
+               text: "Silakan pilih minimal satu produk sebelum checkout.",
+               type: 'error',
+               customClass: {
+                  confirmButton: 'btn btn-danger'
+               },
+               buttonsStyling: false
+            });
             return;
          }
 

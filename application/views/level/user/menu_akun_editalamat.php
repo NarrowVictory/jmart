@@ -1,6 +1,11 @@
 <?php $this->load->view('layouts/user/head'); ?>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/icheck-bootstrap@3.0.1/icheck-bootstrap.min.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://leaflet.github.io/Leaflet.fullscreen/dist/leaflet.fullscreen.css">
+<script src="https://leaflet.github.io/Leaflet.fullscreen/dist/Leaflet.fullscreen.min.js"></script>
 <style>
    .navbar__left {
       width: 4rem;
@@ -47,8 +52,15 @@
       cursor: pointer;
    }
 
-   .choices[data-type*=select-one] .choices__inner {
-      padding-bottom: 3.5px !important;
+   .choices {
+      margin-bottom: 10px !important;
+   }
+
+   .leaflet-container {
+      height: 400px;
+      width: 600px;
+      max-width: 100%;
+      max-height: 100%;
    }
 </style>
 <?php $this->load->view('layouts/user/header'); ?>
@@ -72,7 +84,7 @@
          <div class="misc-wrapper mt-3 text-center">
             <h3 class="mb-2 mx-2">Alamat Tidak Ditemukan</h3>
             <p class="mb-4 mx-2">Silahkan menambahkan alamat terlebih dahulu sebelum melajutkan belanja.</p>
-            <a href="#" data-bs-toggle="modal" data-bs-target="#tambah" class="btn btn-primary justify-content-center text-center">Tambah Alamat</a>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#tambah" class="btn btn-primary justify-content-center text-white text-center">Tambah Alamat</a>
             <div class="mt-3">
                <img src="<?= base_url() ?>public/template/img/illustrations/undraw_page_not_found_re_e9o6.svg" alt="page-misc-error-light" width="500" class="img-fluid" data-app-dark-img="illustrations/page-misc-error-dark.png" data-app-light-img="illustrations/page-misc-error-light.png">
             </div>
@@ -113,6 +125,7 @@
       <?php endif ?>
    </div>
 </section>
+
 <div class="row">
    <br><br><br><br>
 </div>
@@ -129,10 +142,11 @@
                   <label class="form-label" for="basic-default-fullname">Kontak</label>
                   <input style="border-radius: 2.5px;" type="text" class="form-control" id="nama_penerima" name="nama_penerima" placeholder="Nama Lengkap" required>
                   <input style="border-radius: 2.5px;" type="text" class="form-control mt-2" id="kontak_penerima" name="kontak_penerima" placeholder="No. HP" required>
+                  <input type="hidden" id="maps_coordinate" name="maps_coordinate">
                </div>
                <div class="mb-3">
                   <label class="form-label" for="basic-default-fullname">Alamat</label>
-                  <select required name="select_provinsi" id="select_provinsi" class="form-select">
+                  <select required name="select_provinsi" id="select_provinsi" class="form-select" style="margin-bottom: 0px !important;">
                      <option disabled selected>Pilih Provinsi</option>
                      <?php foreach ($provinsi as $key => $prov) : ?>
                         <option value="<?= $prov['id_provinsi'] ?>"><?= $prov['nama_provinsi'] ?></option>
@@ -150,6 +164,9 @@
                   <textarea style="border-radius: 2.5px;" name="detail_lainnya" id="detail_lainnya" class="form-control" placeholder="Detail Lainnya"></textarea>
                </div>
                <div class="mb-3">
+                  <div id="map" style="width: 100%;"></div>
+               </div>
+               <div class="mb-3">
                   <div class="row mb-3 d-flex">
                      <label style="font-family: 'Segoe UI', sans-serif;" class="col-sm-7 col-7 col-form-label" for="basic-default-name">Atur Sebagai Alamat Utama</label>
                      <div class="col-sm-5 col-5 text-end justify-content-end">
@@ -162,7 +179,7 @@
             </div>
             <div class="modal-footer">
                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-               <button type="submit" class="btn btn-primary">Tambah</button>
+               <button type="submit" class="btn btn-primary" onclick="simpanAlamat()">Tambah</button>
             </div>
          </form>
       </div>
@@ -197,6 +214,8 @@
                         </span>
                      </p>
                   </div>
+                  <div id="map_edit<?= $al['id_alamat_user'] ?>" style="height: 300px; margin-bottom: 15px;"></div>
+                  <input type="hidden" id="maps_coordinate_edit<?= $al['id_alamat_user'] ?>" name="maps_coordinate_edit">
                   <div class="mb-3">
                      <div class="row mb-3 d-flex">
                         <label style="font-family: 'Segoe UI', sans-serif;" class="col-sm-7 col-7 col-form-label" for="basic-default-name">Atur Sebagai Alamat Utama</label>
@@ -219,11 +238,52 @@
          </div>
       </div>
    </div>
+
+   <script>
+      $('#edit<?= $al['id_alamat_user'] ?>').on('shown.bs.modal', function() {
+         if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+               const lat = position.coords.latitude;
+               const lng = position.coords.longitude;
+
+               const map = L.map('map_edit<?= $al['id_alamat_user'] ?>').setView([<?= $al['koordinat'] ?>], 17);
+               const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                  maxZoom: 19,
+                  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+               }).addTo(map);
+
+               let marker = L.marker([<?= $al['koordinat'] ?>]).addTo(map);
+               $('#maps_coordinate_edit<?= $al['id_alamat_user'] ?>').val(lat + ', ' + lng);
+
+               map.on('click', function(e) {
+                  marker.setLatLng(e.latlng);
+                  console.log(e.latlng);
+                  $('#maps_coordinate_edit<?= $al['id_alamat_user'] ?>').val(e.latlng.lat + ', ' + e.latlng.lng);
+               });
+            }, function(error) {
+               Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'Lokasi wajib diaktifkan untuk menambahkan alamat!'
+               }).then((result) => {
+                  $('#edit<?= $al['id_alamat_user'] ?>').modal('hide');
+               });
+            });
+         } else {
+            alert('Geolocation tidak didukung oleh browser ini.');
+         }
+      });
+
+      function UpdateAlamat() {
+         const coordinate = $('#maps_coordinate_edit<?= $al['id_alamat_user'] ?>').val();
+         console.log('Koordinat yang disimpan:', coordinate);
+      }
+   </script>
 <?php endforeach ?>
 <?php $this->load->view('layouts/user/menu'); ?>
 <?php $this->load->view('layouts/user/footer'); ?>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
    var choices_provinsi = new Choices(document.getElementById('select_provinsi'));
    var choices_kabupaten = new Choices(document.getElementById('select_kabupaten'));
@@ -360,6 +420,47 @@
          });
       });
    });
+</script>
+
+<script>
+   $('#tambah').on('shown.bs.modal', function() {
+      if ("geolocation" in navigator) {
+         navigator.geolocation.getCurrentPosition(function(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+
+            const map = L.map('map').setView([lat, lng], 13);
+            const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+               maxZoom: 19,
+               attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+
+            let marker = L.marker([lat, lng]).addTo(map);
+            $('#maps_coordinate').val(lat + ', ' + lng);
+
+            map.on('click', function(e) {
+               marker.setLatLng(e.latlng);
+               console.log(e.latlng);
+               $('#maps_coordinate').val(e.latlng.lat + ', ' + e.latlng.lng);
+            });
+         }, function(error) {
+            Swal.fire({
+               icon: 'error',
+               title: 'Error',
+               text: 'Lokasi wajib diaktifkan untuk menambahkan alamat!'
+            }).then((result) => {
+               $('#tambah').modal('hide');
+            });
+         });
+      } else {
+         alert('Geolocation tidak didukung oleh browser ini.');
+      }
+   });
+
+   function simpanAlamat() {
+      const coordinate = $('#maps_coordinate').val();
+      console.log('Koordinat yang disimpan:', coordinate);
+   }
 </script>
 </body>
 

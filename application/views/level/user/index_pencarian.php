@@ -199,6 +199,7 @@
 </div>
 <?php $this->load->view('layouts/user/footer'); ?>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     var page = 1; // Halaman awal untuk lazy load
     var loading = false; // Status memuat data
@@ -241,42 +242,42 @@
         });
     });
 
-     function showAlert(idProduk) {
-      var data = {
-         idProduk: idProduk
-      };
+    function showAlert(idProduk) {
+        var data = {
+            idProduk: idProduk
+        };
 
-      $.ajax({
-         url: '<?= base_url('keranjang/add') ?>', // Ganti dengan URL endpoint Anda
-         type: 'POST', // Metode HTTP yang digunakan (POST, GET, dll.)
-         data: data, // Data yang dikirim ke server
-         success: function(response) {
-            if (response.success == true) {
-               Swal.fire({
-                  title: 'Success!',
-                  text: response.msg,
-                  type: 'success',
-                  customClass: {
-                     confirmButton: 'btn btn-success'
-                  },
-                  buttonsStyling: false
-               });
-            } else {
-               Swal.fire({
-                  title: 'Error!',
-                  text: response.msg,
-                  type: 'error',
-                  customClass: {
-                     confirmButton: 'btn btn-danger'
-                  },
-                  buttonsStyling: false
-               });
-            }
-         },
-         error: function(request, status, error) {
-            alert(request.responseText);
-         },
-      });
+        $.ajax({
+            url: '<?= base_url('keranjang/add') ?>', // Ganti dengan URL endpoint Anda
+            type: 'POST', // Metode HTTP yang digunakan (POST, GET, dll.)
+            data: data, // Data yang dikirim ke server
+            success: function(response) {
+                if (response.success == true) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: response.msg,
+                        type: 'success',
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        },
+                        buttonsStyling: false
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: response.msg,
+                        type: 'error',
+                        customClass: {
+                            confirmButton: 'btn btn-danger'
+                        },
+                        buttonsStyling: false
+                    });
+                }
+            },
+            error: function(request, status, error) {
+                alert(request.responseText);
+            },
+        });
     }
 </script>
 </body>

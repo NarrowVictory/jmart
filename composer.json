@@ -14,7 +14,9 @@
 		"php": ">=5.3.7",
 		"duitkupg/duitku-php": "dev-master",
 		"dompdf/dompdf": "^2.0",
-		"phpoffice/phpspreadsheet": "^1.29"
+		"phpoffice/phpspreadsheet": "^1.29",
+		"pusher/pusher-php-server": "^7.2",
+		"mpdf/mpdf": "^8.2"
 	},
 	"config": {
         "platform": {

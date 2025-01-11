@@ -43,7 +43,11 @@
               <form id="form-register" method="POST" autocomplete="off">
                 <div class="mb-2">
                   <label for="wa_member" class="form-label">Nomor Whatsapp</label>
-                  <input required type="text" class="form-control" id="wa_member" name="wa_member" placeholder="Nomor Whatsapp. Ex: 0852xxxx" autofocus="">
+                  <input required type="number" class="form-control" id="wa_member" name="wa_member" placeholder="Nomor Whatsapp. Ex: 0852xxxx" autofocus="">
+                </div>
+                <div class="mb-2">
+                  <label for="email_member" class="form-label">Email</label>
+                  <input required type="email" class="form-control" id="email_member" name="email_member" placeholder="Email. Ex: john.doe@gmail.com">
                 </div>
                 <div class="mb-2">
                   <label for="username" class="form-label">Username</label>
@@ -51,7 +55,7 @@
                 </div>
                 <div class="mb-2">
                   <label for="nomor_induk" class="form-label">Nomor Induk</label>
-                  <input required type="text" class="form-control" id="nomor_induk" name="nomor_induk" placeholder="Nomor Induk Karyawan">
+                  <input required type="number" class="form-control" id="nomor_induk" name="nomor_induk" placeholder="Nomor Induk Karyawan">
                 </div>
                 <div class="mb-2">
                   <label class="form-label">
@@ -72,23 +76,63 @@
                 </div>
                 <div class="mb-3">
                   <label class="form-check">
-                    <input type="checkbox" class="form-check-input" />
-                    <span class="form-check-label">Agree the <a href="./terms-of-service.html" tabindex="-1">terms and policy</a>.</span>
+                    <input required type="checkbox" class="form-check-input" />
+                    <span class="form-check-label">Setuju dengan <a data-bs-toggle="modal" data-bs-target="#termsModal" href="javascript::void" tabindex="-1">persyaratan dan kebijakan</a>.</span>
                   </label>
                 </div>
                 <div class="form-footer">
-                  <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+                  <button type="submit" class="btn btn-primary w-100">Daftar</button>
                 </div>
               </form>
             </div>
           </div>
           <div class="text-center text-secondary mt-3">
-            Sudah punya Akun? <a href="<?= base_url('login') ?>" tabindex="-1">Sign In</a>
+            Sudah punya Akun? <a href="<?= base_url('login') ?>" tabindex="-1">Login</a>
           </div>
         </div>
       </div>
       <div class="col-lg d-none d-lg-block">
         <img src="<?= base_url() ?>public/template/img/illustrations/undraw_sign_up_n6im.svg" height="300" class="d-block mx-auto" alt="">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="termsModalLabel">Syarat dan Ketentuan - JMART</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="max-height: calc(100vh - 200px);overflow-y: auto;">
+        <p>
+          Selamat datang di JMART! Syarat dan ketentuan ini menguraikan aturan dan regulasi untuk penggunaan Situs Web JMART.
+        </p>
+
+        <h3>1. Penerimaan Syarat</h3>
+        <p>
+          Dengan mengakses atau menggunakan Situs Web JMART, Anda setuju terikat oleh syarat dan ketentuan ini.
+        </p>
+
+        <h3>2. Kebijakan Privasi</h3>
+        <p>
+          Penggunaan Anda terhadap JMART juga diatur oleh Kebijakan Privasi kami. Harap tinjau Kebijakan Privasi kami untuk memahami praktik kami.
+        </p>
+
+        <h3>3. Informasi Produk</h3>
+        <p>
+          JMART berusaha menyediakan informasi produk yang akurat dan terkini. Namun, kami tidak menjamin keakuratan informasi produk.
+        </p>
+
+        <h3>Hubungi Kami</h3>
+        <p>
+          Jika Anda memiliki pertanyaan tentang Syarat dan Ketentuan ini, silakan hubungi kami di <a href="mailto:info@jmart.com">info@jmart.com</a>.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
       </div>
     </div>
   </div>

@@ -34,6 +34,8 @@ class Kabupaten extends CI_Controller
 				'type' => 'inner'
 			)
 		);
+		$start = $this->input->post('start') ?? 0;
+		$length = $this->input->post('length') ?? 10;
 
 		$where = null;
 		if ($nama_provinsi_filter) {
@@ -44,7 +46,7 @@ class Kabupaten extends CI_Controller
 			$where = "nama_kabupaten LIKE '%" . $nama_kabupaten_filter . "%'";
 		}
 
-		$list = $this->Datatable_model->get_data('tb_kabupaten', $columns, $joins, $filter, $this->input->post('search')['value'], $where);
+		$list = $this->Datatable_model->get_data('tb_kabupaten', $columns, $joins, $filter, $this->input->post('search')['value'], $where, $start, $length);
 
 		$data = array();
 		$no = $_POST['start'];
@@ -54,15 +56,23 @@ class Kabupaten extends CI_Controller
 				$no,
 				$kabupaten->nama_provinsi,
 				$kabupaten->nama_kabupaten,
-				'<div class="btn-group">
-					<button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-						Action
+				'
+				<div class="btn-group">
+					<button type="button" class="btn btn-sm btn-secondary text-uppercase dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+					<svg xmlns="http://www.w3.org/2000/svg" class="icon-tabler icon-tabler-dots-vertical" width="14" height="14" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+						<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+						<path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+						<path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+						<path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+					</svg>
+					Aksi&nbsp;
 					</button>
-					<ul class="dropdown-menu">
+					<ul class="dropdown-menu dropdown-menu-end">
 						<li><a class="dropdown-item" href="javascript:void(0);" data-provinsi="' . $kabupaten->nama_provinsi . '"data-id="' . $kabupaten->id_kabupaten . '" data-id="' . $kabupaten->id_kabupaten . '" data-nama="' . $kabupaten->nama_kabupaten . '" onclick="ubahKabupaten(this);">&nbsp;Ubah Kabupaten</a></li>
 						<li><a class="dropdown-item text-danger" data-id="' . $kabupaten->id_kabupaten . '" href="javascript:void(0);" onclick="deleteKabupaten(this);">&nbsp;Hapus Kabupaten</a></li>
 					</ul>
-				</div>',
+				</div>
+				'
 			);
 			$data[] = $row;
 		}
@@ -79,52 +89,86 @@ class Kabupaten extends CI_Controller
 
 	public function simpan()
 	{
-		try {
-			// Mengambil data yang dikirimkan melalui Ajax
-			$selectProvinsi = $this->input->post('select_provinsi');
-			$namaKabupaten = $this->input->post('nama_kabupaten');
+	    try {
+	        // Mengambil data yang dikirimkan melalui Ajax
+	        $selectProvinsi = $this->input->post('select_provinsi');
+	        $namaKabupaten = $this->input->post('nama_kabupaten');
 
-			// Validasi data jika diperlukan
-			if (empty($selectProvinsi) || empty($namaKabupaten)) {
-				echo json_encode(array('status' => 'error', 'message' => 'Data tidak lengkap.'));
-				return;
-			}
+	        // Validasi data jika diperlukan
+	        if (empty($selectProvinsi) || empty($namaKabupaten)) {
+	            echo json_encode(array('status' => 'error', 'message' => 'Data tidak lengkap.'));
+	            return;
+	        }
 
-			$data = array(
-				'id_provinsi' => $selectProvinsi,
-				'nama_kabupaten' => $namaKabupaten
-			);
+	        // Capitalize nama kabupaten
+	        $namaKabupaten = ucwords(strtolower(trim($namaKabupaten)));
 
-			$result = $this->M_Crud->input_data($data, 'tb_kabupaten'); // Ganti 'simpan_data' dengan method yang sesuai di model Anda
+	        // Cek apakah nama kabupaten sudah ada di provinsi yang sama
+	        $existing_kabupaten = $this->M_Crud->get_where('tb_kabupaten', array(
+	            'nama_kabupaten' => $namaKabupaten
+	        ));
 
-			echo json_encode(array('status' => 'success', 'message' => 'Data berhasil disimpan.'));
-		} catch (Exception $e) {
-			echo json_encode(array('status' => 'error', 'message' => 'Terjadi kesalahan dalam proses penyimpanan data.'));
-		}
+	        if ($existing_kabupaten) {
+	            echo json_encode(array('status' => 'error', 'message' => 'Kabupaten sudah ada.'));
+	            return;
+	        }
+
+	        // Data yang akan disimpan
+	        $data = array(
+	            'id_provinsi' => $selectProvinsi,
+	            'nama_kabupaten' => $namaKabupaten
+	        );
+
+	        // Menyimpan data kabupaten
+	        $this->M_Crud->input_data($data, 'tb_kabupaten');
+
+	        echo json_encode(array('status' => 'success', 'message' => 'Data berhasil disimpan.'));
+	    } catch (Exception $e) {
+	        echo json_encode(array('status' => 'error', 'message' => 'Terjadi kesalahan dalam proses penyimpanan data.'));
+	    }
 	}
 
 	public function ubah()
 	{
-		try {
-			$id = $this->input->post('id_kabupaten');
-			$nama = $this->input->post('nama_kabupaten');
+	    try {
+	        // Mengambil data yang dikirimkan melalui Ajax
+	        $idKabupaten = $this->input->post('id_kabupaten');
+	        $namaKabupaten = $this->input->post('nama_kabupaten');
 
-			$data = array(
-				'nama_kabupaten' => $nama
-			);
+	        // Validasi data jika diperlukan
+	        if (empty($idKabupaten) || empty($namaKabupaten)) {
+	            echo json_encode(array('status' => 'error', 'message' => 'Data tidak lengkap.'));
+	            return;
+	        }
 
-			$result = $this->M_Crud->update_data(['id_kabupaten' => $id], $data, 'tb_kabupaten');
+	        // Capitalize nama kabupaten
+	        $namaKabupaten = ucwords(strtolower(trim($namaKabupaten)));
 
-			echo json_encode(
-				array(
-					'status' => 'success',
-					'message' => 'Data berhasil diubah.'
-				)
-			);
-		} catch (Exception $e) {
-			echo json_encode(array('status' => 'error', 'message' => $e->getMessage()));
-		}
+	        // Cek apakah nama kabupaten sudah ada, kecuali diri sendiri
+	        $existing_kabupaten = $this->M_Crud->get_where('tb_kabupaten', array(
+	            'nama_kabupaten' => $namaKabupaten,
+	            'id_kabupaten !=' => $idKabupaten
+	        ));
+
+	        if ($existing_kabupaten) {
+	            echo json_encode(array('status' => 'error', 'message' => 'Nama kabupaten sudah ada.'));
+	            return;
+	        }
+
+	        // Data yang akan diperbarui
+	        $data = array(
+	            'nama_kabupaten' => $namaKabupaten
+	        );
+
+	        // Mengupdate data kabupaten
+	        $this->M_Crud->update_data(['id_kabupaten' => $idKabupaten], $data, 'tb_kabupaten');
+
+	        echo json_encode(array('status' => 'success', 'message' => 'Data berhasil diubah.'));
+	    } catch (Exception $e) {
+	        echo json_encode(array('status' => 'error', 'message' => 'Terjadi kesalahan dalam proses perubahan data.'));
+	    }
 	}
+
 
 	public function delete($id_kabupaten)
 	{

@@ -1,7 +1,8 @@
 <?php $this->load->view('layouts/admin/head'); ?>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 <style>
    .card .card-body p.introtext {
       margin: -20px -20px 20px;
@@ -120,6 +121,20 @@
    .card .table {
       box-shadow: none !important;
    }
+
+   .card-body+.card-body {
+      border-top: none !important;
+   }
+
+   #barang.choices-select {
+      width: 100% !important;
+   }
+
+   .choices {
+      width: 60%;
+      background-color: white;
+      border-radius: 0px
+   }
 </style>
 <?php $this->load->view('layouts/admin/header'); ?>
 <div class="page-header d-print-none">
@@ -168,16 +183,16 @@
                   <div class="row g-3">
                      <div class="col-md-6">
                         <div class="mb-3 row">
-                           <label class="col-3 col-form-label required">ID Transaksi</label>
-                           <div class="col">
-                              <input type="text" class="form-control" placeholder="ID Transaksi" disabled value="#1398jGJ8" id="id_transaksi">
+                           <label class="col-4 col-form-label required">Nama Transaksi</label>
+                           <div class="col-7">
+                              <input name="nama_transaksi" type="text" class="form-control" placeholder="Nama Transaksi" id="nama_transaksi">
                            </div>
                         </div>
                      </div>
                      <div class="col-md-6">
                         <div class="mb-3 row">
-                           <label class="col-3 col-form-label required">Tanggal Pesan</label>
-                           <div class="col">
+                           <label class="col-4 col-form-label required">Tanggal Pesan</label>
+                           <div class="col-7">
                               <input id="tgl_pesan" type="datetime-local" class="form-control" value="<?php echo date('Y-m-d\TH:i'); ?>">
                            </div>
                         </div>
@@ -186,8 +201,8 @@
                   <div class="row g-3">
                      <div class="col-md-6">
                         <div class="mb-3 row">
-                           <label class="col-3 col-form-label required">Pesan Dari</label>
-                           <div class="col">
+                           <label class="col-4 col-form-label required">Pesan Dari</label>
+                           <div class="col-7">
                               <select class="form-select" id="select_supplier">
                                  <option value="">Pilih Supplier</option>
                                  <?php foreach ($supplier as $key => $sup) : ?>
@@ -199,94 +214,63 @@
                      </div>
                      <div class="col-md-6">
                         <div class="mb-3 row">
-                           <label class="col-3 col-form-label required text-nowrap">Pembayaran</label>
-                           <div class="col">
-                              <select class="form-select" id="select_pembayaran">
-                                 <option value="" selected disabled>Pilih Status</option>
-                                 <option value="Lunas">Lunas</option>
-                                 <option value="Belum Lunas">Belum Lunas</option>
-                              </select>
+                           <label class="col-4 col-form-label required text-nowrap">Tanggal Kirim</label>
+                           <div class="col-7">
+                              <input id="tgl_kirim" type="datetime-local" class="form-control">
                            </div>
                         </div>
                      </div>
                   </div>
-                  <div class="row g-3">
-                     <div class="col-md-6">
-                        <div class="mb-3 row">
-                           <label class="col-3 col-form-label required">Status Pemesanan</label>
-                           <div class="col">
-                              <select class="form-select" id="select_status">
-                                 <option value="" selected disabled>Pilih Status</option>
-                                 <option value="Open">Open</option>
-                                 <option value="Received">Received</option>
-                              </select>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="col-md-6">
-                        <div class="mb-3 row">
-                           <label class="col-3 col-form-label">Tanggal Diterima</label>
-                           <div class="col">
-                              <input id="tgl_terima" name="tg_terima" type="datetime-local" class="form-control">
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-
-      <div class="row mt-3">
-         <div class="col-12">
-            <div class="card table">
-               <div class="card-body p-0">
-                  <div class="table-header">
-                     Daftar Pemesanan Barang
-                  </div>
-                  <div class="table-responsive" style="width: 100%">
-                     <form id="ValidasiForm" type="POST" autocomplete="off" style="margin-bottom: 0px !important;">
-                        <div class="form-group">
-                           <div class="row">
-                              <div class="col-4">
-                                 <div class="form-group">
-                                    <select id="barang" class="form-select" style="width: 100%;">
-                                       <option value="" selected disabled>-- Pilih Barang --</option>
-                                    </select>
+                  <hr style="padding-top: 0px;padding-bottom: 0px;margin-top:0px;margin-bottom:0px">
+                  <div class="row pt-0">
+                     <div class="col-12">
+                        <div class="card border-0">
+                           <div class="card-body pb-0 pl-0 pr-0">
+                              <form id="ValidasiForm" type="POST" autocomplete="off" style="margin-bottom: 0px !important;">
+                                 <div class="row">
+                                    <div class="col-md-8">
+                                       <div class="d-flex">
+                                          <select required name="barang" id="barang" class="form-control">
+                                             <option value="" selected disabled>Scan / Input Barcode Disini</option>
+                                          </select>
+                                          <button type="submit" style="height: 45px; border-radius: 0px;display:none" class="btn btn-success">
+                                             <i class="fas fa-plus text-white"></i>&nbsp;&nbsp;<span class="text-white font-weight-bold">Submit</span>
+                                          </button>
+                                       </div>
+                                    </div>
                                  </div>
-                              </div>
-                              <div class="col-auto">
-                                 <button style="border-radius: 2px !important;" type="submit" class="btn btn-success">
-                                    Submit
-                                 </button>
+                              </form>
+                           </div>
+                           <div class="card-body pt-0" style="border-top: none !important;">
+                              <div class="table-responsive" style="width: 100%">
+                                 <table id="example2" class="table table-condensed table-hover nowrap" style="width:100% !important">
+                                    <thead>
+                                       <tr>
+                                          <th width="7"> No </th>
+                                          <th class="text-center"> # </th>
+                                          <th> Product </th>
+                                          <th> Stock </th>
+                                          <th> Prakiraan Harga </th>
+                                          <th> Jumlah </th>
+                                          <th> Subtotal </th>
+                                          <th onclick="hapusAllTemp()" class="text-center"> <i class="fa fa-trash text-danger" style="opacity:0.5; filter:alpha(opacity=50);cursor:pointer"></i> </th>
+                                       </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                    <tfoot>
+                                       <tr>
+                                          <td colspan="6" style="text-align:right !important;vertical-align: middle;"><strong>Total Biaya Pembelian</strong></td>
+                                          <td style="text-align:left !important;vertical-align: middle;" colspan="2">
+                                             <span id="total_harga"></span>
+                                          </td>
+                                       </tr>
+                                    </tfoot>
+                                 </table>
                               </div>
                            </div>
                         </div>
-                     </form>
-                     <table id="example2" class="table table-bordered table-condensed table-hover nowrap" style="width:100% !important">
-                        <thead>
-                           <tr>
-                              <th style="padding: 15px;border-color: #ddd;font-size:11px;background: repeat-x #F4F4F4;" width="7"> No </th>
-                              <th style="padding: 15px;border-color: #ddd;font-size:11px;background: repeat-x #F4F4F4;"> # </th>
-                              <th style="padding: 15px;border-color: #ddd;font-size:11px;background: repeat-x #F4F4F4;"> Product </th>
-                              <th style="padding: 15px;border-color: #ddd;font-size:11px;background: repeat-x #F4F4F4;"> Stock </th>
-                              <th style="padding: 15px;border-color: #ddd;font-size:11px;background: repeat-x #F4F4F4;"> Prakiraan Harga </th>
-                              <th style="padding: 15px;border-color: #ddd;font-size:11px;background: repeat-x #F4F4F4;"> Jumlah </th>
-                              <th style="padding: 15px;border-color: #ddd;font-size:11px;background: repeat-x #F4F4F4;"> Subtotal </th>
-                              <th onclick="hapusAllTemp()" style="padding: 15px;border-color: #ddd;font-size:11px;background: repeat-x #F4F4F4;cursor:pointer" class="text-center"> <i class="fa fa-trash text-danger" style="opacity:0.5; filter:alpha(opacity=50);"></i> </th>
-                           </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                        <tfoot>
-                           <tr>
-                              <td colspan="6" style="text-align:right !important;vertical-align: middle;"><strong>Total Biaya Pembelian</strong></td>
-                              <td style="text-align:left !important;vertical-align: middle;" colspan="2">
-                                 <span id="total_harga"></span>
-                              </td>
-                           </tr>
-                        </tfoot>
-                     </table>
+                     </div>
                   </div>
                </div>
             </div>
@@ -294,6 +278,46 @@
       </div>
    </div>
 </div>
+
+<div class="modal fade" id="modalKonfirmasi" tabindex="-1" aria-labelledby="modalKonfirmasiLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         <div class="modal-status bg-success"></div>
+         <div class="modal-body text-center py-4">
+            <!-- Download SVG icon from http://tabler-icons.io/i/alert-triangle -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" style="fill: rgba(0, 128, 0, 1);">
+               <path d="M12 4C9.243 4 7 6.243 7 9h2c0-1.654 1.346-3 3-3s3 1.346 3 3c0 1.069-.454 1.465-1.481 2.255-.382.294-.813.626-1.226 1.038C10.981 13.604 10.995 14.897 11 15v2h2v-2.009c0-.024.023-.601.707-1.284.32-.32.682-.598 1.031-.867C15.798 12.024 17 11.1 17 9c0-2.757-2.243-5-5-5zm-1 14h2v2h-2z">
+               </path>
+            </svg>
+            <h3>Konfirmasi Pemesanan??</h3>
+            <div class="text-secondary">Apakah Anda yakin ingin menyimpan data ini?</div>
+         </div>
+         <div class="modal-footer">
+            <div class="w-100">
+               <div class="row">
+                  <div class="col">
+                     <a href="javascript::void" class="btn w-100" data-bs-dismiss="modal">
+                        Batalkan
+                     </a>
+                  </div>
+                  <div class="col">
+                     <a href="javascript::void" id="btnKonfirmasiOK" class="btn btn-success w-100" data-bs-dismiss="modal">
+                        <svg xmlns="http://www.w3.org/2000/svg" id="btn-delete-svg" class="icon icon-tabler icon-tabler-circle-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                           <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                           <circle cx="12" cy="12" r="9"></circle>
+                           <path d="M9 12l2 2l4 -4"></path>
+                        </svg>
+                        Konfirmasi
+                     </a>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
 <?php $this->load->view('layouts/admin/footer'); ?>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
@@ -301,26 +325,9 @@
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
    $(document).ready(function() {
-      function toggleDateTimeInput() {
-         const selectStatus = $('#select_status');
-         const tglTerimaInput = $('#tgl_terima');
-
-         if (selectStatus.val() === 'Received') {
-            tglTerimaInput.prop('disabled', false);
-         } else {
-            tglTerimaInput.prop('disabled', true);
-            tglTerimaInput.val('');
-         }
-      }
-
-      // Panggil fungsi saat halaman dimuat dan juga saat select berubah
-      toggleDateTimeInput();
-      $('#select_status').change(function() {
-         toggleDateTimeInput();
-      });
-
       $('#example2').DataTable({
          "processing": true, // Menampilkan pesan "Processing..." selama data sedang dimuat.
          "serverSide": true, // Aktifkan mode server-side.
@@ -473,15 +480,12 @@
          },
       });
 
-      const supplier = new Choices('#select_supplier', {
-         allowHTML: true,
+      $('#select_supplier').select2({
+         theme: 'bootstrap-5'
       });
-      const pembayaran = new Choices('#select_pembayaran', {
-         allowHTML: true,
-      });
-      const status = new Choices('#select_status', {
-         allowHTML: true,
-      });
+      $('#select_pembayaran').select2();
+      $('#select_status').select2();
+
       const barangSelect = new Choices('#barang', {
          searchEnabled: true, // Aktifkan fitur pencarian
          searchPlaceholderValue: 'Minimum 3 Character...',
@@ -498,6 +502,7 @@
             };
          },
       });
+
 
       // Temukan elemen input pencarian di dalam kotak pencarian Choices.js
       // const searchInput = document.querySelector('.choices__input--cloned');
@@ -555,7 +560,6 @@
          }, 100);
 
          $('#ValidasiForm').submit();
-
       });
 
       $('#ValidasiForm').on('submit', function(event) {
@@ -597,43 +601,52 @@
       linkElement.on('click', function(event) {
          event.preventDefault(); // Mencegah perilaku default dari tautan
 
+         var nama = $("#nama_transaksi").val();
          var supplier = $("#select_supplier").val();
-         var pembayaran = $("#select_pembayaran").val();
-         var status = $("#select_status").val();
-         var tgl_terima = $("#tgl_diterima").val();
+         var tgl_pesan = $("#tgl_pesan").val();
+         var tgl_kirim = $("#tgl_kirim").val();
 
-         if (supplier !== "" && pembayaran !== "" && status !== "") {
-            var data = {
-               supplier: supplier,
-               pembayaran: pembayaran,
-               status: status,
-               tgl_terima: tgl_terima
-            };
+         if (supplier !== "" && tgl_pesan !== "") {
+            // Menampilkan konfirmasi dalam modal Bootstrap
+            $('#modalKonfirmasi').modal('show');
 
-            $.ajax({
-               type: "POST", // Metode HTTP
-               url: "<?= base_url('product/simpan_pemesanan') ?>", // Ganti dengan URL Anda
-               data: data, // Data yang akan dikirimkan
-               success: function(response) {
-                  if (response.success == true) {
-                     toastr.success(response.msg, '', {
-                        timeOut: 3000
-                     });
+            // Menangani klik tombol "OK" dalam konfirmasi
+            $('#btnKonfirmasiOK').on('click', function(event) {
+               // Menutup modal konfirmasi
+               $('#modalKonfirmasi').modal('hide');
 
-                     setTimeout(function() {
-                        window.location.href = "<?= base_url('product/pemesanan') ?>";
-                     }, 2000);
-                  } else {
-                     toastr.error(response.msg, '', {
+               var data = {
+                  nama: nama,
+                  supplier: supplier,
+                  tgl_pesan: tgl_pesan,
+                  tgl_kirim: tgl_kirim,
+               };
+
+               $.ajax({
+                  type: "POST", // Metode HTTP
+                  url: "<?= base_url('product/simpan_pemesanan') ?>", // Ganti dengan URL Anda
+                  data: data, // Data yang akan dikirimkan
+                  success: function(response) {
+                     if (response.success == true) {
+                        toastr.success(response.msg, '', {
+                           timeOut: 3000
+                        });
+
+                        setTimeout(function() {
+                           window.location.href = "<?= base_url('product/pemesanan') ?>";
+                        }, 2000);
+                     } else {
+                        toastr.error(response.msg, '', {
+                           timeOut: 3000
+                        });
+                     }
+                  },
+                  error: function(error) {
+                     toastr.error('Terjadi Kesalahan Saat Menyimpan Data', '', {
                         timeOut: 3000
                      });
                   }
-               },
-               error: function(error) {
-                  toastr.error('Terjadi Kesalahan Saat Menyimpan Data', '', {
-                     timeOut: 3000
-                  });
-               }
+               });
             });
          } else {
             if (supplier == "") {
@@ -642,19 +655,14 @@
                });
             }
 
-            if (pembayaran == "") {
-               toastr.error('Data Pembayaran Tidak Boleh Kosong', '', {
-                  timeOut: 3000
-               });
-            }
-
-            if (status == "") {
-               toastr.error('Data Status Tidak Boleh Kosong', '', {
+            if (tgl_pesan == "") {
+               toastr.error('Tanggal Pesan Tidak Boleh Kosong', '', {
                   timeOut: 3000
                });
             }
          }
       });
+
    });
 </script>
 <script>

@@ -1,5 +1,4 @@
 <?php $this->load->view('layouts/user/head'); ?>
-<link rel="stylesheet" href="<?= base_url('') ?>public/template/vendor/libs/sweetalert2/sweetalert2.css" />
 <style>
 	.info-list:not(:last-child)>div {
 		margin-bottom: 1.6rem;
@@ -146,6 +145,7 @@
 <?php $this->load->view('layouts/user/menu'); ?>
 <?php $this->load->view('layouts/user/footer'); ?>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 	$('#changePW').submit(function(event) {
 		event.preventDefault(); // Prevent the default form submission behavior

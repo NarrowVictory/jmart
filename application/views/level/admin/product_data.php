@@ -1,5 +1,6 @@
 <?php $this->load->view('layouts/admin/head'); ?>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 <style>
     .page-link {
         position: relative;
@@ -16,81 +17,52 @@
     }
 
     .dataTables_wrapper .row:first-child {
-        padding-top: 12px;
+        padding-top: 20px;
         padding-bottom: 12px;
-        background-color: #EFF3F8;
+        padding-left: 50px;
+        padding-right: 30px;
     }
 
     .dataTables_wrapper .row:last-child {
-        border-bottom: 1px solid #e0e0e0;
-        padding-top: 12px;
+        padding-top: 20px;
         padding-bottom: 12px;
-        background-color: #EFF3F8;
-    }
-
-    .dataTables_wrapper .row {
-        margin: 0 !important;
-    }
-
-    div.dataTables_wrapper div.dataTables_length label {
-        font-weight: normal;
-        text-align: left;
-        white-space: nowrap;
+        padding-left: 50px;
+        padding-right: 30px;
     }
 
     div.dataTables_wrapper div.dataTables_filter input {
-        margin-left: 0.5em;
-        display: inline-block;
-        width: auto;
+        padding: 14px 6px;
     }
 
-    .form-control-sm {
-        width: 125px;
-        height: 25px;
-        line-height: 25px;
-        -webkit-box-sizing: content-box;
-        -moz-box-sizing: content-box;
-        box-sizing: content-box;
-        padding-right: 40px;
+    div.dataTables_wrapper div.dataTables_length select {
+        padding: 10px 6px;
+        width: 70px;
     }
 
-    .form-select-sm {
-        width: 125px;
-        height: 25px;
-        line-height: 25px;
-        -webkit-box-sizing: content-box;
-        -moz-box-sizing: content-box;
-        box-sizing: content-box;
-        padding-right: 40px;
+    .select2-container .select2-selection--single .select2-selection__rendered {
+        display: block;
+        width: 100%;
+        padding: 0.5625rem 0.75rem;
+        font-family: var(--tblr-font-sans-serif);
+        font-size: .875rem;
+        font-weight: 400;
+        line-height: 1.4285714286;
+        color: var(--tblr-body-color);
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-color: var(--tblr-bg-forms);
+        background-clip: padding-box;
+        border: var(--tblr-border-width) solid var(--tblr-border-color);
+        border-radius: var(--tblr-border-radius);
+        box-shadow: var(--tblr-box-shadow-input);
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
     }
 
-    .table-header {
-        background-color: #307ECC;
-        color: #FFF;
-        font-size: 14px;
-        line-height: 50px;
-        padding-left: 12px;
-        margin-bottom: 1px;
-    }
-
-    div.dataTables_wrapper div.dataTables_filter input {
-        margin-bottom: 0 !important;
-        margin: 0 8px;
-    }
-
-    div.dataTables_wrapper div.dataTables_length label {
-        margin-bottom: 0 !important;
-        margin: 0 8px;
-    }
-
-    div.dataTables_wrapper div.dataTables_info {
-        margin-bottom: 0 !important;
-        margin: 0 8px;
-    }
-
-    div.dataTables_wrapper div.dataTables_paginate {
-        margin-bottom: 0 !important;
-        margin: 0 8px;
+    .select2-container--default .select2-selection--single {
+        background-color: #fff;
+        border: none;
+        border-radius: 4px;
     }
 
     .active>.page-link,
@@ -124,6 +96,42 @@
     .rating .star .starred {
         color: #F0C434;
     }
+
+    .card-header {
+        padding: 0.5rem 1rem;
+        margin-bottom: 0;
+        background: #f7f7f8;
+        border-bottom: 1px solid rgba(0, 0, 0, .125);
+        border-radius: calc(0.25rem - 1px) calc(0.25rem - 1px) 0 0;
+    }
+
+    .card .card-header h2 {
+        float: left;
+        padding: 10px 0;
+        margin: 0 0 0 20px;
+    }
+
+    .blue {
+        color: #428bca !important;
+    }
+
+    .card .card-header h2 i {
+        border-right: 1px solid #dbdee0;
+        padding: 12px 0;
+        height: 40px;
+        width: 40px;
+        display: inline-block;
+        text-align: center;
+        margin: -10px 20px -10px -20px;
+        font-size: 16px;
+    }
+
+    .img-thumbnail {
+        background-color: #f5f7fb;
+        border: 1px solid #cbd5e1;
+        border-radius: 10%;
+        width: 100px !important;
+    }
 </style>
 <?php $this->load->view('layouts/admin/header'); ?>
 <div class="page-header d-print-none">
@@ -154,7 +162,7 @@
                         </svg>
                         Import
                     </a>
-                    <a href="#" class="btn btn-success me-1" title="Lihat Diskon Tagihan">
+                    <a id="export_btn" href="#" class="btn btn-success me-1" title="Lihat Diskon Tagihan">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-spreadsheet" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                             <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
@@ -172,26 +180,109 @@
 </div>
 <div class="page-body">
     <div class="container-xl">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card table" style="margin-top: -5px !important;">
-                    <div class="card-body p-0">
-                        <div class="table-header">
-                            Hasil Untuk Data Product
+        <div class="row mb-2">
+            <div class="col-sm-12 col-md-3 mb-2">
+                <div class="card bg-blue">
+                    <div class="card-stamp">
+                        <div class="card-stamp-icon bg-white text-green">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M3 4m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                                <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+                                <path d="M10 12l4 0" />
+                            </svg>
                         </div>
+                    </div>
+                    <div class="card-body text-white">
+                        Total Produk
+                        <h2>
+                            <?= number_format($total_produk) ?>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-3 mb-2">
+                <div class="card bg-azure">
+                    <div class="card-stamp">
+                        <div class="card-stamp-icon bg-white text-lime">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M3 4m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                                <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+                                <path d="M10 12l4 0" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="card-body text-white">
+                        Total Produk dalam Promo
+                        <h2>
+                            <?= number_format($total_promo) ?>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-3 mb-2">
+                <div class="card bg-azure">
+                    <div class="card-stamp">
+                        <div class="card-stamp-icon bg-white text-red">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M3 4m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                                <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+                                <path d="M10 12l4 0" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="card-body text-white">
+                        <?php
+                        $string = "Total Stock Dibawah 5";
+                        echo $string;
+                        ?>
+                        <h2>
+                            <?= number_format($total_alert) ?>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-3 mb-2">
+                <div class="card bg-cyan">
+                    <div class="card-stamp">
+                        <div class="card-stamp-icon bg-white text-orange">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M3 4m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                                <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+                                <path d="M10 12l4 0" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="card-body text-white">
+                        Total Produk tanpa Gambar
+                        <h2>
+                            <?= number_format($total_nogambar) ?>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-status-top bg-info"></div>
+                    <div class="card-body p-3">
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover table-striped" id="dataBarang" style="width: 100%;">
+                            <table class="table table-hover" id="dataBarang" style="width: 100%;">
                                 <thead>
                                     <tr>
-                                        <th style="padding: 15px;border-color: #ddd;font-size:11px;background: repeat-x #F4F4F4;" width="7"><button class="table-sort">No</button></th>
-                                        <th style="padding: 15px;border-color: #ddd;font-size:11px;background: repeat-x #F4F4F4;"><button class="table-sort"></button></th>
-                                        <th style="padding: 15px;border-color: #ddd;font-size:11px;background: repeat-x #F4F4F4;"><button class="table-sort">Produk</button></th>
-                                        <th style="padding: 15px;border-color: #ddd;font-size:11px;background: repeat-x #F4F4F4;"><button class="table-sort">Kategori</button></th>
-                                        <th style="padding: 15px;border-color: #ddd;font-size:11px;background: repeat-x #F4F4F4;"><button class="table-sort">Penjualan</button></th>
-                                        <th style="padding: 15px;border-color: #ddd;font-size:11px;background: repeat-x #F4F4F4;"><button class="table-sort">Harga Jual</button></th>
-                                        <th style="padding: 15px;border-color: #ddd;font-size:11px;background: repeat-x #F4F4F4;"><button class="table-sort">Stock</button></th>
-                                        <th style="padding: 15px;border-color: #ddd;font-size:11px;background: repeat-x #F4F4F4;"><button class="table-sort">Rating</button></th>
-                                        <th style="padding: 15px;border-color: #ddd;font-size:11px;background: repeat-x #F4F4F4;"><button class="table-sort">Action</button></th>
+                                        <th width="7">No</th>
+                                        <th>#</th>
+                                        <th>Produk</th>
+                                        <th>Kategori</th>
+                                        <th>Supplier</th>
+                                        <th style="text-align: left;">HPP</th>
+                                        <th style="text-align: left;">Harga Jual</th>
+                                        <th>Stock</th>
+                                        <th width="20">Action</th>
                                     </tr>
                                     <tr>
                                         <th class="align-middle text-center">
@@ -211,17 +302,26 @@
                                                 <?php endforeach ?>
                                             </select>
                                         </th>
-                                        <th class="align-middle text-center">
+                                        <th class="align-middle text-left">
+                                            <select class="form-control" name="nama_supplier_filter" id="nama_supplier_filter">
+                                                <option value="" selected>** Filter Supplier</option>
+                                                <?php foreach ($supplier as $key => $value) : ?>
+                                                    <option value="<?= $value['id_supplier'] ?>"><?= $value['nama_supplier'] ?></option>
+                                                <?php endforeach ?>
+                                            </select>
+                                        </th>
+                                        <th class="align-middle text-left">
+                                            #
+                                        </th>
+                                        <th class="align-middle text-left">
                                             #
                                         </th>
                                         <th class="align-middle text-center">
-                                            #
-                                        </th>
-                                        <th class="align-middle text-center">
-                                            #
-                                        </th>
-                                        <th class="align-middle text-center">
-                                            #
+                                            <select name="stock_filter" id="stock_filter" class="form-select">
+                                                <option value="">** Filter Stock</option>
+                                                <option value="down">Stock Dibawah 10</option>
+                                                <option value="up">Stock Diatas 10</option>
+                                            </select>
                                         </th>
                                         <th class="align-middle text-center">
                                             #
@@ -240,235 +340,43 @@
 </div>
 
 <!-- START -->
-<div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+<div class="modal fade" id="deleteProductModal" tabindex="-1" aria-modal="true" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content">
-            <form action="<?= base_url('product/simpan') ?>" method="POST">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editProductModalLabel">Edit Produk</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" style="max-height: calc(100vh - 200px);overflow-y: auto;">
-                    <div class="container-xl">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="nama_produk" class="form-label">Nama Produk</label>
-                                <input type="text" class="form-control slug-title" id="nama_produk" name="nama_produk">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Kategori</label>
-                                <select name="select_kategori" id="select_kategori" class="form-select">
-                                    <option value="" selected disabled>Pilih Kategori</option>
-                                    <?php foreach ($kategori as $kt) : ?>
-                                        <option value="<?= $kt['id_kategori_brg'] ?>"><?= $kt['nama_kategori_brg'] ?></option>
-                                    <?php endforeach ?>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="barcode" class="col-12 col-form-label">Barcode</label>
-                                <div class="col-12">
-                                    <input id="barcode" name="barcode" class="form-control" type="text">
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <label for="stock_brg" class="col-12 col-form-label">Stock Awal</label>
-                                <div class="col-12">
-                                    <input id="stock_brg" name="stock_brg" class="form-control" type="text">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="select_satuan" class="col-12 col-form-label">Satuan</label>
-                                <div class="col-12">
-                                    <select name="select_satuan" id="select_satuan" class="form-select">
-                                        <option value="" selected disabled>Pilih Satuan</option>
-                                        <?php foreach ($satuan as $st) : ?>
-                                            <option value="<?= $st['id_satuan'] ?>"><?= $st['nama_satuan'] ?></option>
-                                        <?php endforeach ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="alert_quantity" class="form-label">Alert Jumlah</label>
-                                <input id="alert_quantity" name="alert_quantity" class="form-control" type="text">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="select_supplier" class="form-label">Pilih Supplier</label>
-                                <select name="select_supplier" id="select_supplier" class="form-select">
-                                    <option value="" selected disabled>Pilih Supplier</option>
-                                    <?php foreach ($supplier as $sp) : ?>
-                                        <option value="<?= $sp['id_supplier'] ?>"><?= $sp['nama_supplier'] ?></option>
-                                    <?php endforeach ?>
-                                </select>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="description" class="form-label">Sort Description</label>
-                                <textarea id="description" name="description" class="form-control" rows="3"></textarea>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Upload Gambar</label>
-                                <input class="form-control" type="file" id="formFile" onchange="preview()" accept=".png,.jpg,.jpeg">
-                                <button type="button" onclick="clearImage()" class="btn btn-danger mt-3">Clear Image</button>
-                            </div>
-                            <div class="col-md-6">
-                                <img id="frame" src="" class="img-fluid" />
-                            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-status bg-danger"></div>
+            <div class="modal-body text-center py-4">
+                <!-- Download SVG icon from http://tabler-icons.io/i/alert-triangle -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-danger icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M12 9v4"></path>
+                    <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z"></path>
+                    <path d="M12 16h.01"></path>
+                </svg>
+                <h3>Konfirmasi Penghapusan??</h3>
+                <div class="text-secondary">Data produk yang sudah pernah digunakan tidak dapat dilakukan penghapusan. Harap konfirmasi kepada Super Administrator!!</div>
+            </div>
+            <div class="modal-footer">
+                <div class="w-100">
+                    <div class="row">
+                        <div class="col">
+                            <a href="javascript::void" class="btn w-100" data-bs-dismiss="modal">
+                                Batalkan
+                            </a>
                         </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="table-responsive">
-                                    <table class="border-0 text-nowrap">
-                                        <tbody>
-                                            <tr>
-                                                <td><label for="hpp">HPP <span class="text-danger">*</span></label></td>
-                                                <td></td>
-                                                <td><label for="markup_barang">Markup (%)</label></td>
-                                                <td></td>
-                                                <td><label for="retail_price">Harga Jual <span class="text-danger">*</span></label></td>
-                                                <td></td>
-                                                <td><label for="ref_tax_id">Pajak</label></td>
-                                                <td></td>
-                                                <td><label for="retail_price_aft_tax">Harga Jual <span class="text-danger">*</span></label></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="step_two">
-                                                    <input type="text" class="form-control" id="hpp" name="hpp_barang" placeholder="HPP" value="">
-                                                </td>
-                                                <td class="center" width="40">
-                                                    <hr>
-                                                </td>
-                                                <td class="step_three">
-                                                    <input type="text" class="form-control" id="markup_barang" name="markup_barang" placeholder="Markup (%)" value="">
-                                                </td>
-                                                <td class="center" width="40">
-                                                    <hr>
-                                                </td>
-                                                <td>
-                                                    <input type="text" class="form-control" id="harga_jual_barang" name="harga_jual_barang" placeholder="Harga Jual" value="">
-                                                </td>
-                                                <td class="center" width="40">
-                                                    <hr>
-                                                </td>
-                                                <td>
-                                                    <select class="form-control select2" name="ppn_barang" id="ppn">
-                                                        <option value="" selected disabled>**</option>
-                                                        <option value="N">Tidak PPN</option>
-                                                        <option value="Y">PPN</option>
-                                                    </select>
-                                                </td>
-                                                <td class="text-right" width="40" style="padding-right: 10px;">
-                                                    <hr>
-                                                </td>
-                                                <td>
-                                                    <input type="text" class="form-control numeric" name="total_jual" id="total_jual" placeholder="Harga Jual Setelah Pajak" value="">
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <div class="ket-input">Tidak termasuk pajak</div>
-                                                </td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td>
-                                                    <div class="ket-input">Tidak termasuk pajak</div>
-                                                </td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td>
-                                                    <div class="ket-input">Termasuk pajak</div>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                        <div class="col">
+                            <a href="javascript::void" id="btn-delete-submit" class="btn btn-danger w-100" data-bs-dismiss="modal">
+                                <svg xmlns="http://www.w3.org/2000/svg" id="btn-delete-svg" class="icon icon-tabler icon-tabler-circle-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <circle cx="12" cy="12" r="9"></circle>
+                                    <path d="M9 12l2 2l4 -4"></path>
+                                </svg>
+                                Hapus
+                            </a>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!-- END -->
-
-
-<!-- START -->
-<div class="modal fade" id="detailProductModal" tabindex="-1" aria-labelledby="detailProductModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form action="<?= base_url('product/simpan') ?>" method="POST">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="detailProductModalLabel">Detail Produk</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" style="max-height: calc(100vh - 200px);overflow-y: auto;">
-                    <div class="container-xl">
-                        <div class="row">
-                            <div class="col-lg-3 col-md-3 col-sm-6" style="position: relative;">
-                                <img src="https://mir-s3-cdn-cf.behance.net/projects/404/1152c0119714885.Y3JvcCwzNDc2LDI3MTksMjU4LDA.png">
-                            </div>
-                            <div class="col-lg-9 col-md-9 col-sm-6">
-                                <h2 class="m-t-40">Kratindaeng Energy Drink 150 ml</h2>
-                                <h2 style="margin-top: -10px;" class="m-t-40">Rp. 6,500 <small class="text-success">(36% off)</small></h2>
-                                <h4 class="text-success" style="margin-top: -10px;">Promo On</h4>
-                            </div>
-                        </div>
-                        <hr style="color:white;margin-bottom:-20px">
-                        <div class="row">
-                            <div class="col-lg-12 col-md-12 col-sm-12 mt-5">
-                                <h3 class="box-title m-t-40">General Info</h3>
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <tbody>
-                                            <tr>
-                                                <td width="200">Nama Barang</td>
-                                                <td> Kratindaeng Energy Drink 150 ml </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Barcode</td>
-                                                <td> 123456789812 </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Nama Supplier</td>
-                                                <td> </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Stock</td>
-                                                <td> 100 Pcs </td>
-                                            </tr>
-                                            <tr>
-                                                <td>HPP Barang</td>
-                                                <td> Rp. 5,000 </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Markup Barang</td>
-                                                <td> 0 % </td>
-                                            </tr>
-                                            <tr>
-                                                <td>PPN</td>
-                                                <td> Ya </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Harga Jual Barang</td>
-                                                <td> Rp. 7,100 </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
@@ -477,6 +385,10 @@
 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#dataBarang').DataTable({
@@ -490,6 +402,8 @@
                 data: function(d) {
                     d.nama = $('#nama_barang_filter').val();
                     d.kategori = $('#nama_kategori_filter').val();
+                    d.stock = $("#stock_filter").val();
+                    d.supplier = $("#nama_supplier_filter").val();
                 }
             },
             columns: [{
@@ -498,7 +412,8 @@
                 },
                 {
                     data: "1",
-                    className: "text-center align-middle"
+                    className: "text-center align-middle",
+                    width: "45px"
                 },
                 {
                     data: "2"
@@ -509,15 +424,15 @@
                 },
                 {
                     data: "4",
-                    className: "text-end align-middle"
+                    className: "text-left align-middle"
                 },
                 {
                     data: "5",
-                    className: "text-end align-middle dt-nowrap"
+                    className: "text-start align-middle dt-nowrap"
                 },
                 {
                     data: "6",
-                    className: "text-end align-middle dt-nowrap"
+                    className: "text-start align-middle dt-nowrap"
                 },
                 {
                     data: "7",
@@ -530,21 +445,138 @@
             ]
         });
 
-        $('#nama_barang_filter').on('change', function() {
+        $('#nama_barang_filter').on('input', function() {
             $('#dataBarang').DataTable().ajax.reload();
         });
 
         $('#nama_kategori_filter').on('input', function() {
             $('#dataBarang').DataTable().ajax.reload();
         });
+
+        $('#stock_filter').on('input', function() {
+            $('#dataBarang').DataTable().ajax.reload();
+        });
+
+        $('#nama_supplier_filter').on('input', function() {
+            $('#dataBarang').DataTable().ajax.reload();
+        });
+
+        $('#nama_kategori_filter').select2({
+            placeholder: "** Filter Kategori", // Placeholder
+            allowClear: true // Opsi untuk menghapus pilihan
+        });
+
+        $('#nama_supplier_filter').select2({
+            placeholder: "** Filter Supplier", // Placeholder
+            allowClear: true // Opsi untuk menghapus pilihan
+        });
     });
 
-    function ubahProduk() {
-        $("#editProductModal").modal('show');
+    function deleteProduk(link) {
+        var idProduk = link.getAttribute("data-id");
+
+        // Menampilkan modal konfirmasi penghapusan
+        $('#deleteProductModal').modal('show');
+
+        // Menghapus event handler sebelum menambahkan yang baru
+        $('#btn-delete-submit').off('click').on('click', function() {
+            // Menutup modal
+            $('#deleteProductModal').modal('hide');
+
+            // Ajax untuk menghapus data Kasir
+            $.ajax({
+                url: "<?php echo base_url('product/delete/'); ?>" + idProduk,
+                type: "POST",
+                dataType: "json",
+                success: function(response) {
+                    if (response.status === "success") {
+                        $('#dataBarang').DataTable().ajax.reload();
+                        toastr.success('Barang Berhasil dihapus.');
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // alert("Terjadi kesalahan: " + error);
+                    toastr.error("Tidak dapat melakukan penghapusan data ini.");
+                }
+            });
+        });
+
+        // Menangani klik pada tombol batal di dalam modal
+        $('#btn-delete-abort').on('click', function() {
+            // Menutup modal
+            $('#deleteProductModal').modal('hide');
+        });
     }
 
-    function detailProduk() {
-        $("#detailProductModal").modal('show');
+    $('#export_btn').click(function() {
+        var stock_filter = $('#stock_filter').val();
+
+        Swal.fire({
+            title: 'Konfirmasi',
+            text: 'Apakah Anda yakin ingin mengekspor data?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Ekspor'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                exportData(document.querySelector('#stock_filter').value);
+            }
+        });
+    });
+
+    function exportData(stock_filter) {
+        $.ajax({
+            url: '<?= base_url('product/export') ?>',
+            type: 'POST',
+            data: {
+                stock_filter: stock_filter
+            },
+            xhrFields: {
+                responseType: 'blob' // Menyatakan bahwa respons yang diharapkan adalah dalam bentuk blob
+            },
+            success: function(blob, status, xhr) {
+                // Logika untuk menangani respons dari server
+                console.log(blob);
+
+                // Membuat objek URL untuk blob
+                var url = window.URL.createObjectURL(blob);
+
+                // Membuat elemen link download
+                var a = document.createElement('a');
+                a.href = url;
+
+                // Mengambil nama file dengan ekstensi .xlsx
+                var fileName = xhr.getResponseHeader('Content-Disposition').split('filename=')[1];
+                if (fileName) {
+                    fileName = fileName.replace('"', '').replace('"', ''); // Menghapus tanda kutip (jika ada)
+                    if (!fileName.endsWith('.xlsx')) {
+                        fileName += '.xlsx'; // Menambahkan ekstensi .xlsx jika belum ada
+                    }
+                } else {
+                    fileName = 'data_barang.xlsx'; // Nama file default
+                }
+
+                a.download = fileName;
+                document.body.appendChild(a); // Menambahkan elemen link ke body
+
+                // Memicu unduhan secara otomatis
+                a.click();
+
+                // Membersihkan objek URL
+                window.URL.revokeObjectURL(url);
+
+                // Menghapus elemen link dari body
+                document.body.removeChild(a);
+            },
+            error: function(xhr, status, error) {
+                // Logika untuk menangani error
+                console.error(error);
+            }
+        });
     }
 </script>
 </body>

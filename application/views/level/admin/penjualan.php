@@ -3,7 +3,53 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+<script src="https://mp.imin.sg/WebPrint/jquery.jqprint-0.3.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 <style>
+   .btn-xs,
+   .btn-group-xs>.btn {
+      padding: 5px 10px;
+      font-size: 12px;
+      line-height: 1.5;
+      border-radius: 3px;
+      margin-bottom: 3px;
+      width: 150px;
+      text-align: left !important;
+   }
+
+   .waves-effect {
+      position: relative;
+      cursor: pointer;
+      display: inline-block;
+      overflow: hidden;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+   }
+
+   .card .card-header h2 {
+      float: left;
+      padding: 10px 0;
+      margin: 0 0 0 20px;
+   }
+
+   .blue {
+      color: #428bca !important;
+   }
+
+   .card .card-header h2 i {
+      border-right: 1px solid #dbdee0;
+      padding: 12px 0;
+      height: 40px;
+      width: 40px;
+      display: inline-block;
+      text-align: center;
+      margin: -10px 20px -10px -20px;
+      font-size: 16px;
+   }
+
    .bg-green {
       color: #ffffff !important;
       background: #2fb344 !important;
@@ -105,82 +151,53 @@
       background: #626976 !important;
    }
 
+   .select2-container .select2-selection--single .select2-selection__rendered {
+      display: block;
+      width: 100%;
+      padding: 0.5625rem 0.75rem;
+      font-family: var(--tblr-font-sans-serif);
+      font-size: .875rem;
+      font-weight: 400;
+      line-height: 1.4285714286;
+      color: var(--tblr-body-color);
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-color: var(--tblr-bg-forms);
+      background-clip: padding-box;
+      border: var(--tblr-border-width) solid var(--tblr-border-color);
+      border-radius: var(--tblr-border-radius);
+      box-shadow: var(--tblr-box-shadow-input);
+      transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+   }
+
+   .select2-container--default .select2-selection--single {
+      background-color: #fff;
+      border: none;
+      border-radius: 4px;
+   }
+
    .dataTables_wrapper .row:first-child {
-      padding-top: 12px;
+      padding-top: 20px;
       padding-bottom: 12px;
-      background-color: #EFF3F8;
+      padding-left: 50px;
+      padding-right: 30px;
    }
 
    .dataTables_wrapper .row:last-child {
-      border-bottom: 1px solid #e0e0e0;
-      padding-top: 12px;
+      padding-top: 20px;
       padding-bottom: 12px;
-      background-color: #EFF3F8;
-   }
-
-   .dataTables_wrapper .row {
-      margin: 0 !important;
-   }
-
-   div.dataTables_wrapper div.dataTables_length label {
-      font-weight: normal;
-      text-align: left;
-      white-space: nowrap;
+      padding-left: 50px;
+      padding-right: 30px;
    }
 
    div.dataTables_wrapper div.dataTables_filter input {
-      margin-left: 0.5em;
-      display: inline-block;
-      width: auto;
+      padding: 14px 6px;
    }
 
-   .form-control-sm {
-      width: 125px;
-      height: 25px;
-      line-height: 25px;
-      -webkit-box-sizing: content-box;
-      -moz-box-sizing: content-box;
-      box-sizing: content-box;
-      padding-right: 40px;
-   }
-
-   .form-select-sm {
-      width: 125px;
-      height: 25px;
-      line-height: 25px;
-      -webkit-box-sizing: content-box;
-      -moz-box-sizing: content-box;
-      box-sizing: content-box;
-      padding-right: 40px;
-   }
-
-   .table-header {
-      background-color: #307ECC;
-      color: #FFF;
-      font-size: 14px;
-      line-height: 50px;
-      padding-left: 12px;
-      margin-bottom: 1px;
-   }
-
-   div.dataTables_wrapper div.dataTables_filter input {
-      margin-bottom: 0 !important;
-      margin: 0 8px;
-   }
-
-   div.dataTables_wrapper div.dataTables_length label {
-      margin-bottom: 0 !important;
-      margin: 0 8px;
-   }
-
-   div.dataTables_wrapper div.dataTables_info {
-      margin-bottom: 0 !important;
-      margin: 0 8px;
-   }
-
-   div.dataTables_wrapper div.dataTables_paginate {
-      margin-bottom: 0 !important;
-      margin: 0 8px;
+   div.dataTables_wrapper div.dataTables_length select {
+      padding: 10px 6px;
+      width: 70px;
    }
 
    .active>.page-link,
@@ -244,6 +261,18 @@
    .bdarkGreen {
       background: #78cd51 !important;
    }
+
+   .btn i {
+      margin-right: 5px;
+      /* Tambahkan jarak antara ikon dan teks */
+   }
+
+   #qrcode {
+      width: 84px !important;
+      height: 84px !important;
+      margin-top: 0;
+      margin-bottom: 0;
+   }
 </style>
 <?php $this->load->view('layouts/admin/header'); ?>
 <!-- CONTAIN DISINI -->
@@ -275,7 +304,7 @@
                   </svg>
                   Import
                </a>
-               <a href="#" class="btn btn-success" title="Lihat Diskon Tagihan">
+               <a href="#" class="btn btn-success" title="Lihat Diskon Tagihan" data-bs-toggle="modal" data-bs-target="#filterModal">
                   <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-spreadsheet" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                      <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
@@ -284,7 +313,7 @@
                      <path d="M8 15h8"></path>
                      <path d="M11 11v7"></path>
                   </svg>
-                  Export
+                  Export Inventory
                </a>
             </div>
          </div>
@@ -379,52 +408,69 @@
             </div>
          </div>
       </div>
-      <div class="row mb-3">
-         <div class="col-12">
-            <div class="card">
-               <div class="card-body pb-2">
-                  <div class="row d-flex mb-4">
-                     <div class="col-sm-12 col-md-2 col-form-label text-center">
-                        <label class="form-label">
-                           Pilih Anggota
-                        </label>
-                     </div>
-                     <div class="col-sm-12 col-md-9">
-                        <select id="select_anggota" class="form-select" style="width: 100%;">
-                           <option value="" selected disabled>-- Pilih Anggota --</option>
-                        </select>
-                     </div>
+      <div class="row">
+         <div class="col-sm-12">
+            <div class="accordion bg-white mb-3">
+               <div class="accordion-item">
+                  <div class="accordion-header">
+                     <h2 class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#tab-filter" aria-expanded="false" style="cursor: pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-filter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                           <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                           <path d="M5.5 5h13a1 1 0 0 1 .5 1.5l-5 5.5l0 7l-4 -3l0 -4l-5 -5.5a1 1 0 0 1 .5 -1.5"></path>
+                        </svg>
+                        Filter Data
+                     </h2>
                   </div>
-                  <div class="row d-flex text-center">
-                     <div class="col">
-                        <p class="mb-1 text-muted">
-                           Nama Lengkap
-                        </p>
-                        <p id="nama_lengkap_cari" class="lead strong">-</p>
-                     </div>
-                     <div class="col">
-                        <p class="mb-1 text-muted">
-                           Jenis Kelamin
-                        </p>
-                        <p id="jenis_kelamin_cari" class="lead strong">-</p>
-                     </div>
-                     <div class="col">
-                        <p class="mb-1 text-muted">
-                           Nomor Induk
-                        </p>
-                        <p id="nomor_induk_cari" class="lead strong">-</p>
-                     </div>
-                     <div class="col">
-                        <p class="mb-1 text-muted">
-                           No HP
-                        </p>
-                        <p id="no_hp_cari" class="lead strong">-</p>
-                     </div>
-                     <div class="col">
-                        <p class="mb-1 text-muted">
-                           Status
-                        </p>
-                        <p id="status_cari" class="lead strong">-</p>
+                  <div id="tab-filter" class="accordion-collapse collapse">
+                     <div class="accordion-body pt-0">
+                        <form id="filter-form" action="javascript:void(0)">
+                           <div class="row">
+                              <div class="col-sm-6 col-md-4 mb-2">
+                                 <label class="form-label">ID Transaksi</label>
+                                 <input id="id_transaksi_filter" type="text" class="form-control" placeholder="ID Transaksi">
+                              </div>
+                              <div class="col-sm-6 col-md-4 mb-2">
+                                 <label class="form-label">Tanggal Transaksi</label>
+                                 <input id="tgl_transaksi_filter" type="date" class="form-control" value="<?= date('Y-m-d') ?>">
+                              </div>
+                              <div class="col-sm-6 col-md-4 mb-2">
+                                 <label class="form-label"> Status Pesanan </label>
+                                 <select name="status_pesanan_filter" id="status_pesanan_filter" class="form-select">
+                                    <option value="">-- Status --</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Disiapkan">Disiapkan</option>
+                                    <option value="Dikirim">Dikirim</option>
+                                    <option value="Selesai">Selesai</option>
+                                 </select>
+                              </div>
+                              <div class="col-sm-6 col-md-4 mb-2">
+                                 <label class="form-label"> Status Pembayaran </label>
+                                 <select name="status_pembayaran_filter" id="status_pembayaran_filter" class="form-select">
+                                    <option value="">-- Pilih Status Pembayaran --</option>
+                                    <option value="Menunggu Pembayaran">Menunggu Pembayaran</option>
+                                    <option value="Lunas">Lunas</option>
+                                 </select>
+                              </div>
+                              <div class="col-sm-6 col-md-4 mb-2">
+                                 <label class="form-label"> Metode Pemabayaran </label>
+                                 <select name="metode_filter" id="metode_filter" class="form-select">
+                                    <option value="">-- Pilih Metode Bayar --</option>
+                                    <option value="Cash">Cash</option>
+                                    <option value="Transfer">Transfer</option>
+                                    <option value="Autodebet">Autodebit</option>
+                                 </select>
+                              </div>
+                              <div class="col-sm-6 col-md-4 mb-2">
+                                 <label class="form-label"> Tipe Order </label>
+                                 <select name="jenis_order_filter" id="jenis_order_filter" class="form-select">
+                                    <option value="">-- Pilih Jenis Order --</option>
+                                    <option value="ambil_sendiri">Ambil Sendiri</option>
+                                    <option value="dianterin">Dianterin</option>
+                                    <option value="dianterin_pt">Dianterin ke PT</option>
+                                 </select>
+                              </div>
+                           </div>
+                        </form>
                      </div>
                   </div>
                </div>
@@ -433,77 +479,22 @@
       </div>
       <div class="row">
          <div class="col-sm-12">
-            <div class="card table">
-               <div class="card-body p-0">
-                  <div class="table-header">
-                     Hasil untuk Data Penjualan
-                  </div>
-                  <div class="table-responsive">
-                     <table class="table table-sm table-bordered table-hover table-striped" id="example" style="width: 100%;">
+            <div class="card">
+               <div class="card-status-top bg-info"></div>
+               <div class="card-body p-3">
+                  <div class="table-responsive" style="min-height: 500px;">
+                     <table class="table table-hover" id="example" style="width: 100%;">
                         <thead>
                            <tr>
-                              <th style="padding: 15px;font-size:11px;background: repeat-x #F4F4F4;"><button class="table-sort">No</button></th>
-                              <th style="padding: 15px;font-size:11px;background: repeat-x #F4F4F4;"><button class="table-sort">Action</button></th>
-                              <th style="padding: 15px;font-size:11px;background: repeat-x #F4F4F4;"><button class="table-sort">ID Transaksi</button></th>
-                              <th style="padding: 15px;font-size:11px;background: repeat-x #F4F4F4;"><button class="table-sort">Date</button></th>
-                              <th style="padding: 15px;font-size:11px;background: repeat-x #F4F4F4;"><button class="table-sort">Customer</button></th>
-                              <th style="padding: 15px;font-size:11px;background: repeat-x #F4F4F4;"><button class="table-sort">Status</button></th>
-                              <th style="padding: 15px;font-size:11px;background: repeat-x #F4F4F4;"><button class="table-sort">Tipe</button></th>
-                              <th style="padding: 15px;font-size:11px;background: repeat-x #F4F4F4;"><button class="table-sort">Pembayaran</button></th>
-                              <th style="padding: 15px;font-size:11px;background: repeat-x #F4F4F4;"><button class="table-sort">Jenis</button></th>
-                              <th style="padding: 15px;font-size:11px;background: repeat-x #F4F4F4;"><button class="table-sort">Total</button></th>
-                           </tr>
-                           <tr>
-                              <th class="align-middle text-center">
-                                 #
-                              </th>
-                              <th>
-                                 #
-                              </th>
-                              <th>
-                                 <input id="id_transaksi_filter" type="text" class="form-control" placeholder="ID Transaksi">
-                              </th>
-                              <th>
-                                 <input id="tgl_transaksi_filter" type="date" class="form-control">
-                              </th>
-                              <th class="align-middle text-center">
-                                 #
-                              </th>
-                              <th>
-                                 <select name="status_pesanan_filter" id="status_pesanan_filter" class="form-select">
-                                    <option value="">-- Pilih Status Pesanan --</option>
-                                    <option value="Pending">Pending</option>
-                                    <option value="Disiapkan">Disiapkan</option>
-                                    <option value="Dikirim">Dikirim</option>
-                                    <option value="Selesai">Selesai</option>
-                                 </select>
-                              </th>
-                              <th>
-                                 <select name="metode_filter" id="metode_filter" class="form-select">
-                                    <option value="">-- Pilih Metode Bayar --</option>
-                                    <option value="Cash">Cash</option>
-                                    <option value="Transfer">Transfer</option>
-                                    <option value="Autodebet">Autodebit</option>
-                                 </select>
-                              </th>
-                              <th>
-                                 <select name="status_pembayaran_filter" id="status_pembayaran_filter" class="form-select">
-                                    <option value="">-- Pilih Status Pembayaran --</option>
-                                    <option value="Menunggu Pembayaran">Menunggu Pembayaran</option>
-                                    <option value="Lunas">Lunas</option>
-                                 </select>
-                              </th>
-                              <th>
-                                 <select name="jenis_order_filter" id="jenis_order_filter" class="form-select">
-                                    <option value="">-- Pilih Jenis Order --</option>
-                                    <option value="ambil_sendiri">Ambil Sendiri</option>
-                                    <option value="dianterin">Dianterin</option>
-                                    <option value="dianterin_pt">Dianterin ke PT</option>
-                                 </select>
-                              </th>
-                              <th class="align-middle text-center">
-                                 #
-                              </th>
+                              <th width="7">No</th>
+                              <th>Action</th>
+                              <th>Profil</th>
+                              <th>Customer</th>
+                              <th>ID Transaksi</th>
+                              <th>Tanggal</th>
+                              <th>Pesanan</th>
+                              <th>Pembayaran</th>
+                              <th>Total</th>
                            </tr>
                         </thead>
                         <tbody>
@@ -569,53 +560,49 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
          </div>
          <div id="modal-qrcode" class="modal-body p-0" style="max-height: calc(90vh - 200px);overflow-y: auto;">
-            <div class="container">
-               <div class="card mt-3">
-                  <div class="card-header justify-content-between">
-                     <strong>Invoice : 01/01/01/2018</strong>
-                     <span class="float-end"> <strong>Status:</strong> Pending</span>
+            <div class="card mt-3">
+               <div class="card-body">
+                  <div style="display: flex;justify-content: space-between;">
+                     <div style="flex: 1;text-align: left;font-weight:bold;font-size:12px">JMART (#<span id="my_id"></span>)</div>
+                     <div style="flex: 1;text-align: right;font-weight:bold;font-size:12px">Kurir JMART</div>
                   </div>
-                  <div class="card-body">
-                     <div class="row mb-3">
-                        <div class="" style="width: 50%;">
-                           <h4>To:</h4>
-                           <div> <strong>Bob Mart</strong> </div>
-                           <div>Attn: Daniel Marek</div>
-                           <div>43-190 Mikolow, Poland</div>
-                           <div>Email: marek@daniel.com</div>
-                           <div>Phone: +48 123 456 789</div>
-                        </div>
-                        <div style="width: 50%;">
-                           <div class="row justify-content-end" style="font-size: 0.9rem;">
-                              <div class="col-auto">
-                                 <div id="qrcode" style="width: 84px !important;height:84px !important"></div>
-                              </div>
-                           </div>
-                        </div>
+                  <hr style="border: none;border-top: 2px dashed #ccc;margin-top:5px !important;margin-bottom:15px">
+                  <div style="display: flex;justify-content: center;">
+                     <div id="qrcode" style="width: 84px !important;height:84px !important"></div>
+                  </div>
+                  <hr style="border: none;border-top: 2px dashed #ccc;margin-top:15px !important">
+                  <div style="display: grid;grid-template-columns: repeat(2, 1fr);grid-gap: 20px;">
+                     <div style="padding: 10px;border: 1px solid #ccc;">
+                        <h2 style="margin-bottom: 0px;font-size:14px">Penerima [<span style="margin-bottom: 0px;font-size:12px" id="my_contact"></span>]</h2>
+                        <p style="margin-bottom: 0px;font-size:12px">Nama Penerima: <span id="my_customer"></span></p>
+                        <p style="margin-bottom: 0px;font-size:12px">Alamat: <span id="my_address"></span></p>
                      </div>
-                     <div id="tabel-pemesanan"></div>
-                     <div class="row">
-                        <div class="col-lg-12 ml-auto">
-                           <table class="table table-sm">
-                              <tbody>
-                                 <tr>
-                                    <td class="left"><strong>Subtotal</strong></td>
-                                    <td class="right"><span id="kr-subtotal"></span></td>
-                                 </tr>
-                                 <tr>
-                                    <td class="left"><strong>Discount</strong></td>
-                                    <td class="right">0</td>
-                                 </tr>
-                                 <tr>
-                                    <td class="left"><strong>Total</strong></td>
-                                    <td class="right"><strong id="kr_total"></strong>
-                                    </td>
-                                 </tr>
-                              </tbody>
-                           </table>
-                        </div>
+                     <div style="padding: 10px;border: 1px solid #ccc;">
+                        <h2 style="margin-bottom: 0px;font-size:14px">Pengirim</h2>
+                        <p style="margin-bottom: 0px;font-size:12px">Nama Pengirim: Kurir JMART</p>
+                        <p style="margin-bottom: 0px;font-size:12px">Hubungi: +6287163816398</p>
                      </div>
                   </div>
+                  <span id="my_belum_lunas" style="display: none;">
+                     <hr style="border: none;border-top: 2px dashed #ccc;">
+                     <div style="display: inline-block;border: 1px solid #ccc;padding: 10px;margin-right:20px;font-weight:bolder;">
+                        Belum Lunas
+                     </div>
+                     <div style="display: inline-block;font-style: italic;">
+                        Pembeli harus membayar transaksi kepada kurir
+                     </div>
+                  </span>
+                  <span id="my_lunas" style="display: none;">
+                     <hr style="border: none;border-top: 2px dashed #ccc;">
+                     <div style="display: inline-block;border: 1px solid #ccc;padding: 10px;margin-right:20px;font-weight:bolder;">
+                        Lunas
+                     </div>
+                     <div style="display: inline-block;font-style: italic;">
+                        Pembeli tidak perlu membayar transaksi kepada kurir
+                     </div>
+                  </span>
+                  <hr style="border: none;border-top: 2px dashed #ccc;">
+                  <div id="tabel-pemesanan"></div>
                </div>
             </div>
          </div>
@@ -641,6 +628,75 @@
          </div>
       </div>
    </div>
+</div>
+
+<div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="filterModalLabel">Filter Data</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+            <form>
+               <div class="mb-3">
+                  <label for="monthSelect" class="form-label">Bulan</label>
+                  <?php
+                  $currentMonth = date("n"); // Mendapatkan bulan saat ini (1-12)
+                  ?>
+
+                  <select class="form-select" id="monthSelect">
+                     <?php
+                     $months = [
+                        1 => "Januari",
+                        2 => "Februari",
+                        3 => "Maret",
+                        4 => "April",
+                        5 => "Mei",
+                        6 => "Juni",
+                        7 => "Juli",
+                        8 => "Agustus",
+                        9 => "September",
+                        10 => "Oktober",
+                        11 => "November",
+                        12 => "Desember"
+                     ];
+
+                     foreach ($months as $monthNumber => $monthName) {
+                        if ($monthNumber == $currentMonth) {
+                           echo "<option value=\"$monthNumber\" selected>$monthName</option>";
+                        } else {
+                           echo "<option value=\"$monthNumber\">$monthName</option>";
+                        }
+                     }
+                     ?>
+                  </select>
+               </div>
+               <div class="mb-3">
+                  <label for="yearSelect" class="form-label">Tahun</label>
+                  <?php
+                  $currentYear = date("Y");
+                  $startYear = $currentYear - 4;
+                  ?>
+
+                  <select class="form-select" id="yearSelect">
+                     <?php
+                     for ($year = $startYear; $year <= $currentYear; $year++) {
+                        if ($year == $currentYear) {
+                           echo "<option value=\"$year\" selected>$year</option>";
+                        } else {
+                           echo "<option value=\"$year\">$year</option>";
+                        }
+                     }
+                     ?>
+                  </select>
+               </div>
+               <button type="button" class="btn btn-primary w-100" id="filterButton">Filter</button>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
 </div>
 
 <?php $this->load->view('layouts/admin/footer'); ?>
@@ -780,6 +836,7 @@
       $("#ubahTransaksiModal").modal('show');
    }
 
+
    function myQRCode(id) {
       var url = "<?php echo base_url('penjualan/get_bukti_transaksi/'); ?>" + id;
 
@@ -794,18 +851,22 @@
             $("#modalQRCode").modal('show');
             var inputan = data[0].id_pesanan;
             document.getElementById("qrcode").innerHTML = '';
-            new QRCode(document.getElementById("qrcode"), inputan);
+            new QRCode(document.getElementById("qrcode"), {
+               text: inputan,
+               width: 84,
+               height: 84
+            });
 
             var tambahanHtml3 = `
-            <div class="table-responsive-sm">
-               <table class="table table-sm table-striped">
-                  <thead>
+            <div style="overflow-x: auto;">
+               <table style="border-collapse: collapse; width: 100%; border: 1px solid #dee2e6;">
+                  <thead style="background-color: #f8f9fa;">
                      <tr>
-                        <th class="center">#</th>
-                        <th>Item</th>
-                        <th class="right">Harga</th>
-                        <th class="center">Qty</th>
-                        <th class="right">Total</th>
+                        <th style="text-align: center; padding: 8px;">#</th>
+                        <th style="padding: 8px;">Item</th>
+                        <th style="text-align: right; padding: 8px;">Harga</th>
+                        <th style="text-align: center; padding: 8px;">Qty</th>
+                        <th style="text-align: right; padding: 8px;">Total</th>
                      </tr>
                   </thead>
                   <tbody>`;
@@ -813,22 +874,42 @@
             for (var i = 0; i < data.length; i++) {
                tambahanHtml3 +=
                   `<tr>
-                        <td class="text-center">${i+1}</td>
-                        <td class="left strong">${data[i].nama_barang}</td>
-                        <td class="right">${data[i].harga_saat_ini}</td>
-                        <td class="center">${data[i].jumlah_jual}</td>
-                        <td class="right">${data[i].harga_saat_ini * data[i].jumlah_jual}</td>
+                        <td style="text-align: center; padding: 8px; font-size: 12px;">${i+1}</td>
+                        <td style="padding: 8px; font-size: 12px;">${data[i].nama_barang}</td>
+                        <td style="text-align: right; padding: 8px; font-size: 12px;">${data[i].harga_saat_ini}</td>
+                        <td style="text-align: center; padding: 8px; font-size: 12px;">${data[i].jumlah_jual}</td>
+                        <td style="text-align: right; padding: 8px; font-size: 12px;">${data[i].harga_saat_ini * data[i].jumlah_jual}</td>
                      </tr>`;
             }
 
             tambahanHtml3 += `</tbody>
-               </table>
-            </div>
-            `;
+               <tfoot>
+                  <tr>
+                     <td colspan="4" style="text-align: right; padding: 8px; font-size: 12px;">Subtotal</td>
+                     <td style="text-align: right; padding: 8px; font-size: 12px;">${data[0].grand_total - data[0].ongkos_kirim}</td>
+                  </tr>
+                  <tr>
+                     <td colspan="4" style="text-align: right; padding: 8px; font-size: 12px;">Ongkos Kirim</td>
+                     <td style="text-align: right; padding: 8px; font-size: 12px;">${data[0].ongkos_kirim}</td>
+                  </tr>
+                  <tr>
+                     <td colspan="4" style="text-align: right; padding: 8px; font-size: 12px;">Grand Total</td>
+                     <td style="text-align: right; padding: 8px; font-size: 12px;">${data[0].grand_total}</td>
+                  </tr>
+               </tfoot>
+            </table>
+            </div>`;
 
-            document.getElementById("kr-subtotal").innerHTML = data[0].grand_total;
-            document.getElementById("kr_total").innerHTML = data[0].grand_total;
+            document.getElementById("my_id").innerHTML = data[0].id_pesanan;
+            document.getElementById("my_contact").innerHTML = data[0].kontak_penerima;
+            document.getElementById("my_customer").innerHTML = data[0].nama_member;
+            document.getElementById("my_address").innerHTML = data[0].nama_desa + " (" + data[0].detail_lainnya + ")";
 
+            if (data[0].status_pembayaran == "Menunggu Pembayaran") {
+               document.getElementById("my_belum_lunas").style = 'block';
+            } else {
+               document.getElementById("my_lunas").style = 'block';
+            }
             $("#tabel-pemesanan").html(tambahanHtml3);
          })
          .catch(function(error) {
@@ -897,7 +978,9 @@
                      <tr>
                         <td style="width: 30%;"> Oleh </td>
                         <td>:</td>
-                        <td colspan="2" class="text-end"><span class="kasir_name detail_cashier">RICO</span></td>
+                        <td colspan="2" class="text-end">
+                           <span class="kasir_name detail_cashier">${data[0].nama_kasir !== "" ? data[0].nama_kasir : ""}</span>
+                        </td>
                      </tr>
                      <tr>
                         <td style="width: 30%;"> Alat Kasir</td>
@@ -908,7 +991,7 @@
                      <tr id="customer_data">
                         <td style="width: 30%;"> Anggota </td>
                         <td>:</td>
-                        <td colspan="2" class="text-end"><span id="customer_name">${data[0].nama_member}</span></td>
+                        <td colspan="2" class="text-end"><span id="customer_name">${data[0].nama_member !== null ? data[0].nama_member : 'Walk In Customer'}</span></td>
                      </tr>
                      <tr class="highline" style="height: 23px;">
                         <td colspan="5">
@@ -925,7 +1008,7 @@
                   </td>
                   <td align="right" style="vertical-align: top;">
                      <span class="number tbl-product">
-                        ${data[i].jumlah_jual * data[i].harga_saat_ini} </span>
+                        ${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(data[i].jumlah_jual * data[i].harga_saat_ini)} </span>
                   </td>
                </tr>
                `;
@@ -938,8 +1021,8 @@
                         </td>
                      </tr>
                      <tr>
-                        <td class="line-ttl-product" colspan="3"><span class="ttl-product">Subtotal (12 items,14 qty)</span></td>
-                        <td class="line-ttl-product" align="right" width="30%"><span class="number ttl-product">${data[0].grand_total}</span></td>
+                        <td class="line-ttl-product" colspan="3"><span class="ttl-product">Subtotal (${data[0].total_rows} items)</span></td>
+                        <td class="line-ttl-product" align="right" width="30%"><span class="number ttl-product">${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(data[0].grand_total)}</span></td>
                      </tr>
 
                      <tr style="height: 10px">
@@ -957,7 +1040,7 @@
                      <tr>
                         <td class="line-ttl-product" colspan="3"><strong class="ttl-product">Total</strong></td>
                         <td class="line-ttl-product" align="right" width="30%">
-                           <strong class="ttl-product">${data[0].grand_total}</strong>
+                           <strong class="ttl-product">${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(data[0].grand_total)}</strong>
                         </td>
                      </tr>
                      <tr class="highline" style="height: 23px;">
@@ -977,7 +1060,7 @@
                      </tr>
                      <tr>
                         <td class="line-ttl-product" colspan="3">Total Bayar</td>
-                        <td class="line-ttl-product" align="right" width="30%">${data[0].total_bayar}</td>
+                        <td class="line-ttl-product" align="right" width="30%">${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(data[0].total_bayar)}</td>
                      </tr>
                      <tr class="highline" style="height: 23px;">
                         <td class="line-ttl-product" colspan="4">
@@ -986,7 +1069,16 @@
                      </tr>
                      <tr>
                         <td class="line-ttl-product" colspan="3"><strong class="footer-ttl-product">Kembalian</strong></td>
-                        <td class="line-ttl-product" align="right" width="30%"><strong class="footer-ttl-product">${data[0].kembalian}</strong></td>
+                        <td class="line-ttl-product" align="right" width="30%"><strong class="footer-ttl-product">${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(data[0].kembalian)}</strong></td>
+                     </tr>
+                     <tr style="height: 23px;">
+                        <td class="line-ttl-product" colspan="10">
+                           <hr>
+                        </td>
+                     </tr>
+                     <tr>
+                        <td class="line-ttl-product" colspan="3"><strong class="footer-ttl-product">Transaksi Bulan Ini</strong></td>
+                        <td class="line-ttl-product" align="right" width="30%"><strong class="footer-ttl-product">${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(data[0].total_bulan_ini)}</strong></td>
                      </tr>
                      <tr style="height: 23px;">
                         <td class="line-ttl-product" colspan="10">
@@ -1059,7 +1151,7 @@
                                                    <div class="delivered-to">
                                                       <p style="margin-bottom: 5px;"><b>Kepada :</b></p>
                                                       <p class="address-delive">
-                                                         <b>${data[0].nama_member}</b>
+                                                         <b>${data[0].nama_member != null ? data[0].nama_member : 'Walk in Customer'}</b>
                                                          <br>
                                                       </p>
                                                    </div>
@@ -1247,7 +1339,7 @@
             tambahanHtml2 += `
             <tr>
                <td colspan="10"><span id="footer_text_demo">
-               <p style="text-align:center">Terima Kasih &amp; Selamat Belanja Kembali<br><span style="font-size:11px">Powered by www.foliopos.com</span></p>
+               <p style="text-align:center">Terima Kasih &amp; Selamat Belanja Kembali<br><span style="font-size:11px">Powered by www.myproyekt.net</span></p>
                </span></td>
             </tr>
             </tbody>
@@ -1337,7 +1429,7 @@
          popupWin.document.open();
          popupWin.document.write('<html><head><title>Cetak</title></head><body>' + modalContent + '</body></html>');
          popupWin.document.close();
-         popupWin.print();
+         popupWin.jqprint();
          popupWin.close();
       });
 
@@ -1348,9 +1440,8 @@
          // Buat jendela popup untuk mencetak
          var popupWin = window.open('', '_blank', 'width=600,height=600');
          popupWin.document.open();
-         popupWin.document.write('<html><head><title>Cetak</title></head><body>' + modalContent + '</body></html>');
-         popupWin.document.close();
-         popupWin.print();
+         popupWin.document.write('<html><head><title>Cetak</title><style>@media print { body { font-family: Arial, sans-serif; } /* Tambahkan aturan font-family lainnya jika diperlukan */ }</style></head><body>' + modalContent + '</body></html>');
+         popupWin.jqprint();
          popupWin.close();
       });
 
@@ -1363,14 +1454,14 @@
          popupWin.document.open();
          popupWin.document.write('<html><head><title>Cetak</title></head><body>' + modalContent + '</body></html>');
          popupWin.document.close();
-         popupWin.print();
+         popupWin.jqprint();
          popupWin.close();
       });
 
       $('#example').DataTable({
          "processing": true,
          "serverSide": true,
-         "ordering": false,
+         "ordering": true,
          "ajax": {
             "url": "<?php echo base_url('penjualan/json'); ?>",
             "type": "POST",
@@ -1394,35 +1485,31 @@
             },
             {
                "data": 2,
-               "className": "text-center align-middle"
-            },
-            {
-               "data": 3,
                "className": "text-center align-middle dt-nowrap"
             },
             {
-               "data": 4,
+               "data": 3,
                "className": "text-left align-middle"
             },
             {
+               "data": 4,
+               "className": "text-left align-middle dt-wrap"
+            },
+            {
                "data": 5,
-               "className": "text-center align-middle",
+               "className": "text-left align-middle dt-nowrap",
             },
             {
                "data": 6,
-               "className": "text-center align-middle",
+               "className": "text-center align-middle text-nowrap",
             },
             {
                "data": 7,
-               "className": "dt-nowrap text-center align-middle"
+               "className": "text-center align-middle text-nowrap",
             },
             {
                "data": 8,
-               "className": "text-center align-middle"
-            },
-            {
-               "data": 9,
-               "className": "dt-nowrap text-center align-middle"
+               "className": "text-left align-middle text-nowrap",
             },
          ],
       });

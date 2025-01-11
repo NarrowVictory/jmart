@@ -132,26 +132,21 @@
 <?php $this->load->view('layouts/admin/header'); ?>
 <div class="page-header d-print-none">
     <div class="container-xl">
-        <div class="row g-4 align-items-center">
+        <div class="row g-2 align-items-center">
             <div class="col">
-                <h1 class="h3 m-0">Order #<?= $id ?></h1>
+                <h2 class="page-title">
+                    Invoice
+                </h2>
             </div>
-            <div class="col-auto d-flex">
-                <a href="javascipt::void" onclick="window.close()" class="btn btn-secondary text-dark me-3" style="background-color:#e6e8eb"><i class="fa fa-arrow-left"></i>&nbsp;&nbsp;Kembali</a>
-                <a href="#" class="btn btn-warning" style="background-color:#ffd333">Edit</a>
-            </div>
-        </div>
-        <div class="sa-page-meta mt-3">
-            <div class="sa-page-meta__body">
-                <div class="sa-page-meta__list">
-                    <div class="sa-page-meta__item"><?= date('d/F/Y', strtotime($pesanan['tgl_pesanan'])) ?> at <?= date('H:i:s', strtotime($pesanan['tgl_pesanan'])) ?></div>
-                    <div class="sa-page-meta__item"><?= count($barang) . " items" ?></div>
-                    <div class="sa-page-meta__item">Total <?= number_format($pesanan['grand_total']) ?></div>
-                    <div class="sa-page-meta__item d-flex align-items-center fs-6">
-                        <span class="badge bg-success text-white p-2 me-2"><?= $pesanan['status_pesanan'] ?></span>
-                        <span class="badge bg-warning text-white p-2 me-2"><?= $pesanan['status_pembayaran'] ?></span>
-                    </div>
-                </div>
+            <!-- Page title actions -->
+            <div class="col-auto ms-auto d-print-none">
+                <button type="button" class="btn btn-secondary" onclick="location.href='<?= base_url('penjualan') ?>'">
+                    <!-- Download SVG icon from http://tabler-icons.io/i/printer -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);">
+                        <path d="M21 11H6.414l5.293-5.293-1.414-1.414L2.586 12l7.707 7.707 1.414-1.414L6.414 13H21z"></path>
+                    </svg>
+                    &nbsp;&nbsp;Kembali
+                </button>
             </div>
         </div>
     </div>
@@ -159,97 +154,73 @@
 <div class="page-body">
     <div class="container-xl">
         <div class="row">
-            <div class="col-12 col-md-7">
-                <div class="card table mb-2 w-100">
+            <div class="col-12">
+                <div class="card card-lg">
                     <div class="card-body">
-                        <h2 class="mb-0 fs-exact-18 me-4">Items</h2>
-                    </div>
-                    <div class="table-responsive p-1">
-                        <table class="table table-bordered">
+                        <div class="row">
+                            <div class="col-6">
+                                <p class="h3">JMART</p>
+                                <address>
+                                    Tanggal Order : <?= date('d/M/Y H:i:s', strtotime($pesanan['tgl_pesanan'])) ?><br>
+                                    Jenis Order : <?= ucwords(str_replace('_', ' ', $pesanan['jenis_order'])) ?><br>
+                                    Metode Bayar : <?= ucwords(str_replace('_', ' ', $pesanan['metode_bayar'])) ?><br>
+                                    Status Pembayaran : <?= ucwords(str_replace('_', ' ', $pesanan['status_pembayaran'])) ?>
+                                </address>
+                            </div>
+                            <div class="col-6 text-end">
+                                <p class="h3">Customer</p>
+                                <address>
+                                    <?= $pesanan['nama_member'] ?><br>
+                                    <?= $pesanan['nomor_induk'] ?><br>
+                                    <?= $pesanan['wa_member'] ?><br>
+                                    <?= $pesanan['email_member'] ?>
+                                </address>
+                            </div>
+                            <div class="col-12 my-5">
+                                <h1>Invoice #<?= $pesanan['id_pesanan'] ?></h1>
+                            </div>
+                        </div>
+                        <table class="table table-transparent table-responsive">
                             <thead>
                                 <tr>
-                                    <th>Photo</th>
+                                    <th class="text-center" style="width: 1%"></th>
                                     <th>Product</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
+                                    <th class="text-center" style="width: 1%">Qnt</th>
+                                    <th class="text-end" style="width: 1%">Unit</th>
+                                    <th class="text-end" style="width: 1%">Amount</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($barang as $key => $value) : ?>
-                                    <?php
-                                    $gambar = $value['gambar_barang'] == "https://dodolan.jogjakota.go.id/assets/media/default/default-product.png" ? "<img style='\border-radius: 3px;width:50px' src='" . $value['gambar_barang'] . "'>" : "<img style='\border-radius: 3px;width:50px' src='" . base_url('public/template/upload/barang/' . $value['gambar_barang']) . "'>";
-                                    ?>
                                     <tr>
-                                        <td class="text-center">
-                                            <?= $gambar ?>
+                                        <td class="text-center"><?= $key + 1 ?></td>
+                                        <td>
+                                            <p class="strong mb-1"><?= $value['nama_barang'] ?></p>
+                                            <div class="text-secondary"><?= $value['nama_kategori_brg'] ?></div>
                                         </td>
-                                        <td><?= $value['nama_barang'] ?></td>
-                                        <td><?= $value['jumlah_jual'] ?></td>
-                                        <td class="font-500"><?= $value['harga_saat_ini'] ?></td>
+                                        <td class="text-center">
+                                            <?= $value['jumlah_jual'] ?>
+                                        </td>
+                                        <td class="text-end text-nowrap">Rp. <?= number_format($value['harga_saat_ini']) ?></td>
+                                        <td class="text-end text-nowrap">Rp. <?= number_format($value['harga_saat_ini'] * $value['jumlah_jual']) ?></td>
                                     </tr>
                                 <?php endforeach ?>
                                 <tr>
-                                    <td colspan="3" class="fw-bold" align="right">Sub Total</td>
-                                    <td class="font-500"><?= $pesanan['grand_total'] ?></td>
+                                    <td colspan="4" class="strong text-end">Subtotal</td>
+                                    <td class="text-end"><?= "Rp. " . number_format($pesanan['grand_total'] - $pesanan['ongkos_kirim']) ?></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3" class="fw-bold" align="right">Ongkos Kirim</td>
-                                    <td class="font-500">00</td>
+                                    <td colspan="4" class="strong text-end">Ongkos Kirim</td>
+                                    <td class="text-end">Rp. <?= number_format($pesanan['ongkos_kirim']) ?></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3" class="fw-bold" align="right">Total Amount</td>
-                                    <td class="font-500"><?= $pesanan['grand_total'] ?></td>
+                                    <td colspan="4" class="strong text-end">Grand Total</td>
+                                    <td class="text-end">Rp. <?= number_format($pesanan['grand_total']) ?></td>
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-5">
-                <div class="card mb-2 w-100">
-                    <div class="card-header">
-                        <h2 class="fs-exact-16 mb-0">Customer</h2>
-                    </div>
-                    <div class="card-body d-flex align-items-center pt-4">
-                        <div class="list-group-item">
-                            <div class="row align-items-center">
-                                <div class="col-auto">
-                                    <a href="#">
-                                        <span class="avatar" style="background-image: url(./static/avatars/003f.jpg)"></span>
-                                    </a>
-                                </div>
-                                <div class="col text-truncate">
-                                    <a href="#" class="text-reset d-block"><?= $pesanan['nama_member'] ?></a>
-                                    <div class="d-block text-secondary text-truncate mt-n1">Bergabung pada : <?= date('d/m/Y H:i:s', strtotime($pesanan['created_at'])) ?></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card mb-2 w-100">
-                    <div class="card-header">
-                        <h2 class="mb-0 fs-exact-18 me-4">Transactions</h2>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table text-nowrap">
-                            <tbody>
-                                <tr>
-                                    <td>Pembayaran<div class="text-muted fs-exact-13">melalui ...</div>
-                                    </td>
-                                    <td>October 7, 2020</td>
-                                    <td class="text-end">
-                                        <div class="sa-price"><?= $pesanan['grand_total'] ?></div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Contact Person<div class="text-muted fs-exact-13">Whatsapp</div>
-                                    </td>
-                                    <td colspan="2" class="text-end">
-                                        085277961769
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <p class="text-secondary text-center mt-5">Thank you very much for doing business with us. We look forward to working with
+                            you again!</p>
                     </div>
                 </div>
             </div>

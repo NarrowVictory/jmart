@@ -15,12 +15,74 @@ class Kasir extends CI_Controller
         $this->auth->cek_login();
     }
 
+    public function cek_keranjang()
+    {
+        $id_user = $this->session->userdata('id_user');
+
+        $this->db->where('id_user', $id_user);
+        $jumlah_barang = $this->db->count_all_results('tb_keranjang');
+        echo json_encode(array('jumlah_barang' => $jumlah_barang));
+    }
+
+    public function getAnggota()
+    {
+        $page = $this->input->get('page'); // Ambil nomor halaman dari query string
+        $searchTerm = $this->input->get('q'); // Ambil kata kunci pencarian
+
+        // Tentukan jumlah data per halaman
+        $perPage = 10;
+
+        // Hitung offset berdasarkan halaman
+        $offset = ($page - 1) * $perPage;
+
+        // Mulai membangun query pencarian
+        $this->db->select('id_user, nomor_induk, nama_member');
+        $this->db->from('tb_user');
+        $this->db->where('level', 'User');
+
+        // Jika ada kata kunci pencarian, tambahkan kondisi pencarian
+        if (!empty($searchTerm)) {
+            $this->db->group_start();
+            $this->db->like('nama_member', $searchTerm);
+            $this->db->or_like('nomor_induk', $searchTerm);
+            $this->db->group_end();
+        }
+
+        // Batasi jumlah data yang diambil
+        $this->db->limit($perPage, $offset);
+
+        // Eksekusi query
+        $query = $this->db->get();
+        $anggota = $query->result_array();
+
+        // Kirim data sebagai response JSON
+        header('Content-Type: application/json');
+        echo json_encode($anggota);
+    }
+
+    public function get_bukti_transaksi()
+    {
+        $id = $this->session->userdata('id_user');
+        $this->db->select('*');
+        $this->db->from('tb_keranjang');
+        $this->db->join('tb_barang', 'tb_barang.id_brg = tb_keranjang.id_brg');
+        $this->db->where('tb_keranjang.id_user', $id);
+        $query = $this->db->get();
+
+        // Mengonversi hasil query menjadi array
+        $result = $query->result_array();
+
+        // Mengembalikan data dalam bentuk JSON
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
+
     public function load_barang()
     {
         $output = '';
         $keyword = $this->input->post('query');
         $page = $this->input->post('page') ? $this->input->post('page') : 1;
-        $limit = 8;
+        $limit = 6;
         $limit_start = ($page - 1) * $limit;
 
         if ($keyword) {
@@ -49,13 +111,13 @@ class Kasir extends CI_Controller
         foreach ($barang as $key => $value) {
             $gambar = $value['gambar_barang'] == "https://dodolan.jogjakota.go.id/assets/media/default/default-product.png" ? "<img style='\border-radius: 3px;' src='" . $value['gambar_barang'] . "'>" : "<img style='\border-radius: 3px;' src='" . base_url('public/template/upload/barang/' . $value['gambar_barang']) . "'>";
             $output .= '
-                <div class="col-3 d-flex" onclick="simpanData(\'' . $value['id_brg'] . '\')">
+                <div class="col-6 col-md-4 d-flex" onclick="simpanData(\'' . $value['id_brg'] . '\')">
                     <div class="card w-100 mb-2" style="border: 1px solid #ccc; border-radius: 8px; padding: 10px; overflow: hidden; border-radius:0px !important; cursor:pointer">
                         <div class="justify-content-end text-end">
                             ' . $gambar . '
                         </div>
                         <div class="label">' . $value['stock_brg'] . '</div>
-                        <div class="nama-barang" style="margin-top: 5px;font-size:15px;">' . $value['nama_barang'] . '</div>
+                        <div class="nama-barang" style="margin-top: 5px; font-size:13px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">' . $value['nama_barang'] . '</div>
                         <div class="harga-barang">Rp. ' . number_format($value['harga_jual_barang']) . '</div>
                     </div>
                 </div>
@@ -66,14 +128,12 @@ class Kasir extends CI_Controller
         }
 
         $output .= '</div>';
-
-
         $jumlah_page = ceil($total_records / $limit);
         $jumlah_number = 1;
         $start_number = ($page > $jumlah_number) ? $page - $jumlah_number : 1;
         $end_number = ($page < ($jumlah_page - $jumlah_number)) ? $page + $jumlah_number : $jumlah_page;
 
-        $output .= '<nav class="mb-5"><ul class="pagination justify-content-end">';
+        $output .= '<nav class="mb-1"><ul class="pagination justify-content-end">';
 
         if ($page == 1) {
             $output .= '<li class="page-item disabled"><a class="page-link" href="javascript::void">First</a></li>';
@@ -95,6 +155,7 @@ class Kasir extends CI_Controller
         }
 
         $output .= '</ul></nav>';
+
         echo $output;
     }
 
@@ -102,11 +163,20 @@ class Kasir extends CI_Controller
     {
         $id = $this->session->userdata('id_user');
 
-        // Query SQL untuk menghitung total_harga
-        $sql = "SELECT SUM(tb_barang.harga_jual_barang * tb_keranjang.jumlah) as total_harga
-            FROM tb_keranjang
-            JOIN tb_barang ON tb_barang.id_brg = tb_keranjang.id_brg WHERE tb_keranjang.id_user = $id";
+        // Query SQL yang mencakup logika grosir dan promo dari tb_barang
+        $sql = "
+        SELECT SUM(
+            CASE 
+                WHEN tb_barang.grosir_brg = 'On' AND tb_keranjang.jumlah BETWEEN tb_barang.rentang_awal AND tb_barang.rentang_akhir THEN tb_barang.harga_grosir * tb_keranjang.jumlah
+                WHEN tb_barang.promo_brg = 'On' THEN tb_barang.harga_promo * tb_keranjang.jumlah
+                ELSE tb_barang.harga_jual_barang * tb_keranjang.jumlah
+            END
+        ) as total_harga
+        FROM tb_keranjang
+        JOIN tb_barang ON tb_barang.id_brg = tb_keranjang.id_brg 
+        WHERE tb_keranjang.id_user = $id";
 
+        // Total item
         $total_item = $this->db->select('COUNT(*) as total_item')
             ->from('tb_keranjang')
             ->join('tb_barang', 'tb_barang.id_brg = tb_keranjang.id_brg')
@@ -133,9 +203,9 @@ class Kasir extends CI_Controller
 
     public function simpanData()
     {
-        // Mendapatkan data dari permintaan AJAX
+        $this->load->helper('pesanan');
         $id = $this->session->userdata('id_user');
-        $id_pesanan = rand(10000, 10000000);
+        $id_pesanan = generate_nomor_pesanan();
         $id_user = $this->input->post('id');
         $id_kasir = $this->input->post('kasir');
         $tgl = $this->input->post('tgl_pesanan');
@@ -146,12 +216,15 @@ class Kasir extends CI_Controller
         $grand_total = $this->input->post('grand_total');
         $total_bayar = $this->input->post('total_bayar');
         $kembalian = $this->input->post('kembalian');
+        $note = $this->input->post('note');
 
         $data = array(
             'id_pesanan' => $id_pesanan,
             'id_user' => $id_user,
             'id_kasir' => $id_kasir,
             'tgl_pesanan' => $tgl,
+            'keterangan_pesanan' => $note,
+            'tipe_order' => 'OFFLINE',
             'jenis_order' => $jenis,
             'status_pembayaran' => $status_pembayaran,
             'metode_bayar' => $metode,
@@ -172,30 +245,78 @@ class Kasir extends CI_Controller
         $keranjang = $this->M_Crud->all_data('tb_keranjang')->join('tb_barang', 'tb_barang.id_brg = tb_keranjang.id_brg')->where('id_user', $id)->get()->result_array();
 
         foreach ($keranjang as $item) {
+            // Default harga adalah harga jual barang
+            $harga = $item['harga_jual_barang'];
+
+            // Cek apakah grosir_brg aktif
+            if ($item['grosir_brg'] === 'On') {
+                // Ambil rentang jumlah grosir
+                $rentang_awal = $item['rentang_awal'];
+                $rentang_akhir = $item['rentang_akhir'];
+
+                // Cek apakah jumlah berada di dalam rentang grosir
+                if ($item['jumlah'] >= $rentang_awal && $item['jumlah'] <= $rentang_akhir) {
+                    $harga = $item['harga_grosir'];
+                }
+            }
+
+            // Masukkan data pesanan detail
             $data_pesanan_detail = array(
                 'id_pesanan' => $id_pesanan,
                 'id_brg' => $item['id_brg'],
-                'harga_saat_ini' => $item['harga_jual_barang'],
+                'harga_saat_ini' => $harga, // Gunakan harga sesuai logika di atas
                 'jumlah_jual' => $item['jumlah']
             );
             $this->M_Crud->input_data($data_pesanan_detail, 'tb_pesanan_detail');
             $this->M_Crud->hapus_data(['id_keranjang' => $item['id_keranjang']], 'tb_keranjang');
+
+            // INPUT RIWAYAT
+            $riwayat = [
+                'id_brg' => $item['id_brg'],
+                'tgl_riwayat_stock' => date('Y-m-d H:i:s'),
+                'jumlah_riwayat' => $item['jumlah'],
+                'jenis_transaksi' => 'stock_keluar',
+                'stock_sebelum' => $item['stock_brg'],
+                'stock_sesudah' => $item['stock_brg'] - $item['jumlah'],
+                'keterangan_riwayat_stock' => "Pengurangan Melalui Fitur Kasir"
+            ];
+            $this->M_Crud->input_data($riwayat, "tb_riwayat_stock");
 
             // KURANGI STOCK
             $stock = $this->M_Crud->show('tb_barang', ['id_brg' => $item['id_brg']])->row_array();
             $this->M_Crud->update_data(['id_brg' => $item['id_brg']], ['stock_brg' => $stock['stock_brg'] - $item['jumlah']], 'tb_barang');
         }
 
-        echo json_encode(array('pesan' => 'Data berhasil disimpan'));
+        echo json_encode(array('pesan' => 'Data berhasil disimpan', 'last_insert_id' => $id_pesanan));
     }
 
     public function index()
     {
-        $data['anggota'] = $this->M_Crud->all_data('tb_user')->where('level', 'User')->get()->result_array();
-        $data['kasir'] = $this->M_Crud->all_data('tb_kasir')->get()->result_array();
+        $this->load->helper('pesanan');
+        $data['transaction_number'] = generate_nomor_pesanan();
+
+        // Get the session level and check if it's 'Kasir'
+        $session_level = $this->session->userdata('level');
+
+        // Default query to fetch all kasir data
+        $kasir_query = $this->M_Crud->all_data('tb_kasir');
+
+        if ($session_level == 'Kasir') {
+            // If the user is 'Kasir', filter by id_kasir
+            $id_kasir = $this->session->userdata('id_user');
+            $kasir_query = $kasir_query->where('id_kasir', $id_kasir); // Add WHERE condition
+        }
+
+        // Execute the query to fetch kasir data
+        $data['kasir'] = $kasir_query->get()->result_array();
+
+        // Fetch all barang data as usual (no filtering needed here)
         $data['barang'] = $this->M_Crud->all_data('tb_barang')->get()->result_array();
+
+        // Load the view with the data
         $this->load->view('level/admin/cashier', $data);
     }
+
 
     public function getNamaKasirById($id_kasir)
     {
@@ -214,11 +335,12 @@ class Kasir extends CI_Controller
     public function keranjang()
     {
         $id = $this->input->post('id');
+        $user = $this->session->userdata('id_user');
         $stok = $this->M_Crud->show('tb_barang', ['id_brg' => $id])->row_array();
 
         // Memeriksa apakah stok cukup untuk menambahkan ke keranjang
         if ($stok['stock_brg'] >= 1) {
-            $cek = $this->M_Crud->all_data('tb_keranjang')->where('id_brg', $id)->get()->row_array();
+            $cek = $this->M_Crud->all_data('tb_keranjang')->where('id_brg', $id)->where('id_user', $user)->get()->row_array();
 
             if (!empty($cek)) {
                 if (($cek['jumlah'] + 1) > $stok['stock_brg']) {
@@ -304,7 +426,29 @@ class Kasir extends CI_Controller
 
         $nomor_urut = $start + 1;
         $new_data = array();
+
         foreach ($data as $row) {
+            // Ambil detail barang dari tb_barang
+            $barang = $this->db->get_where('tb_barang', ['id_brg' => $row->id_brg])->row();
+
+            if ($barang) {
+                // Logika untuk menentukan harga
+                if ($barang->grosir_brg == "On") {
+                    // Cek apakah jumlah berada dalam rentang grosir
+                    if ($row->jumlah >= $barang->rentang_awal && $row->jumlah <= $barang->rentang_akhir) {
+                        $harga = $barang->harga_grosir;
+                    } else {
+                        $harga = $barang->harga_jual_barang;
+                    }
+                } else {
+                    // Jika bukan grosir, gunakan harga promo atau harga jual
+                    $harga = ($row->promo_brg == "On") ? $row->harga_promo : $barang->harga_jual_barang;
+                }
+            } else {
+                // Jika barang tidak ditemukan, gunakan default harga
+                $harga = 0;
+            }
+
             $row->product = '
             <div class="row">
                 <div class="col-auto">
@@ -312,15 +456,15 @@ class Kasir extends CI_Controller
                 </div>
                 <div class="col">
                     <div class="font-weight-medium"><b>' . $row->nama_barang . '</b></div>
-                    <div class="text-secondary">Rp. ' . number_format($row->harga_jual_barang) . ' | Rp. ' . number_format($row->harga_jual_barang * $row->jumlah) . '</div>
+                    <div class="text-secondary">Rp. ' . number_format($harga) . ' | Rp. ' . number_format($harga * $row->jumlah) . '</div>
                 </div>
             </div>
-            ';
+        ';
             $row->action = '
-                <a href="javascript:void(0);" onclick="hapusItem(' . $row->id_keranjang . ');">
-                    <i class="fa fa-times"></i>
-                </a>
-            ';
+            <a href="javascript:void(0);" onclick="hapusItem(' . $row->id_keranjang . ');">
+                <i class="fa fa-times"></i>
+            </a>
+        ';
             $new_data[] = $row;
             $nomor_urut++;
         }
@@ -387,7 +531,5 @@ class Kasir extends CI_Controller
             ->set_output($json_data);
     }
 
-    public function hapus_semua()
-    {
-    }
+    public function hapus_semua() {}
 }

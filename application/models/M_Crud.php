@@ -7,6 +7,12 @@ class M_Crud extends CI_model
         return $this->db->select('*')->from($table)->count_all_results();
     }
 
+    public function count_rows($table, $where = array())
+    {
+        $this->db->where($where);
+        return $this->db->count_all_results($table);
+    }
+
     public function show($table, $where)
     {
         return $this->db->where($where)->get($table);
@@ -49,5 +55,10 @@ class M_Crud extends CI_model
         $id_pesanan = $tanggal . $waktu . $angka_acak;
 
         return $id_pesanan;
+    }
+
+    public function get_where($table, $where = array())
+    {
+        return $this->db->get_where($table, $where)->row_array(); // Mengambil satu baris data sebagai array
     }
 }

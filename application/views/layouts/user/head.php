@@ -11,8 +11,6 @@
    <link rel="canonical" href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/" />
    <!-- Favicon -->
    <link rel="icon" type="image/x-icon" href="<?= base_url('') ?>public/template/img/favicon/favicon.ico" />
-   <!-- Fonts -->
-   <link rel="stylesheet" href="<?= base_url() ?>public/template/libs/sweetalert2/sweetalert2.css" />
    <link rel="manifest" href="<?= base_url() ?>public/manifest.json">
    <link href="<?= base_url() ?>public/template/css/tabler.min.css?1692870487" rel="stylesheet" />
    <link href="<?= base_url() ?>public/template/css/tabler-flags.min.css?1692870487" rel="stylesheet" />
@@ -92,6 +90,8 @@
       .footer-nav__link._active {
          color: #2F5596;
          position: relative;
+         font-weight: bold;
+         font-size: 16px;
       }
 
       a:focus,

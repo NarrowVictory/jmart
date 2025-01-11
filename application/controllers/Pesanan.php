@@ -81,29 +81,7 @@ class Pesanan extends CI_Controller
 		$data['dikemas'] = $this->db->select('*')->from('tb_pesanan')->where('jenis_order', 'dianterin')->where('status_pesanan', 'dikemas')->get()->num_rows();
 		$data['misi'] = $this->db->select('*')->from('tb_pesanan')->where('jenis_order', 'dianterin')->where('status_pesanan', 'dikirimkan')->get()->num_rows();
 		$data['selesai'] = $this->db->select('*')->from('tb_pesanan')->where('jenis_order', 'dianterin')->where('status_pesanan', 'selesai')->get()->num_rows();
-
-
-		// PAGINATION
-		$config = array();
-		$config["base_url"] = base_url() . "pesanan/user";
-		$config["total_rows"] = $this->M_Pagination->hitung_data('tb_pesanan');
-		$config["per_page"] = 5;
-		$config["uri_segment"] = 3;
-
-		$config["full_tag_open"] = '<ul class="pagination">';
-		$config["full_tag_close"] = '</ul>';
-		$config["num_tag_open"] = '<li class="page-item">';
-		$config["num_tag_close"] = '</li>';
-		$config['cur_tag_open'] = '<li class="page-item active"><a class="page-link" href="#">';
-		$config['cur_tag_close'] = '</a></li>';
-		$config['next_link'] = 'Next &raquo;';
-		$config['prev_link'] = '&laquo; Previous';
-		$this->pagination->initialize($config);
-		$page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
-		$data["pesanan"] = $this->M_Pagination->ambil_data($config["per_page"], $page, 'tb_pesanan');
-		$data["links"] = $this->pagination->create_links();
-		$data['starts'] = $page;
-		$data['ends'] = $config["per_page"];
+		$data["pesanan"] = $this->M_Crud->all_data(['tb_pesanan'])->join('tb_user', 'tb_pesanan.id_user = tb_user.id_user')->where('status_pesanan', 'selesai')->where('jenis_order', 'dianterin')->get()->result();
 		$this->load->view('level/kurir/pesanan', $data);
 	}
 
@@ -114,8 +92,51 @@ class Pesanan extends CI_Controller
 		$data['count_dikemas'] = $this->M_Crud->all_data('tb_pesanan')->where('id_user', $id)->where('status_pesanan', 'Dikemas')->get()->num_rows();
 		$data['count_dikirim'] = $this->M_Crud->all_data('tb_pesanan')->where('id_user', $id)->where('status_pesanan', 'Dikirim')->get()->num_rows();
 		$data['count_selesai'] = $this->M_Crud->all_data('tb_pesanan')->where('id_user', $id)->where('status_pesanan', 'Selesai')->get()->num_rows();
+		$data['count_autodebit'] = $this->M_Crud->all_data('tb_pesanan')->where('id_user', $id)->where('metode_bayar', 'autodebet')->get()->num_rows();
 		$data['count_bulan_ini'] = $this->M_Crud->all_data('tb_pesanan')->where('id_user', $id)->where('MONTH(tgl_pesanan)', date('m'))->get()->num_rows();
+
+		$data['rupiah_bulan_ini'] = $this->db->select_sum('grand_total', 'total_grand_total')->from('tb_pesanan')->where('MONTH(tgl_pesanan)', date('m'))->where('id_user', $id)->get()->row();
+		$data['rupiah_semua'] = $this->db->select_sum('grand_total', 'total_grand_total')->from('tb_pesanan')->where('id_user', $id)->get()->row();
+
 		$data['pesanan'] = $this->M_Crud->all_data('tb_pesanan')->where('id_user', $id)->get()->result_array();
+		$autodebit = $this->db
+			->select_sum('grand_total', 'total_grand_total')
+			->from('tb_pesanan')
+			->where('metode_bayar', 'autodebet')
+			->where('status_pembayaran', 'Menunggu Pembayaran')
+			->where('id_user', $id)
+			->get();
+		$autodebit_bulan_ini = $this->db
+			->select_sum('grand_total', 'total_grand_total')
+			->from('tb_pesanan')
+			->where('metode_bayar', 'autodebet')
+			->where('status_pembayaran', 'Menunggu Pembayaran')
+			->where('id_user', $id)
+			->where('tgl_pesanan >=', date('Y-m-16', strtotime('last month')))
+			->where('tgl_pesanan <=', date('Y-m-15'))
+			->get();
+
+		$data['autodebit'] = $autodebit->row()->total_grand_total ?? 0;
+		$data['autodebit_bulan_ini'] = ($autodebit_bulan_ini->num_rows() > 0) ? $autodebit_bulan_ini->row()->total_grand_total : 0;
+
+
+		if ($this->input->get('tahun') == null) {
+			$tahun = date('Y');
+		} else {
+			$tahun = $this->input->get('tahun');
+		}
+
+		$query = $this->db->query("SELECT MONTH(tgl_pesanan) as bulan, SUM(grand_total) as total_penjualan FROM tb_pesanan WHERE id_user = ? AND YEAR(tgl_pesanan) = ? GROUP BY MONTH(tgl_pesanan)", array($this->session->userdata('id_user'), $tahun));
+		$result = $query->result();
+
+		// Inisialisasi array untuk menyimpan data penjualan per bulan
+		$data['penjualan'] = array_fill(0, 12, 0);
+
+		// Memasukkan hasil query ke dalam array penjualan
+		foreach ($result as $row) {
+			$data['penjualan'][$row->bulan - 1] = $row->total_penjualan;
+		}
+
 		$this->load->view('level/user/menu_pesanan', $data);
 	}
 
@@ -185,6 +206,7 @@ class Pesanan extends CI_Controller
 
 		$total = $this->input->post('total');
 		$ongkos = $this->input->post('ongkos');
+		$keterangan = $this->input->post('keterangan');
 
 		// Remove non-numeric characters
 		$totalNumeric = preg_replace("/[^0-9]/", "", $total);
@@ -199,6 +221,8 @@ class Pesanan extends CI_Controller
 			'id_user' => $id,
 			'tgl_pesanan' => date('Y-m-d H:i:s'),
 			'atas_nama' => $nama['nama_member'],
+			'keterangan_pesanan' => $keterangan,
+			'tipe_order' => 'ONLINE',
 			'jenis_order' => $this->input->post('jenis'),
 			'status_pembayaran' => "Menunggu Pembayaran",
 			'metode_bayar' => $this->input->post('metode'),
@@ -217,13 +241,29 @@ class Pesanan extends CI_Controller
 			$keranjangData = $this->input->post('keranjang');
 
 			foreach ($keranjangData as $item) {
+				// Logika harga grosir
+				if ($item['grosir_brg'] == "On" && $item['jumlah'] >= $item['rentang_awal'] && $item['jumlah'] <= $item['rentang_akhir']) {
+					$harga = $item['harga_grosir'];
+				} else {
+					// Logika harga promo atau harga jual biasa
+					$harga = $item['promo_brg'] == "On" ? $item['harga_promo'] : $item['harga_jual_barang'];
+				}
+
+				$hasSerial = $item['barcode'];
+
+				// Data untuk dimasukkan ke tabel tb_pesanan_detail
 				$data_pesanan_detail = array(
 					'id_pesanan' => $id_pesanan,
 					'id_brg' => $item['id_brg'],
-					'harga_saat_ini' => $item['harga_promo'],
-					'jumlah_jual' => $item['jumlah']
+					'harga_saat_ini' => $harga,
+					'jumlah_jual' => $item['jumlah'],
+					'status_verified' => (empty($hasSerial) || $hasSerial == "NO DATA") ? "1" : "0"
 				);
+
+				// Input data ke tabel tb_pesanan_detail
 				$this->M_Crud->input_data($data_pesanan_detail, 'tb_pesanan_detail');
+
+				// Hapus data dari tabel tb_keranjang
 				$this->M_Crud->hapus_data(['id_keranjang' => $item['id_keranjang']], 'tb_keranjang');
 			}
 
@@ -233,6 +273,24 @@ class Pesanan extends CI_Controller
 				'updated_at' => date('Y-m-d H:i:s'),
 				'updated_by' => $id
 			]);
+
+			$options = array(
+				'cluster' => 'ap1',
+				'useTLS' => true
+			);
+
+			// Inisialisasi objek Pusher
+			$pusher = new Pusher\Pusher(
+				'fe22024f3d888f7e4ae0',
+				'f7967965f26b5b0760db',
+				'1732080',
+				$options
+			);
+
+			$data['user'] = $this->M_Crud->all_data('tb_pesanan')->join('tb_user', 'tb_user.id_user = tb_pesanan.id_user')->where(['id_pesanan' => $id_pesanan])->get()->row_array();
+			$data['pesanan'] = $this->M_Crud->all_data('tb_pesanan_detail')->join('tb_barang', 'tb_barang.id_brg = tb_pesanan_detail.id_brg')->where(['id_pesanan' => $id_pesanan])->get()->result_array();
+
+			$pusher->trigger('my-channel', 'my-event', $data);
 
 			$response = array(
 				'success' => true,

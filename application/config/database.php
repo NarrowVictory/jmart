@@ -75,10 +75,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost:3307',
-	'username' => 'root',
-	'password' => '',
-	'database' => 'jmart',
+	'hostname' => 'localhost',
+	'username' => 'hexifymy_jmart',
+	'password' => '.)fgAr3+tH~g',
+	'database' => 'hexifymy_jmart',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

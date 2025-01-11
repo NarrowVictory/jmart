@@ -38,6 +38,23 @@
           <div class="card card-md">
             <form id="form-reset" class="card card-md" method="POST" autocomplete="off">
               <div class="card-body">
+                <?php
+                if ($this->session->flashdata('error') != '') {
+                  echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
+                  echo $this->session->flashdata('error');
+                  echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                  echo '</div>';
+                }
+                ?>
+
+                <?php
+                if ($this->session->flashdata('success_register') != '') {
+                  echo '<div class="alert alert-info alert-dismissible fade show" role="alert">';
+                  echo $this->session->flashdata('success_register');
+                  echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                  echo '</div>';
+                }
+                ?>
                 <h2 class="card-title text-center mb-4">Forgot password</h2>
                 <p class="text-secondary mb-4">Masukkan Email Anda, Kami akan mengirimkan link reset password ke Email Anda.</p>
                 <div class="mb-3">
@@ -51,7 +68,7 @@
                       <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"></path>
                       <path d="M3 7l9 6l9 -6"></path>
                     </svg>
-                    Send me new password
+                    Kirimkan Saya Link Reset Password
                   </button>
                 </div>
               </div>

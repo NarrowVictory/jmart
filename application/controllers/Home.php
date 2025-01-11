@@ -13,9 +13,78 @@ class Home extends CI_Controller
 		$this->auth->cek_login();
 	}
 
+	public function pusher()
+	{
+		$this->load->view('sample/pusher');
+	}
+
+	public function report()
+	{
+		$data['penjualan'] = $this->M_Crud->all_data('tb_pesanan')->join('tb_user', 'tb_user.id_user = tb_pesanan.id_user')->order_by('tgl_pesanan', 'DESC')->get()->result();
+		$this->load->view('report/omset_penjualan', $data);
+	}
+
+	public function send_pusher_event()
+	{
+		$options = array(
+			'cluster' => 'ap1',
+			'useTLS' => true
+		);
+
+		// Inisialisasi objek Pusher
+		$pusher = new Pusher\Pusher(
+			'fe22024f3d888f7e4ae0',
+			'f7967965f26b5b0760db',
+			'1732080',
+			$options
+		);
+
+		$id = 4171884;
+		$data['user'] = $this->M_Crud->all_data('tb_pesanan')->join('tb_user', 'tb_user.id_user = tb_pesanan.id_user')->where(['id_pesanan' => $id])->get()->row_array();
+		$data['pesanan'] = $this->M_Crud->all_data('tb_pesanan_detail')->join('tb_barang', 'tb_barang.id_brg = tb_pesanan_detail.id_brg')->where(['id_pesanan' => $id])->get()->result_array();
+
+		// Trigger event ke channel 'my-channel' dengan nama event 'my-event'
+		$pusher->trigger('my-channel', 'my-event', $data);
+
+		// Tambahkan log atau tanggapan sesuai kebutuhan
+
+		echo "Pusher event terkirim!";
+	}
+
+	public function count_pending()
+	{
+		$pending = $this->M_Crud->all_data('tb_pesanan')->where('status_pesanan', 'Pending')->count_all_results();
+		echo json_encode(['pendingOrders' => $pending]);
+	}
+
+	public function started()
+	{
+		$this->load->view('sample/started');
+	}
+
+	public function login()
+	{
+		$this->load->view('sample/login');
+	}
+
+	public function register()
+	{
+		$this->load->view('sample/register');
+	}
+
 	public function index()
 	{
 		if ($this->session->userdata('level') == "User") {
+			$waktu_sekarang = date('H:i:s');
+
+			if ($waktu_sekarang < '10:00:00') {
+				$data['now'] = 'Selamat Pagi';
+			} elseif ($waktu_sekarang < '15:00:00') {
+				$data['now'] = 'Selamat Siang';
+			} else {
+				$data['now'] = 'Selamat Malam';
+			}
+
 			$data['barang'] = $this->M_Crud->all_data('tb_barang')->join('tb_kategori', 'tb_kategori.id_kategori_brg = tb_barang.id_kategori_brg')->where('promo_brg', 'On')->get()->result_array();
 			$data['kategori'] = $this->M_Crud->all_data('tb_kategori')->limit(5)->get()->result_array();
 			$data['kategori1'] = $this->M_Crud->all_data('tb_kategori')->get()->result_array();
@@ -32,61 +101,74 @@ class Home extends CI_Controller
 			} else {
 				$this->load->view('level/user/index', $data);
 			}
-		} else if ($this->session->userdata('level') == "Administrator") {
+		} else if ($this->session->userdata('level') == "Administrator" || $this->session->userdata('level') == "Kasir") {
 			$data['total_transaksi'] = $this->M_Crud->all_data('tb_pesanan')->where('status_pesanan', 'Selesai')->where('DATE(tgl_pesanan)', date('Y-m-d'))->get()->num_rows();
 			$data['ttl_harga'] = $this->db->select_sum('grand_total')->from('tb_pesanan')->where('status_pesanan', 'Selesai')->where('DATE(tgl_pesanan)', date('Y-m-d'))->get()->row()->grand_total;
 			$data['total_harga_kemarin'] = $this->db->select_sum('grand_total')->from('tb_pesanan')->where('status_pesanan', 'Selesai')->where('DATE(tgl_pesanan)', date('Y-m-d', strtotime('-1 day')))->get()->row()->grand_total;
 			$data['total_barang'] = $this->M_Crud->count('tb_barang');
 
-			// MENDAPATKAN TANGGAL 7 HARI TERAKHIR
-			$tanggal_7_hari_lalu = date('Y-m-d', strtotime('-7 days'));
+			// CHART KE-1
+			$currentMonth = date('m');
+			$currentYear = date('Y');
+			$daysInMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear);
+			$dates = [];
+			for ($day = 1; $day <= $daysInMonth; $day++) {
+				// Format the date as 'd M'
+				$formattedDate = date('d M', mktime(0, 0, 0, $currentMonth, $day, $currentYear));
 
-			$this->db
-				->select('tgl_pesanan, SUM(grand_total) as total_harga')
-				->from('tb_pesanan')
-				// ->where('status_pesanan', 'Selesai')
-				// ->where('tgl_pesanan >=', $tanggal_7_hari_lalu)
-				// ->where('tgl_pesanan <=', date('Y-m-d'))
-				->group_by('DATE(tgl_pesanan)')
-				->order_by('tgl_pesanan', 'ASC');
+				// Add the formatted date to the array
+				$dates[] = $formattedDate;
+
+				// Format the date for filtering in the database query as 'Y-m-d'
+				$filterDate = date('Y-m-d', mktime(0, 0, 0, $currentMonth, $day, $currentYear));
+
+				// Query to get the count and sum of grand_total for the specific date
+				$this->db->select("COUNT(*) AS order_count, SUM(grand_total) AS total_amount");
+				$this->db->from("tb_pesanan");
+				$this->db->where("DATE(tgl_pesanan) =", $filterDate);
+				$query = $this->db->get();
+
+				// Fetch the result
+				$result = $query->row();
+
+				// Update the orderCounts and totalAmounts arrays
+				$orderCounts[$day - 1] = $result ? $result->order_count : 0;
+				$totalAmounts[$day - 1] = $result ? $result->total_amount : 0;
+			}
+			$data['dates'] = $dates;
+			$data['orderCounts'] = $orderCounts;
+			$data['totalAmounts'] = $totalAmounts;
+			// END CHART KE-1
+
+
+			// CHART KE-2
+			$this->db->select('tb_barang.id_kategori_brg,tb_kategori.nama_kategori_brg, COUNT(tb_pesanan_detail.id_pesanan) as order_count');
+			$this->db->from('tb_barang');
+			$this->db->join('tb_pesanan_detail', 'tb_pesanan_detail.id_brg = tb_barang.id_brg');
+			$this->db->join('tb_kategori', 'tb_kategori.id_kategori_brg = tb_barang.id_kategori_brg');
+			$this->db->group_by('tb_barang.id_kategori_brg');
 
 			$query = $this->db->get();
-			$result = $query->result_array();
+			$data['orders_by_category'] = $query->result();
+			// END CHART KE-2
 
-			// Menginisialisasi array untuk label tanggal dan data total harga
-			$labels = array();
-			$data_total_harga = array();
-			$jumlah = array();
+			// CHART KE-3
+			$this->db->select('tb_kasir.id_kasir, tb_kasir.nama_kasir, COUNT(tb_pesanan.id_pesanan) as total_penjualan');
+			$this->db->from('tb_kasir');
+			$this->db->join('tb_pesanan', 'tb_pesanan.id_kasir = tb_kasir.id_kasir', 'left');
+			$this->db->group_by('tb_kasir.id_kasir');
+			$query = $this->db->get();
+			$data['order_by_cashier'] = $query->result_array();
+			// END CHART KE-3
 
-			$p_jumlah = 0;
-			$p_total = 0;
-
-			// Mengisi array label dan data total harga
-			foreach ($result as $row) {
-				$labels[] = date('d-m-Y', strtotime($row['tgl_pesanan']));
-				$data_total_harga[] = $row['total_harga'];
-				$temp = $this->db->select('*')->from('tb_pesanan')->where("DATE(tgl_pesanan) = '" . date('Y-m-d', strtotime($row['tgl_pesanan'])) . "'")->get()->num_rows();
-				$jumlah[] = $temp;
-
-				$p_total = $p_total + $row['total_harga'];
-				$p_jumlah = $p_jumlah + $temp;
-			}
-
-			// Mengirim data ke tampilan
-			$data['labels'] = json_encode($labels);
-			$data['total_harga'] = json_encode($data_total_harga);
-			$data['jumlah_transaksi'] = json_encode($jumlah);
-
-			$data['total'] = $p_total;
-			$data['jumlah'] = $p_jumlah;
-
-			// MENDAPATKAN PRODUK TERLARIS
+			// PRODUK TERLARIS
 			$this->db->select('tb_pesanan_detail.id_brg, 
                     COUNT(tb_pesanan_detail.id_brg) as jumlah_penjualan, 
                     SUM(tb_pesanan_detail.jumlah_jual) as total_terjual, 
                     tb_barang.nama_barang, 
                     tb_barang.gambar_barang, 
-                    tb_satuan.nama_satuan');
+                    tb_satuan.nama_satuan,
+					tb_barang.barcode');
 			$this->db->from('tb_pesanan_detail');
 			$this->db->join('tb_barang', 'tb_pesanan_detail.id_brg = tb_barang.id_brg', 'left');
 			$this->db->join('tb_satuan', 'tb_barang.id_satuan = tb_satuan.id_satuan', 'left');
@@ -96,12 +178,129 @@ class Home extends CI_Controller
 
 			$pl = $this->db->get();
 			$data['produk_terlaris'] = $pl->result_array();
+			// END PRODUK TERLARIS
+
+
+			// PRODUK TERLARIS BULAN INI
+			$this->db->select('tb_pesanan_detail.id_brg, 
+                    COUNT(tb_pesanan_detail.id_brg) as jumlah_penjualan, 
+                    SUM(tb_pesanan_detail.jumlah_jual) as total_terjual, 
+                    tb_pesanan.tgl_pesanan, 
+                    tb_barang.nama_barang, 
+                    tb_barang.gambar_barang, 
+                    tb_satuan.nama_satuan,
+                    tb_barang.barcode');
+			$this->db->from('tb_pesanan_detail');
+			$this->db->join('tb_pesanan', 'tb_pesanan.id_pesanan = tb_pesanan_detail.id_pesanan', 'left');
+			$this->db->join('tb_barang', 'tb_pesanan_detail.id_brg = tb_barang.id_brg', 'left');
+			$this->db->join('tb_satuan', 'tb_barang.id_satuan = tb_satuan.id_satuan', 'left');
+			$this->db->where("DATE_FORMAT(tb_pesanan.tgl_pesanan, '%Y-%m') = '" . date('Y-m') . "'");
+			$this->db->group_by('tb_pesanan_detail.id_brg, tb_pesanan.tgl_pesanan, tb_barang.nama_barang, tb_barang.gambar_barang, tb_satuan.nama_satuan, tb_barang.barcode');
+			$this->db->order_by('total_terjual', 'DESC');
+			$this->db->limit(5);
+
+			$pl = $this->db->get();
+			$data['produk_terlaris_b'] = $pl->result_array();
+			// END PRODUK TERLARIS BULAN INI
+
+
+			// CHART KE-4
+			$this->db->select('jenis_order, COUNT(*) as jumlah');
+			$this->db->from('tb_pesanan');
+			$this->db->group_by('jenis_order');
+			$query = $this->db->get();
+			$data['jenis_order'] = $query->result();
+
+			$jenisOrderChart = [
+				'labels' => [],
+				'series' => [],
+			];
+
+			foreach ($data['jenis_order'] as $row) {
+				$label = str_replace(['_', '-'], ' ', $row->jenis_order);
+				$jenisOrderChart['labels'][] = ucwords($label);
+				$jenisOrderChart['series'][] = intval($row->jumlah);
+			}
+
+			$data['jenis_order_chart'] = $jenisOrderChart;
+			// END CHART KE-4
+
+			// CHART KE-5
+			$this->db->select('status_pesanan, COUNT(*) as jumlah');
+			$this->db->from('tb_pesanan');
+			$this->db->group_by('status_pesanan');
+			$query = $this->db->get();
+			$data['status_pesanan'] = $query->result();
+
+			$statusPesanan = [
+				'labels' => [],
+				'series' => [],
+			];
+
+			foreach ($data['status_pesanan'] as $row) {
+				$statusPesanan['labels'][] = $row->status_pesanan;
+				$statusPesanan['series'][] = intval($row->jumlah);
+			}
+
+			$data['status_pesanan_chart'] = $statusPesanan;
+			// END CHART KE-5
+
+			// CHART KE-6
+			$this->db->select('metode_bayar, COUNT(*) as jumlah');
+			$this->db->from('tb_pesanan');
+			$this->db->group_by('metode_bayar');
+			$query = $this->db->get();
+			$data['metode_bayar'] = $query->result();
+
+			$metodeBayar = [
+				'labels' => [],
+				'series' => [],
+			];
+
+			foreach ($data['metode_bayar'] as $row) {
+				$metodeBayar['labels'][] = ucwords($row->metode_bayar);
+				$metodeBayar['series'][] = intval($row->jumlah);
+			}
+
+			$data['metode_bayar_chart'] = $metodeBayar;
+			// END CHART KE-6
+
+			// CHART KE-7
+			$this->db->select('status_pembayaran, COUNT(*) as jumlah');
+			$this->db->from('tb_pesanan');
+			$this->db->group_by('status_pembayaran');
+			$query = $this->db->get();
+			$data['status_pembayaran'] = $query->result();
+
+			$statusBayar = [
+				'labels' => [],
+				'series' => [],
+			];
+
+			foreach ($data['status_pembayaran'] as $row) {
+				$statusBayar['labels'][] = ucwords($row->status_pembayaran);
+				$statusBayar['series'][] = intval($row->jumlah);
+			}
+
+			$data['status_pembayaran_chart'] = $statusBayar;
+			// END CHART KE-7
+
+			// 4 CHART AWAL
+			$data['monthSekarang'] = date('F Y');
+			$data['monthLalu'] = date('F Y', strtotime('-1 month'));
+
+			$data['penjualan'] = $this->db->select('SUM(CASE WHEN MONTH(tgl_pesanan) = MONTH(CURDATE()) AND YEAR(tgl_pesanan) = YEAR(CURDATE()) THEN 1 ELSE 0 END) as total_bulan_ini, SUM(CASE WHEN MONTH(tgl_pesanan) = MONTH(CURDATE() - INTERVAL 1 MONTH) AND YEAR(tgl_pesanan) = YEAR(CURDATE() - INTERVAL 1 MONTH) THEN 1 ELSE 0 END) as total_bulan_lalu, COUNT(*) as total_semua')->from('tb_pesanan')->get()->row();
+
+			$data['rp'] = $this->db->select('SUM(CASE WHEN MONTH(tgl_pesanan) = MONTH(CURDATE()) AND YEAR(tgl_pesanan) = YEAR(CURDATE()) THEN grand_total ELSE 0 END) as total_bulan_ini, SUM(CASE WHEN MONTH(tgl_pesanan) = MONTH(CURDATE() - INTERVAL 1 MONTH) AND YEAR(tgl_pesanan) = YEAR(CURDATE() - INTERVAL 1 MONTH) THEN grand_total ELSE 0 END) as total_bulan_lalu, SUM(grand_total) as total_semua')->from('tb_pesanan')->get()->row();
+
+			$data['rp_lunas'] = $this->db->select('SUM(CASE WHEN MONTH(tgl_pesanan) = MONTH(CURDATE()) AND YEAR(tgl_pesanan) = YEAR(CURDATE()) THEN grand_total ELSE 0 END) as total_bulan_ini, SUM(CASE WHEN MONTH(tgl_pesanan) = MONTH(CURDATE() - INTERVAL 1 MONTH) AND YEAR(tgl_pesanan) = YEAR(CURDATE() - INTERVAL 1 MONTH) THEN grand_total ELSE 0 END) as total_bulan_lalu, SUM(grand_total) as total_semua')->from('tb_pesanan')->where('status_pembayaran', 'Lunas')->get()->row();
+
+			$data['autodebit'] = $this->db->select('SUM(CASE WHEN MONTH(tgl_pesanan) = MONTH(CURDATE()) AND YEAR(tgl_pesanan) = YEAR(CURDATE()) THEN grand_total ELSE 0 END) as total_bulan_ini, SUM(CASE WHEN MONTH(tgl_pesanan) = MONTH(CURDATE() - INTERVAL 1 MONTH) AND YEAR(tgl_pesanan) = YEAR(CURDATE() - INTERVAL 1 MONTH) THEN grand_total ELSE 0 END) as total_bulan_lalu, SUM(grand_total) as total_semua')->from('tb_pesanan')->where('metode_bayar', 'autodebet')->where('status_pembayaran', 'Menunggu Pembayaran')->get()->row();
+
+
+			// END
 
 			$this->load->view('level/admin/index', $data);
-		} else if ($this->session->userdata('level') == "Super Administrator") {
-			$data['barang'] = $this->M_Crud->all_data('tb_barang')->where('promo_brg', 'On')->get()->result_array();
-			$data['kategori'] = $this->M_Crud->all_data('tb_kategori')->get()->result_array();
-			$this->load->view('level/user/index', $data);
 		} else if ($this->session->userdata('level') == "Kurir") {
 			$current_date = date('Y-m-d');
 			for ($i = 0; $i < 7; $i++) { // Ubah batasan loop menjadi 7
@@ -159,52 +358,42 @@ class Home extends CI_Controller
 			->get()
 			->result_array();
 
-		$output = '<div class="item-list table"><ul class="mb-3">';
+		$output = '<div class="row">';
 		foreach ($barang as $key => $value) {
 			$output .= '
-                 <li class="bg-white">
-                 <div class="item-content">
-                     <div class="item-inner">
-                         <div class="item-title-row">
-                             <h6 style="font-size: 1rem;" class="item-title"><a href="'.base_url('home/barang/'.$value['id_brg']).'">' . $value['nama_barang'] . '</a></h6>
-                             <div class="item-subtitle">' . $value['nama_kategori_brg'] . '</div>
-                         </div>
-                         <div class="item-footer">
-                             <div class="d-flex align-items-center">
-                                 <h6 class="me-3">Rp. ' . number_format($value['harga_jual_barang']) . '</h6>
-                                 <del class="off-text">
-                                     <h5>Normal</h5>
-                                 </del>
-                             </div>
-                             <div class="d-flex align-items-center">
-                                 <i class="fa fa-star"></i>
-                                 <h6>4.5</h6>
-                             </div>
-                         </div>
-                     </div>
-                     <div class="item-media media media-90">
-                         <img src="' . $value['gambar_barang'] . '" alt="logo">
-                         <a style="background-color: #DFE8E3;border-radius: 100%;width: 45px;height: 45px;display: -webkit-box;display: -ms-flexbox;display: flex;-webkit-box-pack: center;-ms-flex-pack: center;justify-content: center;-webkit-box-align: center;-ms-flex-align: center;align-items: center;" href="javascript:void(0);" class="item-bookmark icon-2" onclick="showAlert(\''.$value['id_brg'].'\')">
-						    <i class="fa fa-shopping-cart fw-bold text-danger"></i>
-						</a>
-                     </div>
-                 </div>
-             </li>
-            ';
+        <div class="col-6 col-lg-6 col-md-6 col-sm-6 d-flex">
+            <div class="card w-100 my-2 shadow-2-strong">
+                <img src="' . base_url('public/template/upload/barang/' . $value['gambar_barang']) . '" class="card-img-top mt-3" style="height:120px;width:auto;object-fit:contain;">
+                <div class="card-body d-flex flex-column">
+                    <p class="card-text mb-0 fs-5 ellipsis" style="font-weight: 400;">' . $value['nama_barang'] . '</p>';
+
+			if ($value['promo_brg'] == 'On') {
+				$output .= '<h4 class="fw-bold mb-1 me-1">RP. ' . number_format($value['harga_promo']) . '</h4>
+                    <div class="d-flex mb-0">
+                        <p class="fs-5 mb-1"><span class="badge bg-danger text-white me-2">' . number_format(($value['harga_jual_barang'] - $value['harga_promo']) / $value['harga_jual_barang'] * 100, 2) . '%</span></p>
+                        <p class="fs-5 text-muted mb-1"><del>Rp. ' . number_format($value['harga_jual_barang']) . '</del></p>
+                    </div>';
+			} else {
+				$output .= '<h4 class="fw-bold mb-1 me-1">RP. ' . number_format($value['harga_jual_barang']) . '</h4>';
+			}
+
+			$query = $this->db->query("SELECT COUNT(*) as jumlah_jual FROM tb_pesanan_detail WHERE id_brg = ?", $value['id_brg']);
+			$result = $query->row();
+			$jumlah_jual = $result->jumlah_jual;
+
+			$output .= '
+                    <p class="mb-2 fs-5 text-dark" style="font-weight: 500;">
+                        ' . number_format($jumlah_jual) . ' Terjual
+                    </p>
+                    <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
+                        <a onclick="showAlert(\'' . $value['id_brg'] . '\')" href="javascript:void(0)" class="btn btn-primary shadow-0 me-1 add_keranjang">+ Keranjang</a>
+                    </div>
+                </div>
+            </div>
+        </div>';
 		}
 
-		if (empty($barang)) {
-			exit;
-			echo "<div class=\"empty\">
-                 <div class=\"empty-header\">404</div>
-                 <p class=\"empty-title\">Oops… Barang Tidak Ditemukan</p>
-                 <p class=\"empty-subtitle text-secondary\">
-                     We are sorry but the page you are looking for was not found
-                 </p>
-             </div>";
-		}
-
-		$output .= '</ul></div>';
+		$output .= '</div>';
 
 		echo $output;
 	}
@@ -222,8 +411,42 @@ class Home extends CI_Controller
 	{
 		$cek = $this->M_Crud->show('tb_kategori', ['id_kategori_brg' => $id])->row_array();
 		$data['barang'] = $this->M_Crud->all_data('tb_barang')->join('tb_kategori', 'tb_kategori.id_kategori_brg = tb_barang.id_kategori_brg')->where('tb_barang.id_kategori_brg', $id)->get()->result_array();
+		$data['id'] = $id;
 		$data['header'] = $cek['nama_kategori_brg'];
 		$this->load->view('level/user/index_kategori', $data);
+	}
+
+	public function load_kategori()
+	{
+		$id = $this->input->get('id');
+		$page = $this->input->get('page') ? $this->input->get('page') : 1;
+		$limit = 10; // Jumlah barang per halaman
+
+		// Menghitung offset berdasarkan halaman yang diminta
+		$offset = ($page - 1) * $limit;
+
+		// Memuat data barang dari model (sesuaikan dengan struktur tabel Anda)
+		$barang = $this->M_Crud->all_data('tb_barang')
+			->join('tb_kategori', 'tb_kategori.id_kategori_brg = tb_barang.id_kategori_brg')
+			->where('tb_barang.id_kategori_brg', $id)
+			->limit($limit)
+			->offset($offset)
+			->get()
+			->result_array();
+
+		// Memuat jumlah penjualan untuk setiap barang
+		foreach ($barang as &$item) {
+			$query = $this->db->query("SELECT COUNT(*) as jumlah_jual FROM tb_pesanan_detail WHERE id_brg = ?", $item['id_brg']);
+			$result = $query->row();
+			$item['jumlah_jual'] = $result->jumlah_jual;
+
+			// Format harga barang menggunakan number_format
+			$item['harga_jual_barang'] = number_format($item['harga_jual_barang'], 0, ',', '.');
+			$item['harga_promo'] = number_format($item['harga_promo'], 0, ',', '.');
+		}
+
+		// Mengirim data dalam format JSON
+		echo json_encode(['barang' => $barang]);
 	}
 
 	public function alamat()

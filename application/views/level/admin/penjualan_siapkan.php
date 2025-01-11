@@ -137,21 +137,33 @@
                             </div>
                         </div>
                         <div class="col">
-                            <button type="submit" class="btn btn-success">Scan</button>
-                            <button type="button" class="btn btn-success">Cam</button>
+                            <button type="submit" class="btn btn-success">Scan Barcode</button>
+                            <button type="button" class="btn btn-success">On Camera</button>
                         </div>
                     </div>
                 </div>
             </form>
-            <div class="col-md-12 col-lg-9 d-flex">
-                <div class="card table">
-                    <div class="card-body p-0">
-                        <div class="table-header">
-                            Menyiapkan Pesanan
+            <div class="row">
+                <div class="col-md-12 col-lg-9 d-flex">
+                    <div class="card w-100">
+                        <!-- card header -->
+                        <div class="card-header border-bottom-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <!-- heading -->
+                                    <h4 class="mb-1">Order ID: #<?= $pesanan['id_pesanan'] ?></h4>
+                                    <span>
+                                        Order Date: <?= date('d/M/Y H:i:s', strtotime($pesanan['tgl_pesanan'])) ?>
+                                        <span class="badge bg-success-soft ms-2"><?= $pesanan['status_pesanan'] ?></span>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                         <div class="table-responsive">
-                            <table id="tabel-detail" class="table table-bordered table-vcenter" style="width: 100%;">
-                                <thead>
+                            <!-- Table -->
+                            <table id="tabel-detail" class="table mb-0 text-nowrap">
+                                <!-- Table Head -->
+                                <thead class="table-light">
                                     <tr>
                                         <th>No</th>
                                         <th>Gambar</th>
@@ -162,7 +174,9 @@
                                         <th>Status Verified</th>
                                     </tr>
                                 </thead>
+                                <!-- tbody -->
                                 <tbody>
+
                                 </tbody>
                                 <tfoot>
                                     <tr>
@@ -182,50 +196,63 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- Column -->
-            <div class="col-md-12 col-lg-3">
-                <div class="card mb-2">
-                    <div class="card-body">
-                        <h5 class="card-title">CART SUMMARY</h5>
-                        <hr>
-                        <small>Total Price</small>
-                        <h2><?= "Rp. " . number_format($pesanan['grand_total']) ?></h2>
-                        <hr>
-                        <a onclick="showConfirmation()" id="pesanan_disiapkan" class="btn btn-success me-1 disabled" title="Pesanan Disipapkan">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-checks" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                <path d="M7 12l5 5l10 -10"></path>
-                                <path d="M2 12l5 5m5 -5l5 -5"></path>
-                            </svg>
-                            Proccess
-                        </a>
-                        <button onclick="window.close();" class="btn btn-danger btn-outline">
-                            <i class="fa fa-times"></i>&nbsp;&nbsp;Tutup
-                        </button>
-                    </div>
-                </div>
-                <div class="card mb-2">
-                    <div class="card-body">
-                        <h5 class="card-title">Informasi Pemesan</h5>
-                        <hr>
-                        <h4>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);">
-                                <path d="M19 2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h4l3 3 3-3h4a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm-7 3c1.727 0 3 1.272 3 3s-1.273 3-3 3c-1.726 0-3-1.272-3-3s1.274-3 3-3zM7.177 16c.558-1.723 2.496-3 4.823-3s4.266 1.277 4.823 3H7.177z"></path>
-                            </svg> <?= $user['nama_member'] ?>
-                        </h4>
-                        <h4>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M18.403 5.633A8.919 8.919 0 0 0 12.053 3c-4.948 0-8.976 4.027-8.978 8.977 0 1.582.413 3.126 1.198 4.488L3 21.116l4.759-1.249a8.981 8.981 0 0 0 4.29 1.093h.004c4.947 0 8.975-4.027 8.977-8.977a8.926 8.926 0 0 0-2.627-6.35m-6.35 13.812h-.003a7.446 7.446 0 0 1-3.798-1.041l-.272-.162-2.824.741.753-2.753-.177-.282a7.448 7.448 0 0 1-1.141-3.971c.002-4.114 3.349-7.461 7.465-7.461a7.413 7.413 0 0 1 5.275 2.188 7.42 7.42 0 0 1 2.183 5.279c-.002 4.114-3.349 7.462-7.461 7.462m4.093-5.589c-.225-.113-1.327-.655-1.533-.73-.205-.075-.354-.112-.504.112s-.58.729-.711.879-.262.168-.486.056-.947-.349-1.804-1.113c-.667-.595-1.117-1.329-1.248-1.554s-.014-.346.099-.458c.101-.1.224-.262.336-.393.112-.131.149-.224.224-.374s.038-.281-.019-.393c-.056-.113-.505-1.217-.692-1.666-.181-.435-.366-.377-.504-.383a9.65 9.65 0 0 0-.429-.008.826.826 0 0 0-.599.28c-.206.225-.785.767-.785 1.871s.804 2.171.916 2.321c.112.15 1.582 2.415 3.832 3.387.536.231.954.369 1.279.473.537.171 1.026.146 1.413.089.431-.064 1.327-.542 1.514-1.066.187-.524.187-.973.131-1.067-.056-.094-.207-.151-.43-.263"></path>
-                            </svg> <?= $user['wa_member'] ?>
-                        </h4>
-                        <h4>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);">
-                                <path d="M9.715 12c1.151 0 2-.849 2-2s-.849-2-2-2-2 .849-2 2 .848 2 2 2z"></path>
-                                <path d="M20 4H4c-1.103 0-2 .841-2 1.875v12.25C2 19.159 2.897 20 4 20h16c1.103 0 2-.841 2-1.875V5.875C22 4.841 21.103 4 20 4zm0 14-16-.011V6l16 .011V18z"></path>
-                                <path d="M14 9h4v2h-4zm1 4h3v2h-3zm-1.57 2.536c0-1.374-1.676-2.786-3.715-2.786S6 14.162 6 15.536V16h7.43v-.464z"></path>
-                            </svg> <?= $user['nomor_induk'] ?>
-                        </h4>
+                <!-- Column -->
+                <div class="col-md-12 col-lg-3">
+                    <div class="card w-100">
+                        <!-- card body -->
+                        <div class="card-body">
+                            <!-- heading -->
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h4 class="mb-0">Customer</h4>
+                                <a href="#">View Profile</a>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <!-- img -->
+                                <img width="50" src="<?= base_url('public/template/upload/user/' . $pesanan['avatar']) ?>" class="avatar-lg rounded-circle" alt="">
+                                <div class="ms-3">
+                                    <!-- title -->
+                                    <h4 class="mb-0"><?= $pesanan['nama_member'] ?></h4>
+                                    <div>
+                                        <span>Customer since <?= date('d/M/Y H:i:s', strtotime($pesanan['created_at'])) ?></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- card body -->
+                        <div class="card-body border-top">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <!-- text -->
+                                <h4 class="mb-0">Contact</h4>
+                                <a href="#">Edit</a>
+                            </div>
+                            <div>
+                                <!-- text -->
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fe fe-mail fs-4"></i>
+                                    <a href="#" class="ms-2"><?= $pesanan['email_member'] ?></a>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="fe fe-phone fs-4"></i>
+                                    <span class="ms-2"><?= $pesanan['wa_member'] ?></span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- card body -->
+                        <div class="card-body border-top">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <a onclick="showConfirmation()" id="pesanan_disiapkan" class="btn btn-success me-1 disabled" title="Pesanan Disipapkan">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-checks" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M7 12l5 5l10 -10"></path>
+                                        <path d="M2 12l5 5m5 -5l5 -5"></path>
+                                    </svg>
+                                    Proccess
+                                </a>
+                                <button onclick="window.close();" class="btn btn-danger btn-outline">
+                                    <i class="fa fa-times"></i>&nbsp;&nbsp;Tutup
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -260,7 +287,7 @@
                 },
                 {
                     "data": "nama_barang",
-                    "className": "text-left",
+                    "className": "text-left text-wrap",
                     "render": function(data, type, row) {
                         return data + "<br><i class='text-muted'>" + row.barcode + "</i>";
                     }
@@ -278,7 +305,7 @@
                 },
                 {
                     "data": "sub_total_harga",
-                    "className": "text-right dt-nowrap",
+                    "className": "text-end dt-nowrap",
                 },
                 {
                     "data": "status_verified",

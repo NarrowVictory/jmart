@@ -68,14 +68,14 @@ class Misi extends CI_Controller
 	public function list()
 	{
 		$user = $this->session->userdata('id_user');
-		$data['list'] = $this->M_Crud->all_data('tb_pesanan')->where('status_pesanan', 'Dikirim')->get()->result_array();
+		$data['list'] = $this->M_Crud->all_data('tb_pesanan')->join('tb_user', 'tb_user.id_user = tb_pesanan.id_user')->where('status_pesanan', 'Dikirim')->get()->result_array();
 		$this->load->view('level/kurir/misi_list', $data);
 	}
 
 	public function pending()
 	{
 		$user = $this->session->userdata('id_user');
-		$data['pending'] = $this->M_Crud->all_data('tb_pesanan')->join('tb_user', 'tb_user.id_user = tb_pesanan.id_user')->where('status_pesanan', 'Pending')->or_where('status_pesanan', 'Dikemas')->where('jenis_order', 'dianterin')->get()->result_array();
+		$data['pending'] = $this->M_Crud->all_data('tb_pesanan')->join('tb_user', 'tb_user.id_user = tb_pesanan.id_user')->where('status_pesanan', 'Dikemas')->where('jenis_order', 'dianterin')->get()->result_array();
 		$this->load->view('level/kurir/misi_pending', $data);
 	}
 
@@ -124,7 +124,9 @@ class Misi extends CI_Controller
 
 		$this->M_Crud->input_data($data, 'tb_pesanan_tracking');
 		$this->M_Crud->update_data(['id_pesanan' => $orderId], [
-			'status_pesanan' => "Selesai", 'status_pembayaran' => 'Lunas'
+			'status_pesanan' => "Selesai",
+			'status_pembayaran' => 'Lunas',
+			'tgl_diselesaikan' => date('Y-m-d H:i:s')
 		], 'tb_pesanan');
 
 		// Ubah respons menjadi JSON dan kirimkannya

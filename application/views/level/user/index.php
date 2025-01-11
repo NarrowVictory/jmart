@@ -317,16 +317,15 @@
             <div class="author-notification">
                <div class="container inner-wrapper" style="max-width: 1024px;margin-left: auto;margin-right: auto;padding-left: 10px;padding-right: 15px;box-sizing: border-box;padding-top: 15px;padding-bottom: 15px;">
                   <div class="dz-info">
-                     <span class="text-dark">Selamat Siang</span>
+                     <span class="text-dark"><?= $now ?></span>
                      <h3 class="name mb-0"><?= $this->session->userdata('nama') ?> 👋</h3>
                   </div>
                   <a href="javascript:void(0);" class="position-relative me-2 notify-cart" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom2" aria-controls="offcanvasBottom">
-                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M18.1776 17.8443C16.6362 17.8428 15.3854 19.0912 15.3839 20.6326C15.3824 22.1739 16.6308 23.4247 18.1722 23.4262C19.7136 23.4277 20.9643 22.1794 20.9658 20.638C20.9658 20.6371 20.9658 20.6362 20.9658 20.6353C20.9644 19.0955 19.7173 17.8473 18.1776 17.8443Z" fill="#2C406E"></path>
-                        <path d="M23.1278 4.47973C23.061 4.4668 22.9932 4.46023 22.9251 4.46012H5.93181L5.66267 2.65958C5.49499 1.46381 4.47216 0.574129 3.26466 0.573761H1.07655C0.481978 0.573761 0 1.05574 0 1.65031C0 2.24489 0.481978 2.72686 1.07655 2.72686H3.26734C3.40423 2.72586 3.52008 2.82779 3.53648 2.96373L5.19436 14.3267C5.42166 15.7706 6.66363 16.8358 8.12528 16.8405H19.3241C20.7313 16.8423 21.9454 15.8533 22.2281 14.4747L23.9802 5.74121C24.0931 5.15746 23.7115 4.59269 23.1278 4.47973Z" fill="#2C406E"></path>
-                        <path d="M11.3404 20.5158C11.2749 19.0196 10.0401 17.8418 8.54244 17.847C7.0023 17.9092 5.80422 19.2082 5.86645 20.7484C5.92617 22.2262 7.1283 23.4008 8.60704 23.4262H8.67432C10.2142 23.3587 11.4079 22.0557 11.3404 20.5158Z" fill="#2C406E"></path>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);">
+                        <path d="M4 18h2v4.081L11.101 18H16c1.103 0 2-.897 2-2V8c0-1.103-.897-2-2-2H4c-1.103 0-2 .897-2 2v8c0 1.103.897 2 2 2z"></path>
+                        <path d="M20 2H8c-1.103 0-2 .897-2 2h12c1.103 0 2 .897 2 2v8c1.103 0 2-.897 2-2V4c0-1.103-.897-2-2-2z"></path>
                      </svg>
-                     <span style="cursor: pointer;" onclick="location.href='<?= base_url('keranjang') ?>'" class="badge bg-danger text-white counter"><?= $count_keranjang ?></span>
+                     <span style="cursor: pointer;" onclick="location.href='#'" class="badge bg-danger text-white counter">0</span>
                   </a>
                </div>
             </div>
@@ -389,7 +388,10 @@
             <?php foreach ($kategori as $key => $kt) : ?>
                <a href="<?= base_url('home/kategori/' . $kt['id_kategori_brg']) ?>" class="swiper-slide categore-box style-1" style="text-decoration: none;outline: none;color: #42A7E5;-webkit-transition: all 0.5s;-ms-transition: all 0.5s;transition: all 0.5s;">
                   <div class="icon-bx">
-                     <img src="<?= base_url('public/template/upload/kategori/' . $kt['icon_kategori']) ?>" height="35px" class="card-img-top" alt="Gambar Kartu" style="margin-top:10px">
+                     <?php
+                     $gambar = $kt['icon_kategori'] == "" ? "<img style='width: auto;border-radius: 3px;height: 35px;' src='" . base_url('public/template/upload/kategori/default.png') . "'>" : "<img style='width: auto;border-radius: 3px;height: 35px;' src='" . base_url('public/template/upload/kategori/' . $kt['icon_kategori']) . "'>";
+                     echo $gambar;
+                     ?>
                   </div>
                   <span class="title"><?= $kt['nama_kategori_brg'] ?></span>
                </a>
@@ -413,7 +415,7 @@
       <span class="dblock fw-bold fsize-p-2 mar-bottom--x-half">Lagi Promo Nih!!</span>
       <div class="" style="display: flex;align-items: center;margin-bottom:10px;justify-content: space-between;">
          <h3 class="title">Daftar Barang Promo</h3>
-         <a href="#" class="fsize-m-2">Lihat Semua</a>
+         <a href="<?= base_url('promo') ?>" class="fsize-m-2">Lihat Semua</a>
       </div>
 
       <div class="swiper-container">
@@ -425,7 +427,9 @@
                         <?php
                         $gambar = $brg['gambar_barang'] == "https://dodolan.jogjakota.go.id/assets/media/default/default-product.png" ? "<img style='\border-radius: 3px;' src='" . $brg['gambar_barang'] . "'>" : "<img style='\border-radius: 3px;' src='" . base_url('public/template/upload/barang/' . $brg['gambar_barang']) . "'>";
                         ?>
-                        <?= $gambar ?>
+                        <div style="background-color: white !important;">
+                           <?= $gambar ?>
+                        </div>
                         <div class="form-check bookmark">
                            <input class="form-check-input" type="checkbox" id="flexCheckDefault1">
                            <label class="form-check-label add_keranjang" for="flexCheckDefault1" data-idproduk="<?= $brg['id_brg'] ?>">
@@ -471,14 +475,19 @@
                   </a>
                   <div class="horizontal-product-details">
                      <div class="d-flex align-items-center justify-content-between">
-                        <h4 style="font-size: 14px;margin-bottom: 0;"><?= $brg['nama_barang'] ?></h4>
+                        <h4 class="fw-bold text-primary" style="font-size: 14px;margin-bottom: 0;"><?= $brg['nama_barang'] ?></h4>
                         <div class="rating d-flex align-items-center">
                            <img src="https://themes.pixelstrap.com/fuzzy/assets/images/svg/Star.svg" alt="star">
 
-                           <h6 style="font-size: 16px;line-height: 1.2;margin-bottom: 0;" class="theme-color fw-normal">4.5</h6>
+                           <h6 style="font-size: 16px;line-height: 1.2;margin-bottom: 0;" class="theme-color fw-normal">&nbsp;&nbsp;5.0</h6>
                         </div>
                      </div>
-                     <h5 style="font-size: 13px;margin-bottom: 0;"><?= $brg['nama_kategori_brg'] ?> (10 Terjual)</h5>
+                     <?php
+                     $query = $this->db->query("SELECT COUNT(*) as jumlah_jual FROM tb_pesanan_detail WHERE id_brg = ?", $brg['id_brg']);
+                     $result = $query->row();
+                     $jumlah_jual = $result->jumlah_jual;
+                     ?>
+                     <h5 class="fw-light text-primary" style="font-size: 13px;margin-bottom: 0;"><?= $brg['nama_kategori_brg'] ?> (<?= number_format($jumlah_jual) . " Terjual" ?>)</h5>
 
                      <div class="d-flex align-items-center justify-content-between mt-1">
                         <div class="d-flex align-items-center gap-2">
@@ -524,7 +533,7 @@
                      <?= $key + 1 ?>.
                   </div>
                   <div class="col-2">
-                     <img src="https://sedekahonline.com/cc-content/themes/cicool-so/asset/uploads/user/default.png" class="avatar avatar--small mar-right--x-2 shadow" onerror="this.src='https://sedekahonline.com/cc-content/themes/cicool-so/asset/uploads/user/default.png';">
+                     <img src="<?= base_url('public/template/upload/user/default.jpg') ?>" class="avatar avatar--small mar-right--x-2 shadow">
                   </div>
                   <?php
                   $date = new DateTime($value['created_at']);
@@ -607,25 +616,20 @@
          </div>
          <div class="modal-body" style="max-height: calc(100vh - 200px);overflow-y: auto;">
             <div class="row">
-               <?php foreach ($kategori1 as $key => $kt) : ?>
-                  <?php
-                  $gambar = $kt['icon_kategori'] == "" ? "<img style='width: auto;border-radius: 3px;height: 45px;' src='https://dodolan.jogjakota.go.id/assets/media/default/default-product.png'>" : "<img style='width: auto;border-radius: 3px;height: 45px;' src='" . base_url('public/template/upload/kategori/' . $kt['icon_kategori']) . "'>";
-                  ?>
-                  <div class="col-3 mb-2">
-                     <a href="<?= base_url('home/kategori/' . $kt['id_kategori_brg']) ?>" class="swiper-slide categore-box style-1" style="text-decoration: none;outline: none;color: #42A7E5;-webkit-transition: all 0.5s;-ms-transition: all 0.5s;transition: all 0.5s;">
-                        <div class="icon-bx">
-                           <?= $gambar ?>
-                        </div>
-                        <span class="title<?= strlen($kt['nama_kategori_brg']) > 12 ? ' small-font' : '' ?>">
-                           <?= $kt['nama_kategori_brg'] ?>
-                        </span>
+               <div class="list-group">
+                  <?php foreach ($kategori1 as $key => $kt) : ?>
+                     <?php
+                     $gambar = $kt['icon_kategori'] == "" ? "<img style='width: auto;border-radius: 3px;height: 45px;' src='" . base_url('public/template/upload/kategori/default.png') . "'>" : "<img style='width: auto;border-radius: 3px;height: 45px;' src='" . base_url('public/template/upload/kategori/' . $kt['icon_kategori']) . "'>";
+                     ?>
+                     <a href="<?= base_url('home/kategori/' . $kt['id_kategori_brg']) ?>" class="list-group-item list-group-item-action mb-3" style="padding: 0.25rem 1.25rem !important;font-weight:bold;color: #4f658b;" aria-current="true">
+                        <?= $gambar ?> <?= $kt['nama_kategori_brg'] ?>
                      </a>
-                  </div>
-               <?php endforeach ?>
+                  <?php endforeach ?>
+               </div>
             </div>
          </div>
-         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+         <div class="modal-footer justify-content-center">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup Modal</button>
          </div>
       </div>
    </div>
@@ -640,6 +644,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src=" https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
    var swiper = new Swiper('.swiper-container', {
       slidesPerView: 2, // Jumlah slide yang akan ditampilkan
@@ -703,6 +708,7 @@
       $('#fullScreenModal').on('shown.bs.modal', function() {
          $('#search').focus();
       });
+
       $('#search').autocomplete({
          source: function(request, response) {
             var searchTerm = request.term.trim(); // Hapus spasi ekstra di awal dan akhir

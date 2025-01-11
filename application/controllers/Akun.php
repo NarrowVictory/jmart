@@ -15,6 +15,19 @@ class Akun extends CI_Controller
 		$this->auth->cek_login();
 	}
 
+	public function profile()
+	{
+		$id = $this->session->userdata('id_user');
+		$data['profile'] = $this->M_Crud->show('tb_user', ['id_user' => $id])->row_array();
+		$this->load->view('level/admin/setting_profile', $data);
+	}
+
+	public function sandi()
+	{
+		$data = [];
+		$this->load->view('level/admin/setting_sandi', $data);
+	}
+
 	public function index()
 	{
 		$id = $this->session->userdata('id_user');
@@ -125,13 +138,20 @@ class Akun extends CI_Controller
 					->update();
 			}
 
+			if ($jumlah_data <= 0) {
+				$set_default = "main";
+			} else {
+				$set_default = $cekbox == true ? "main" : "secondary";
+			}
+
 			$data = array(
 				'id_user' => $id,
+				'koordinat' => $this->input->post('maps_coordinate'),
 				'id_desa' => $this->input->post('select_desa'),
 				'nama_penerima' => $this->input->post('nama_penerima'),
 				'kontak_penerima' => $this->input->post('kontak_penerima'),
 				'detail_lainnya' => $this->input->post('detail_lainnya'),
-				'set_default' => $cekbox == true ? "main" : "secondary",
+				'set_default' => $set_default,
 			);
 			$this->M_Crud->input_data($data, 'tb_user_alamat');
 
@@ -168,6 +188,7 @@ class Akun extends CI_Controller
 
 		$this->form_validation->set_rules('nama_penerima', 'Nama Lengkap', 'required');
 		$this->form_validation->set_rules('kontak_penerima', 'No. HP', 'required');
+		$this->form_validation->set_rules('maps_coordinate_edit', 'MAPS', 'required');
 
 		if ($this->form_validation->run() === FALSE) {
 			// Validasi gagal, kembali ke halaman form
@@ -185,7 +206,8 @@ class Akun extends CI_Controller
 			$data = array(
 				'nama_penerima' => $this->input->post('nama_penerima'),
 				'kontak_penerima' => $this->input->post('kontak_penerima'),
-				'detail_lainnya' => $this->input->post('detail_lainnya')
+				'detail_lainnya' => $this->input->post('detail_lainnya'),
+				'koordinat' => $this->input->post('maps_coordinate_edit'),
 			);
 
 			$this->M_Crud->update_data(['id_alamat_user' => $id], $data, 'tb_user_alamat');

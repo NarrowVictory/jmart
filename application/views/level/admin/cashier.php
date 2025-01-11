@@ -4,6 +4,8 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 <style>
     .table>thead:first-child>tr:first-child>th,
     .table>thead:first-child>tr:first-child>td,
@@ -298,6 +300,21 @@
         font-size: 24px;
         margin-bottom: 10px;
     }
+
+    .cart-totals {
+        border-radius: 15px;
+        -webkit-box-shadow: 5px 5px 15px rgb(0 0 0 / 5%);
+        box-shadow: 5px 5px 15px rgb(0 0 0 / 5%);
+        padding: 30px 40px;
+    }
+
+    .text-brand {
+        color: #3BB77E !important;
+    }
+
+    .table-bordered {
+        border: 1px solid #ddd;
+    }
 </style>
 <?php $this->load->view('layouts/admin/header') ?>
 <div id="loading" class="loading-overlay" style="display: none;">
@@ -306,112 +323,103 @@
         Loading...
     </div>
 </div>
-<div class="row">
-    <div class="col-12 col-lg-8">
-        <div class="page-body">
-            <div class="container-fluid">
-                <div class="input-group mb-2">
-                    <span class="input-group-text">
-                        <i class="fa fa-barcode"></i>
-                    </span>
-                    <input class="form-control ui-autocomplete" type="text" id="search" name="search" placeholder="Search Code / Product Name..." autocomplete="off">
+<audio id="beepSound" preload="auto" src="<?= base_url('public/template/upload/audio/simpan.mp3') ?>"></audio>
+<audio id="removeSound" preload="auto" src="<?= base_url('public/template/upload/audio/hapus.mp3') ?>"></audio>
+<audio id="wrongSound" preload="auto" src="<?= base_url('public/template/upload/audio/tetot.mp3') ?>"></audio>
+<div class="container-fluid">
+    <div class="row mt-4">
+        <div class="col-12 col-lg-5 d-flex">
+            <div class="card w-100" style="background-color: transparent !important;border:none !important">
+                <div class="card-header" style="background-color: white !important;border:1px solid rgba(4, 32, 69, 0.14)">
+                    <h5 class="card-title">Preview Barang</h5>
                 </div>
-                <div class="row mb-3">
-                    <div class="col-12">
-                        <div id="result"></div>
-                    </div>
+                <div class="card-body p-0" style="background-color: transparent !important;">
+                    <div id="result" class="mt-2"></div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-12 col-lg-4" style="margin-top: 25px !important;">
-        <div class="card" style="border-radius: 0px !important;">
-            <div class="card-header" style="background-color: rgb(226, 232, 240);border-radius:0px !important; height: 50px; z-index: 1;">
-                Cart Settings
+        <div class="col-12 col-lg-4 d-flex">
+            <div class="card w-100" style="background-color: transparent !important;border:none !important">
+                <div class="card-header" style="background-color: white !important;border:1px solid rgba(4, 32, 69, 0.14)">
+                    <h5 class="card-title">Detail Pesanan</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="input-group mb-2 mt-2" style="border-radius:0px !important">
+                        <span class="input-group-text">
+                            <i class="fa fa-barcode"></i>
+                        </span>
+                        <input style="border-radius:0px !important;cursor:pointer !important" class="form-control ui-autocomplete" type="text" id="search" name="search" placeholder="Search Code / Product Name..." autocomplete="off">
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div style="max-height: 390px; overflow-y: auto;">
+                                <table class="table items table-striped table-bordered table-condensed table-hover mt-2 w-100" id="list_barang">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th style="width: 5%; text-align: center;">
+                                                <i style="cursor: pointer;opacity:0.6" class="fa fa-trash"></i>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- STARTS -->
+
+                    <!-- END -->
+                </div>
             </div>
-            <div class="card-body p-0">
-                <div class="row">
-                    <div class="col-12">
-                        <div style="max-height: 350px; overflow-y: auto;">
-                            <table class="table items table-striped table-bordered table-condensed table-hover mt-2 w-100" id="list_barang">
-                                <thead>
-                                    <tr>
-                                        <th>Product</th>
-                                        <th style="width: 5%; text-align: center;">
-                                            <i class="fa fa-trash"></i>
-                                        </th>
-                                    </tr>
-                                </thead>
+        </div>
+        <div class="col-12 col-lg-3">
+            <div class="card w-100" style="background-color: transparent !important;border:none !important">
+                <div class="card-header" style="background-color: white !important;border:1px solid rgba(4, 32, 69, 0.14)">
+                    <h5 class="card-title">Keterangan</h5>
+                </div>
+                <div class="card-body p-3 mt-1" style="background-color: white !important;border:1px solid rgba(4, 32, 69, 0.14)">
+                    <div class="p-md-2 ml-30">
+                        <div class="table-responsive">
+                            <table class="table no-border">
                                 <tbody>
+                                    <tr>
+                                        <td>
+                                            <h6 class="text-muted mb-0" style="font-size: 14px;">Total Barang</h6>
+                                        </td>
+                                        <td>
+                                            <h4 class="text-brand text-end mb-0" style="font-size: 22px;">
+                                                <span id="titems">0</span>
+                                            </h4>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h6 class="text-muted" style="font-size: 14px;">Total Harga</h6>
+                                        </td>
+                                        <td>
+                                            <h4 class="text-brand text-end" style="font-size: 22px;">
+                                                Rp. <span id="gtotal"></span>
+                                            </h4>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-                </div>
-                <!-- STARTS -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <!-- Cart Total Container Bootstrap 5 -->
-                            <div class="card-body p-0" style="bottom: 0;">
-                                <div class="row border-bottom" style="margin-left: 10px;">
-                                    <div class="col-6 col-md-6">
-                                        <div class="total-title">
-                                            <span>Kasir</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 col-md-6">
-                                        <span data-bs-toggle="modal" data-bs-target="#KasirModal" id="kasir_select">
-                                            <span id="kasir_select_value"></span>
-                                            <i class="fa fa-edit text-warning" style="cursor: pointer;"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="row" style="margin-left: 10px;">
-                                    <div class="col-6 col-md-6">
-                                        <div class="total-title">
-                                            <span>Items</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 col-md-6">
-                                        <span id="titems">0</span>
-                                    </div>
-                                </div>
-                                <hr style="margin: 0px !important;">
-                                <div class="row" style="margin-left: 10px;">
-                                    <div class="col-6 col-md-6">
-                                        <div class="total-title">
-                                            <span>Total</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 col-md-6">
-                                        Rp. <span id="gtotal"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Akhir Cart Total Container Bootstrap 5 -->
+                        <div class="text-start">
+                            <a id="modalClick" data-bs-toggle="modal" data-bs-target="#checkOutModal" href="#" class="btn btn-primary mb-2 w-100 text-start">Proceed To CheckOut&nbsp;&nbsp;<i class="fa fa-save"></i></a>
+                            <a id="deleteButton" href="javascript::void" class="btn btn-danger w-100 text-start">Cancel Order&nbsp;&nbsp;<i class="fa fa-trash"></i></a>
                         </div>
                     </div>
                 </div>
-                <!-- END -->
-            </div>
-            <div class="card-footer d-flex">
-                <!-- Tombol pertama -->
-                <button id="deleteButton" class="btn btn-outline-primary" style="margin-right: 5px; min-height: 100%;border: 1px solid #08c; border-radius: 10px;">
-                    <i class="fa fa-trash"></i>
-                </button>
-
-                <!-- Tombol ketiga -->
-                <button class="btn btn-outline-primary" style="margin-right: 5px; min-height: 100%;border: 1px solid #08c; border-radius: 10px;" data-bs-toggle="modal" data-bs-target="#checkOutModal">
-                    <i class="fa fa-check"></i> &nbsp;&nbsp;Checkout
-                </button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- MODAL -->
-<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class=" modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header text-white" style="background: linear-gradient(to right, #489ce2, #4299e1, #2181d0) !important;">
@@ -482,196 +490,146 @@
 </div>
 
 <div class="modal fade" id="checkOutModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header text-white" style="background: linear-gradient(to right, #489ce2, #4299e1, #2181d0) !important">
+            <div class="modal-header bg-white text-dark">
                 <h5 class="modal-title" id="exampleModalLabel">Proses Pesanan</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" style="max-height: calc(100vh - 200px);overflow-y: auto;">
+                <div class="modal-body" style="margin-top: -20px;">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <select style="border-radius: 0px;height:50px" name="id_customer" id="id_customer" class="form-select" required="required">
+                                <option value="">Walk In Customer</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6 mb-1">
+                            <input style="border-radius: 0px;height:50px" type="text" class="form-control" id="id_transaksi" name="id_transaksi" value="<?= $transaction_number ?>" readonly>
+                        </div>
+                        <div class="col-12 col-md-6 mb-1">
+                            <input style="border-radius: 0px;height:50px" type="datetime-local" id="tgl_penjualan" class="form-control" value="<?= date('Y-m-d\TH:i:s') ?>">
+                        </div>
+                    </div>
+                    <hr class="mt-3 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="jenisOrder" class="form-label fw-bold">Jenis Order:</label>
+                                <div class="form-check">
+                                    <input style="width: 25px;height: 25px;box-sizing: border-box;padding: 0;border-radius:5px !important" class="form-check-input" type="checkbox" name="jenisOrder" id="cash" value="Cash">
+                                    <label class="form-check-label" for="cash">Cash</label>
+                                </div>
+                                <div class="form-check">
+                                    <input style="width: 25px;height: 25px;box-sizing: border-box;padding: 0;border-radius:5px !important" class="form-check-input" type="checkbox" name="jenisOrder" id="autodebit" value="Autodebet">
+                                    <label class="form-check-label" for="autodebit">Autodebit</label>
+                                </div>
+                                <div class="form-check">
+                                    <input disabled style="width: 25px;height: 25px;box-sizing: border-box;padding: 0;border-radius:5px !important" class="form-check-input" type="checkbox" name="jenisOrder" id="transfer" value="Transfer">
+                                    <label class="form-check-label" for="transfer">Transfer (Dev Only)</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="statusPembayaran" class="form-label fw-bold">Status Pembayaran:</label>
+                                <div class="form-check">
+                                    <input readonly style="width: 25px;height: 25px;box-sizing: border-box;padding: 0;border-radius:5px !important;pointer-events: none;" class="form-check-input" type="checkbox" name="statusPembayaran" id="lunas" value="Lunas">
+                                    <label style="pointer-events: none;" class="form-check-label" for="lunas">Lunas</label>
+                                </div>
+                                <div class="form-check">
+                                    <input readonly style="width: 25px;height: 25px;box-sizing: border-box;padding: 0;border-radius:5px !important;pointer-events: none;" class="form-check-input" type="checkbox" name="statusPembayaran" id="belumLunas" value="Menunggu Pembayaran">
+                                    <label style="pointer-events: none;" class="form-check-label" for="belumLunas">Belum Lunas</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <label class="fw-bold form-label" for="">Pilih Kasir</label>
+                            <select required name="kasir_cache" id="kasir_cache" class="form-select" required="required" onchange="setLocalStorageValue('kasir_cache', 'selectedKasir')">
+                                <option value="" disabled selected="selected">Pilih Kasir</option>
+                                <?php foreach ($kasir as $key => $value) : ?>
+                                    <option value="<?= $value['id_kasir'] ?>"><?= $value['nama_kasir'] ?></option>
+                                <?php endforeach ?>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="fw-bold form-label" for="">Discount</label>
+                            <input disabled type="text" id="discount" class="form-control" value="" placeholder="Discount">
+                        </div>
+                    </div>
+                    <hr class="mt-3 mb-3">
+                    <div class="row mb-50 align-items-center">
+                        <div class="col text-sm fw-500">Total Items:</div>
+                        <div class="col-auto text-sm fw-500" id="titems2">0.00</div>
+                    </div>
+                    <div class="row mb-50 align-items-center">
+                        <div class="col text-sm fw-500">Sub Total:</div>
+                        <div class="col-auto  text-sm fw-500" id="divSubTotal">0.00</div>
+                    </div>
+                    <div class="row mb-50 align-items-center">
+                        <div class="col text-sm fw-500">Discount:</div>
+                        <div class="col-auto  text-sm fw-500" id="divDiscountAmountInTable">0.00</div>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col text-sm fw-600">Total Semua:</div>
+                        <div class="col-auto text-sm fw-600" id="keseluruhan"></div>
+                    </div>
+                    <hr class="mt-3 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold" for="">Total Pembayaran</label>
+                            <div class="input-group" style="width: 100% !important;">
+                                <span class="input-group-text text-success fw-bold fs-4" id="basic-addon1">Rp. </span>
+                                <input style="border-radius: 0px;height:40px;border-color: #ced4da;font-size:20px" min="1" id="total-membayar" type="text" class="form-control text-success fw-bold" placeholder="Nominal" aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold" for="">Kembalian</label>
+                            <div class="input-group" style="width: 100% !important;">
+                                <span class="input-group-text text-danger fw-bold fs-4" id="basic-addon1">Rp. </span>
+                                <input style="border-radius: 0px;height:40px;font-size:20px" readonly id="kembalian" type="number" class="form-control text-danger fw-bold" placeholder="Kembalian" aria-label="Kembalian" aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="mt-3 mb-3">
+                    <div class="row" style="margin-bottom: -20px;">
+                        <div class="col-12">
+                            <label class="form-label">Notes/Remarks</label>
+                            <textarea rows="3" class="form-control" placeholder="Enter Notes" id="OrderNotes" name="OrderNotes"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" style="border-radius: 5px !important;" data-bs-dismiss="modal">Tutup</button>
+                <button class="btn btn-primary" style="border-radius: 5px !important;" id="submit-sale">Simpan & Print</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="buktiTransaksiModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Bukti Transaksi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="max-height: calc(90vh - 200px);overflow-y: auto;" id="modalBukti">
+            </div>
+            <div class="modal-footer d-flex">
                 <div class="row">
-                    <div class="col-12 col-lg-7">
-                        <div class="container">
-                            <div class="row mb-2">
-                                <input style="border-radius: 0px" type="datetime-local" id="tgl_penjualan" class="form-control" value="<?= date('Y-m-d\TH:i:s') ?>">
-                            </div>
-                            <div class="row mb-2">
-                                <select name="id_customer" id="id_customer" class="form-select" required="required" style="background-color: #f4f4f4; border: 1px solid #ddd; cursor: default; border-radius: 0px !important;">
-                                    <option value="" selected="selected">Pilih Customer</option>
-                                    <?php foreach ($anggota as $key => $value) : ?>
-                                        <option value="<?= $value['id_user'] ?>"><?= $value['nama_member'] ?></option>
-                                    <?php endforeach ?>
-                                </select>
-                            </div>
-                            <div class="row mb-2">
-                                <select style="background-color: #f4f4f4; border: 1px solid #ddd; cursor: default; border-radius: 0px !important;" name="metode_pembayaran" id="metode_pembayaran" class="form-select">
-                                    <option value="Cash">Cash</option>
-                                    <option value="Autodebet">Autodebit</option>
-                                </select>
-                            </div>
-                            <div class="row mb-1">
-                                <div class="col-8" style="padding-left: 0px !important;">
-                                    <b>Total Dibayarkan</b>
-                                </div>
-                                <div class="col-4">
-                                    <b>Kembalian</b>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-8" style="padding-left: 0px !important;">
-                                    <div class="input-group">
-                                        <input id="total-membayar" type="text" class="form-control mb-0" value="0" style="border: 1px solid #ddd; border-radius: 0px !important;height: 40px;width: 100%;color: #38ada9;padding-top: 9px;border: 0.5px solid;background: #fff;-webkit-box-shadow: 0 3px 23px -2px #dfe4ea;box-shadow: 0 3px 23px -2px #dfe4ea;font-size: 2rem;" readonly>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <input disabled type="text" class="form-control" id="kembalian" style="border: 1px solid #ddd; border-radius: 0px !important;height: 40px;width: 100%;color: #38ada9;padding-top: 9px;border: 0.5px solid;background: #f4f4f4;-webkit-box-shadow: 0 3px 23px -2px #dfe4ea;box-shadow: 0 3px 23px -2px #dfe4ea;font-size: 1rem;">
-                                </div>
-                            </div>
-                            <div class="row d-flex mb-3" style="margin-top: 4%;">
-                                <div class="col-4 col-lg-3" style="padding-left: 0px !important;">
-                                    <button data-nominal="100000" type="button" class="btn btn-md btn-info quick-payable" style="border-radius: 8px;color: #fff;border: 0.5px solid;background: #38ada9;width:80px !important">100,000</button>
-                                </div>
-                                <div class="col-4 col-lg-3" style="padding-left: 0px !important;">
-                                    <button data-nominal="50000" type="button" class="btn btn-md btn-info quick-payable" style="border-radius: 8px;color: #fff;border: 0.5px solid;background: #38ada9;width:80px !important">50,000</button>
-                                </div>
-                                <div class="col-4 col-lg-3" style="padding-left: 0px !important;">
-                                    <button data-nominal="20000" type="button" class="btn btn-md btn-info quick-payable" style="border-radius: 8px;color: #fff;border: 0.5px solid;background: #38ada9;width:80px !important">20,000</button>
-                                </div>
-                                <div class="col-4 col-lg-3" style="padding-left: 0px !important;">
-                                    <button data-nominal="10000" type="button" class="btn btn-md btn-info quick-payable" style="border-radius: 8px;color: #fff;border: 0.5px solid;background: #38ada9;width:80px !important">10,000</button>
-                                </div>
-                                <div class="col-4 col-lg-3" style="padding-left: 0px !important;">
-                                    <button data-nominal="5000" type="button" class="btn btn-md btn-info quick-payable" style="border-radius: 8px;color: #fff;border: 0.5px solid;background: #38ada9;width:80px !important">5,000</button>
-                                </div>
-                                <div class="col-4 col-lg-3" style="padding-left: 0px !important;">
-                                    <button data-nominal="2000" type="button" class="btn btn-md btn-info quick-payable" style="border-radius: 8px;color: #fff;border: 0.5px solid;background: #38ada9;width:80px !important">2,000</button>
-                                </div>
-                                <div class="col-4 col-lg-3" style="padding-left: 0px !important;">
-                                    <button data-nominal="1000" type="button" class="btn btn-md btn-info quick-payable" style="border-radius: 8px;color: #fff;border: 0.5px solid;background: #38ada9;width:80px !important">1,000</button>
-                                </div>
-                                <div class="col-4 col-lg-3" style="padding-left: 0px !important;">
-                                    <button data-nominal="500" type="button" class="btn btn-md btn-info quick-payable" style="border-radius: 8px;color: #fff;border: 0.5px solid;background: #38ada9;width:80px !important">500</button>
-                                </div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-12" style="padding-left: 0px !important;">
-                                    <textarea name="" id="" class="form-control" placeholder="Tuliskan Keterangan"></textarea>
-                                </div>
-                            </div>
-                            <div class="row" style="padding-top: 1%;">
-                                <div class="btn-group" role="group" aria-label="Basic example" style="padding-left: 0px !important;">
-                                    <button type="button" class="btn btn-secondary button-outline-md-peace" style="color: #222f3e;font-weight: bold;display: block;margin-left: auto;margin-right: auto;width: -webkit-fill-available;border-color: #9ca7b5;color: #9ca7b5;background-color: transparent;">
-                                        <i class="fa fa-phone"></i>&nbsp;&nbsp;Whatsapp
-                                    </button>
-                                    <button type="button" class="btn button-outline-md-peace" style="color: #222f3e;font-weight: bold;display: block;margin-left: auto;margin-right: auto;width: -webkit-fill-available;border-color: #9ca7b5;color: #9ca7b5;background-color: transparent;">
-                                        <i class="fa fa-envelope"></i>&nbsp;&nbsp;Email
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="col">
+                        <a class="btn btn-primary-outline" id="send-email1" data-idx="_a83a14c1e50566a02b904f4046b74369"><span>Kirim</span></a>
+                        <a class="btn btn-primary" id="cetak_bukti"><span>Cetak</span></a>
                     </div>
-                    <div class="col-12 col-lg-5" style="background: #f1f2f6; border-radius: 10px 0px 0px 0px; height: auto;">
-                        <div style="padding-left: 5%; padding-top: 2%;">
-                            <div>
-                                <p class="mb-0"><b>Total Amount</b></p>
-                                <h2 style="margin-top: 8px;"><b><span id="keseluruhan"></span></b></h2>
-                            </div>
-                        </div>
-
-                        <div style="padding-top: 2%;">
-                            <div class="row" style="border-bottom: 3px dotted black;">
-                                <div class="col-6">
-                                    <p class="mb-0"><b>Tanggal</b></p>
-                                </div>
-                                <div class="col-6 text-end">
-                                    <?= date('d/m/Y') ?>
-                                </div>
-                            </div>
-                            <div class="row" style="border-bottom: 3px dotted black;">
-                                <div class="col-6">
-                                    <p class="mb-0"><b>Waktu</b></p>
-                                </div>
-                                <div class="col-6 text-end">
-                                    <?= date('H:i:s') ?>
-                                </div>
-                            </div>
-                            <div class="row" style="border-bottom: 3px dotted black;">
-                                <div class="col-6">
-                                    <p class="mb-0"><b>Petugas</b></p>
-                                </div>
-                                <div class="col-6 text-end">
-                                    <span id="kasir_selected_value"></span>
-                                </div>
-                            </div>
-                            <div class="row" style="border-bottom: 3px dotted black;">
-                                <div class="col-6">
-                                    <p class="mb-0"><b>Pay by cash</b></p>
-                                </div>
-                                <div class="col-6 text-end">
-                                    <span id="pay">Rp. 0,00</span>
-                                </div>
-                            </div>
-
-                            <div class="row" style="border-bottom: 3px dotted black;">
-                                <div class="col-6">
-                                    <p class="mb-0"><b>Discount</b></p>
-                                </div>
-                                <div class="col-6 text-end">
-                                    <span id="">Rp. 0,00</span>
-                                </div>
-                            </div>
-
-                            <div class="row" style="border-bottom: 3px dotted black;">
-                                <div class="col-6">
-                                    <p class="mb-0"><b>Balance</b></p>
-                                </div>
-                                <div class="col-6 text-end">
-                                    <span id="balance">Rp. 0,00</span>
-                                </div>
-                            </div>
-
-                            <div class="row mt-4">
-                                <button class="btn btn-outline-secondary btn-sm p-2 mb-2" style="color: #fff;background-color: #a4b0be;width: 80%;border-radius: 6px;margin-left: auto;display: block;margin-right: auto;" data-bs-dismiss="modal">Cancel</button>
-                                <button data-nominal="0" class="btn btn-outline-danger btn-sm p-2 mb-2 reset-total" style="color: #fff;background-color: #f53d3d;width: 80%;border-radius: 6px;margin-left: auto;display: block;margin-right: auto;">Void</button>
-                                <button class="btn btn-outline-primary btn-sm p-2 mb-2" style="color: #fff;background-color: #222f3e;width: 80%;border-radius: 6px;margin-left: auto;display: block;margin-right: auto;">Reprint</button>
-                            </div>
-
-                            <div class="row">
-                                <button class="btn btn-outline-info btn-sm p-2" style="color: #fff;background-color: #38ada9;width: 80%;border-radius: 6px;margin-left: auto;display: block;margin-right: auto;" id="submit-sale">Checkout</button>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<!-- MODAL KASIR -->
-<div class="modal fade" id="KasirModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-top-right">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ubah Kasir</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Select a Kasir:</p>
-                <select name="kasir_cache" id="kasir_cache" class="form-select" required="required" style="background-color: #f4f4f4; border: 1px solid #ddd; cursor: default; border-radius: 0px !important; height: 50px" onchange="setLocalStorageValue('kasir_cache', 'selectedKasir')">
-                    <option disabled selected="selected">Pilih Kasir</option>
-                    <?php foreach ($kasir as $key => $value) : ?>
-                        <option value="<?= $value['id_kasir'] ?>"><?= $value['nama_kasir'] ?></option>
-                    <?php endforeach ?>
-                </select>
-            </div>
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- END MODAL KASIR -->
 
 <!-- END -->
 <?php $this->load->view('layouts/admin/footer') ?>
@@ -680,9 +638,283 @@
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    var choices_kasir = new Choices(document.getElementById('kasir_cache'));
-    var choices_customer = new Choices(document.getElementById('id_customer'));
+    // var choices_kasir = new Choices(document.getElementById('kasir_cache'));
+    // var choices_customer = new Choices(document.getElementById('id_customer'));
+    // var choices_pembayaran = new Choices(document.getElementById('metode_pembayaran'));
+
+    $(document).ready(function() {
+        // Menggunakan jQuery untuk menangani perubahan pada inputan jenis order
+        $('input[name="jenisOrder"]').change(function() {
+            // Mendapatkan nilai inputan jenis order yang dipilih
+            var jenisOrder = $('input[name="jenisOrder"]:checked').val();
+
+            // Jika jenis order adalah "Cash", centang inputan status pembayaran "Lunas"
+            if (jenisOrder === "Cash") {
+                $("#total-membayar").prop('readonly', false).val("");
+                $('#lunas').prop('checked', true);
+                $('#belumLunas').prop('checked', false);
+            } else if (jenisOrder === "Autodebet") {
+                $("#total-membayar").prop('readonly', true).val(0);
+                $('#lunas').prop('checked', false);
+                $('#belumLunas').prop('checked', true);
+            }
+        });
+    });
+
+    $('#modalClick').click(function() {
+        $('#total-membayar').val("");
+        $('#kembalian').val("");
+    });
+
+    function BuktiTransaksi(id) {
+        var url = "<?php echo base_url('penjualan/get_bukti_transaksi/'); ?>" + id;
+
+        fetch(url)
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('Respons tidak ok: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(function(data) {
+                var tambahanHtml = `
+                <div id="print_invoice" class="pb-body">
+                    <table border="0" class="struk-pay" id="struk" style="width: 350px !important; font-size: 14px !important;">
+                      <tbody>
+                     <tr id="logo_name">
+                        <td colspan="5" align="center"><b class="judul">J-MART</b></td>
+                     </tr>
+                     <tr id="logo_space">
+                        <td colspan="5">&nbsp;</td>
+                     </tr>
+                     <tr>
+                        <td colspan="6" align="right" style="text-align: right;">Receipt Salinan</td>
+                     </tr>
+                     <tr>
+                        <td colspan="6">
+                           <hr>
+                        </td>
+                     </tr>`;
+                var tglPesanan = new Date(data[0].tgl_pesanan);
+                var tanggal = tglPesanan.getDate();
+                var bulan = tglPesanan.getMonth() + 1;
+                var tahun = tglPesanan.getFullYear();
+
+                var jam = tglPesanan.getHours();
+                var menit = tglPesanan.getMinutes();
+                var detik = tglPesanan.getSeconds();
+
+                var tanggalFormat = tanggal + '-' + bulan + '-' + tahun;
+                var waktuFormat = jam + ':' + menit + ':' + detik;
+
+                tambahanHtml += `<tr>
+                        <td colspan="2">
+                           <span id="trans_date" class="detail_cashier">${tanggalFormat}</span>
+                        </td>
+                        <td colspan="2" class="text-end">
+                           <span id="trans_date" class="detail_cashier">${waktuFormat}</span>
+                        </td>
+                     </tr>
+                     <tr style="margin-top: 20px !important;">
+                        <td style="width: 30%;">No. Struk </td>
+                        <td>:</td>
+                        <td colspan="2" class="text-end">
+                           <span>${data[0].id_pesanan}</span>
+                        </td>
+                     </tr>
+                     <tr>
+                        <td style="width: 30%;"> Oleh </td>
+                        <td>:</td>
+                        <td colspan="2" class="text-end"><span class="kasir_name detail_cashier">${data[0].nama_kasir}</span></td>
+                     </tr>
+                     <tr>
+                        <td style="width: 30%;"> Alat Kasir</td>
+                        <td>:</td>
+                        <td colspan="2" class="text-end"><span class="detail_cashier">ADMIN</span></td>
+                     </tr>
+
+                     <tr id="customer_data">
+                        <td style="width: 30%;"> Anggota </td>
+                        <td>:</td>
+                        <td colspan="2" class="text-end"><span id="customer_name">${data[0].nama_member !== null ? data[0].nama_member : 'Walk In Customer'}</span></td>
+                     </tr>
+                      <tr>
+                        <td style="width: 30%;"> Note</td>
+                        <td>:</td>
+                        <td colspan="2" class="text-end"><span class="detail_cashier">${data[0].keterangan_pesanan}</span></td>
+                     </tr>
+                     <tr class="highline" style="height: 23px;">
+                        <td colspan="5">
+                           <hr>
+                        </td>
+                     </tr>`;
+                for (var i = 0; i < data.length; i++) {
+                    tambahanHtml += `
+               <tr>
+                  <td class="tbl-product" colspan="3">
+                     ${data[i].nama_barang} <br>
+                     <indent style="padding: 15px !important;">
+                        ${data[i].jumlah_jual}x @${data[i].harga_saat_ini} </indent>
+                  </td>
+                  <td align="right" style="vertical-align: top;">
+                     <span class="number tbl-product">
+                        ${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(data[i].jumlah_jual * data[i].harga_saat_ini)} </span>
+                  </td>
+               </tr>
+               `;
+                }
+
+                tambahanHtml += `
+                     <tr class="highline" style="height: 23px;">
+                        <td colspan="5">
+                            <hr>
+                        </td>
+                     </tr>
+                     <tr>
+                        <td class="line-ttl-product" colspan="3"><span class="ttl-product">Subtotal (${data[0].total_rows} items)</span></td>
+                        <td class="line-ttl-product" align="right" width="30%"><span class="number ttl-product">${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(data[0].grand_total)}</span></td>
+                     </tr>
+
+                     <tr style="height: 10px">
+                        <td></td>
+                     </tr>
+                     <tr>
+                        <td class="line-ttl-product" colspan="3"><span class="ttl-product">Total Diskon</span></td>
+                        <td class="line-ttl-product" align="right" width="30%">
+                           <span class="ttl-product">0</span>
+                        </td>
+                     </tr>
+                     <tr style="height: 10px">
+                        <td></td>
+                     </tr>
+                     <tr>
+                        <td class="line-ttl-product" colspan="3"><strong class="ttl-product">Total</strong></td>
+                        <td class="line-ttl-product" align="right" width="30%">
+                           <strong class="ttl-product">${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(data[0].grand_total)}</strong>
+                        </td>
+                     </tr>
+                     <tr class="highline" style="height: 23px;">
+                        <td class="line-ttl-product" colspan="4">
+                           <hr>
+                        </td>
+                     </tr>
+                     <tr class="bayar_hutang">
+                        <td class="line-ttl-product" colspan="3"><span class="ttl-product">Kredit</span></td>
+                        <td class="line-ttl-product" align="right" width="30%"><span class="ttl-product">0</span></td>
+                     </tr>
+
+                     <tr class="highline" style="height: 23px;">
+                        <td class="line-ttl-product" colspan="4">
+                           <hr>
+                        </td>
+                     </tr>
+                     <tr>
+                        <td class="line-ttl-product" colspan="3">Total Bayar</td>
+                        <td class="line-ttl-product" align="right" width="30%">${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(data[0].total_bayar)}</td>
+                     </tr>
+                     <tr class="highline" style="height: 23px;">
+                        <td class="line-ttl-product" colspan="4">
+                           <hr>
+                        </td>
+                     </tr>
+                    <tr>
+                        <td class="line-ttl-product" colspan="3"><strong class="footer-ttl-product">Kembalian</strong></td>
+                        <td class="line-ttl-product" align="right" width="30%"><strong class="footer-ttl-product">${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(data[0].kembalian)}</strong></td>
+                     </tr>
+                     <tr style="height: 23px;">
+                        <td class="line-ttl-product" colspan="10">
+                           <hr>
+                        </td>
+                     </tr>
+                     <tr>
+                        <td class="line-ttl-product" colspan="3"><strong class="footer-ttl-product">Transaksi Bulan Ini</strong></td>
+                        <td class="line-ttl-product" align="right" width="30%"><strong class="footer-ttl-product">${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(data[0].total_bulan_ini)}</strong></td>
+                     </tr>
+                     <tr style="height: 23px;">
+                        <td class="line-ttl-product" colspan="10">
+                           <hr>
+                        </td>
+                     </tr>
+                     <tr>
+                        <td></td>
+                     </tr>
+                     <tr>
+                        <td colspan="5"><span id="header_text_demo" class="text-footer-struk ">
+                              <p style="text-align:center;">Terima Kasih &amp; Selamat Belanja Kembali<br>
+                                 &nbsp;</p>
+                           </span></td>
+                     </tr>
+                  </tbody>
+                  </table>
+               </div>
+            `;
+
+                // Menambahkan elemen HTML tambahan ke dalam modal-body
+                $("#modalBukti").html(tambahanHtml);
+            })
+            .catch(function(error) {
+                console.error('Terjadi kesalahan: ', error);
+            });
+    }
+
+
+    $('#checkOutModal').on('shown.bs.modal', function() {
+        $('#kasir_cache').select2({
+            theme: 'bootstrap-5'
+        });
+
+        $('#id_customer').select2({
+            theme: 'bootstrap-5',
+            dropdownParent: $('#checkOutModal'),
+            ajax: {
+                url: '<?= base_url('kasir/getAnggota'); ?>', // URL endpoint ke controller Anggota
+                dataType: 'json',
+                delay: 250, // Delay sebelum mengirimkan permintaan
+                data: function(params) {
+                    return {
+                        q: params.term, // Nilai inputan pencarian
+                        page: params.page || 1 // Nomor halaman
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                id: item.id_user,
+                                text: item.nomor_induk + ' - ' + item.nama_member
+                            };
+                        })
+                    };
+                },
+                cache: true
+            },
+            placeholder: 'Walk In Customer',
+            minimumInputLength: 0 // Jumlah karakter minimum sebelum pencarian dimulai
+        });
+
+        $('#status_pembayaran').select2({
+            theme: 'bootstrap-5'
+        });
+    });
+
+
+    function playBeep() {
+        var beep = document.getElementById("beepSound");
+        beep.play();
+    }
+
+    function removeBeep() {
+        var beep2 = document.getElementById("removeSound");
+        beep2.play();
+    }
+
+    function wrongBeep() {
+        var beep2 = document.getElementById("wrongSound");
+        beep2.play();
+    }
 
     function simpanData(id_barang) {
         $.ajax({
@@ -693,11 +925,13 @@
             },
             success: function(response) {
                 if (response.status == "success") {
+                    playBeep();
                     toastr.success(response.message, '', {
-                        timeOut: 2000
+                        timeOut: 2000,
                     });
                     $('#list_barang').DataTable().ajax.reload();
                 } else {
+                    wrongBeep();
                     toastr.error(response.message, '', {
                         timeOut: 2000
                     });
@@ -717,6 +951,7 @@
                 barang: label
             },
             success: function(response) {
+                playBeep();
                 toastr.success("Barang Berhasil Ditambahkan", '', {
                     timeOut: 5000
                 });
@@ -747,9 +982,11 @@
             dataType: "json",
             success: function(response) {
                 if (response.status == "success") {
+                    playBeep();
                     $('#list_barang').DataTable().ajax.reload();
                     $('#myModal').modal('hide');
                 } else {
+                    wrongBeep();
                     toastr.error(response.message, '', {
                         timeOut: 2000
                     });
@@ -820,7 +1057,9 @@
 
                     // Mengganti isi elemen dengan ID 'gtotal' dengan total yang diambil dari controller
                     $('#gtotal').text(total);
+                    $('#gtotal2').text(total);
                     $('#titems').text(items);
+                    $('#titems2').text(items);
                     $('#keseluruhan').text("Rp. " + total);
                 },
                 error: function(xhr, ajaxOptions, thrownError) {
@@ -843,18 +1082,29 @@
     });
 
     function hapusItem(idKeranjang) {
-        if (confirm('Apakah Anda yakin ingin menghapus item ini?')) {
-            $.ajax({
-                type: "POST",
-                url: "<?= base_url('kasir/hapus_list/') ?>" + idKeranjang,
-                success: function(data) {
-                    $('#list_barang').DataTable().ajax.reload();
-                },
-                error: function() {
-                    // Handle kesalahan jika diperlukan
-                }
-            });
-        }
+        Swal.fire({
+            title: 'Apakah Anda yakin ingin menghapus item ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "<?= base_url('kasir/hapus_list/') ?>" + idKeranjang,
+                    success: function(data) {
+                        removeBeep();
+                        $('#list_barang').DataTable().ajax.reload();
+                    },
+                    error: function() {
+                        // Handle kesalahan jika diperlukan
+                    }
+                });
+            }
+        });
     }
 
     function setLocalStorageValue(elementId, storageKey) {
@@ -866,8 +1116,6 @@
 
         // Menyimpan nilai yang dipilih ke localStorage
         localStorage.setItem(storageKey, selectedValue);
-
-        location.reload();
     }
 
     function setSelectValueFromLocalStorage(elementId, storageKey) {
@@ -878,6 +1126,23 @@
         if (savedValue) {
             selectElement.value = savedValue;
         }
+    }
+
+    function formatRupiah(angka, prefix) {
+        var number_string = angka.replace(/[^,\d]/g, '').toString(),
+            split = number_string.split(','),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+        // tambahkan titik jika yang di input sudah menjadi angka ribuan
+        if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        return prefix == undefined ? rupiah : (rupiah ? '' + rupiah : '');
     }
 
     setSelectValueFromLocalStorage("kasir_cache", "selectedKasir");
@@ -898,94 +1163,191 @@
         }
     });
 
-    $(".quick-payable").click(function() {
-        var nominal = $(this).data("nominal");
-        var currentValue = parseInt($("#total-membayar").val()) || 0;
-        var nilaiKeseluruhan = $("#keseluruhan").text().replace(/\D/g, '');
+    $("#total-membayar").on("input", function() {
+        var currentValue = $("#total-membayar").val();
+        var Hrgdibayar = currentValue.replace(/\D/g, '');
+        var nilaiKeseluruhan = parseInt($("#keseluruhan").text().replace(/\D/g, ''));
 
-        if (nilaiKeseluruhan !== '') {
-            nilaiKeseluruhan = parseInt(nilaiKeseluruhan);
+        var totHvG = Hrgdibayar - nilaiKeseluruhan;
+
+        if (totHvG < 1000) {
+            var totTot = (totHvG).toFixed();
         } else {
-            nilaiKeseluruhan = 0;
+            var totTot = (totHvG / 1000).toFixed(3);
         }
 
-        var newValue = currentValue + nominal;
-        var hasilPengurangan = newValue - nilaiKeseluruhan;
-        $("#pay").text("Rp. " + newValue.toLocaleString("id-ID"));
-        $("#total-membayar").val(newValue);
-        $("#balance").text("Rp. " + hasilPengurangan.toLocaleString("id-ID"));
-        $("#kembalian").val(hasilPengurangan.toLocaleString("id-ID"));
+        $("#kembalian").val(totTot);
     });
 
-    $(".reset-total").click(function() {
-        // Mereset nilai input "Total Membayar" menjadi 0
-        $("#pay").text("Rp. 0,00");
-        $("#total-membayar").val(0);
-        $("#balance").text("Rp. 0,00");
-        $("#kembalian").val("");
+    var rupiah1 = document.getElementById('total-membayar');
+    rupiah1.addEventListener('keyup', function(e) {
+        rupiah1.value = formatRupiah(this.value, '');
     });
 
     $('#deleteButton').click(function() {
-        // Munculkan dialog konfirmasi
-        var konfirmasi = confirm('Apakah Anda yakin ingin menghapus semua data?');
-
-        // Jika pengguna menekan "OK" dalam dialog konfirmasi
-        if (konfirmasi) {
-            // Menggunakan Ajax untuk memanggil method deleteAllData di sisi server
-            $.ajax({
-                url: '<?= base_url('kasir/hapus_keranjang') ?>', // Ganti dengan URL yang sesuai
-                type: 'POST',
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status === 'success') {
-                        $('#list_barang').DataTable().ajax.reload();
-                    } else {
-                        alert('Gagal menghapus data.');
+        // Munculkan dialog konfirmasi menggunakan SweetAlert2
+        Swal.fire({
+            title: 'Apakah Anda yakin ingin menghapus semua data?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            // Jika pengguna menekan tombol "Ya, hapus!"
+            if (result.isConfirmed) {
+                // Menggunakan Ajax untuk memanggil method deleteAllData di sisi server
+                $.ajax({
+                    url: '<?= base_url('kasir/hapus_keranjang') ?>', // Ganti dengan URL yang sesuai
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            removeBeep();
+                            $('#list_barang').DataTable().ajax.reload();
+                        } else {
+                            Swal.fire(
+                                'Gagal!',
+                                'Gagal menghapus data.',
+                                'error'
+                            );
+                        }
+                    },
+                    error: function() {
+                        Swal.fire(
+                            'Kesalahan!',
+                            'Terjadi kesalahan saat menghubungi server.',
+                            'error'
+                        );
                     }
-                },
-                error: function() {
-                    alert('Terjadi kesalahan saat menghubungi server.');
-                }
-            });
-        }
+                });
+            }
+        });
     });
 
     $("#submit-sale").on("click", function() {
+        $.ajax({
+            type: "POST",
+            url: "<?php echo base_url('kasir/cek_keranjang'); ?>", // Ubah dengan URL yang sesuai
+            dataType: "json",
+            success: function(response) {
+                if (response.jumlah_barang > 0) {
+                    proceedSale();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Minimal satu barang belanja harus ada sebelum melanjutkan!',
+                    });
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                // Handle kesalahan jika diperlukan
+                console.log(xhr.status);
+            }
+        });
+    });
+
+    function proceedSale() {
         var id_pelanggan = $("#id_customer").val();
         var tgl = $("#tgl_penjualan").val();
-        var metode = $("#metode_pembayaran").val();
-        var totalMembayar = parseInt($("#total-membayar").val()) || 0;
+        var metode = [];
+        var totalMembayar = parseFloat($("#total-membayar").val().replace(/\./g, '')) || 0;
         var totalHarga = $("#keseluruhan").text().replace(/\D/g, '');
-        var balance = $("#balance").text().replace(/\D/g, '');
-        var kasir = localStorage.getItem('selectedKasir');
+        var balance = parseFloat($("#kembalian").val().replace(/\./g, '')) || 0;
+        var kasir = $("#kasir_cache").val();
+        var note = $("#OrderNotes").val();
+        var status = [];
 
-        if (metode === "Cash" && totalMembayar < totalHarga) {
-            alert("Total membayar tidak mencukupi. Silakan periksa kembali.");
+        // PUSH NILAI METODE
+        document.querySelectorAll('input[name="jenisOrder"]:checked').forEach(function(checkbox) {
+            metode.push(checkbox.value);
+        });
+
+        // PUSH NILAI STATUS PEMBAYARAN
+        document.querySelectorAll('input[name="statusPembayaran"]:checked').forEach(function(checkbox) {
+            status.push(checkbox.value);
+        });
+
+        var inputTotalMembayar = document.getElementById("total-membayar");
+        var totalMembayar = parseFloat(inputTotalMembayar.value.trim().replace(/\./g, ''));
+
+        if (metode.length === 0) {
+            wrongBeep();
+            toastr.error('Silahkan memilih Metode Pembayaran', '', {
+                timeOut: 2000
+            });
+        } else if (isNaN(totalMembayar)) {
+            wrongBeep();
+            toastr.error('Total membayar tidak valid.', '', {
+                timeOut: 2000
+            });
+        } else if (metode.includes("Cash") && totalMembayar < totalHarga) {
+            wrongBeep();
+            toastr.error('Total membayar tidak mencukupi. Silakan periksa kembali.', '', {
+                timeOut: 2000
+            });
         } else {
-            $.ajax({
-                type: "POST",
-                url: "<?php echo base_url('kasir/simpanData'); ?>",
-                data: {
-                    id: id_pelanggan,
-                    kasir: kasir,
-                    tgl_pesanan: tgl,
-                    jenis_order: "ambil_sendiri",
-                    status_pembayaran: "Lunas",
-                    metode: metode,
-                    status_pesanan: "Selesai",
-                    grand_total: totalHarga,
-                    total_bayar: totalMembayar,
-                    kembalian: balance
-                },
-                success: function(response) {
-                    var hasil = JSON.parse(response);
-                    alert(hasil.pesan);
-                    $('#lanjutkanModal').modal('hide');
-                    location.reload();
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: 'Apakah Anda yakin ingin melanjutkan?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Lanjutkan!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "<?php echo base_url('kasir/simpanData'); ?>",
+                        data: {
+                            transaksi: $("#id_transaksi").val(),
+                            id: id_pelanggan,
+                            kasir: kasir,
+                            tgl_pesanan: tgl,
+                            jenis_order: "ambil_sendiri",
+                            status_pembayaran: status[status.length - 1],
+                            metode: metode[metode.length - 1],
+                            status_pesanan: "Selesai",
+                            grand_total: totalHarga,
+                            total_bayar: totalMembayar,
+                            kembalian: balance < 0 ? 0 : balance,
+                            note: note
+                        },
+                        success: function(response) {
+                            var hasil = JSON.parse(response);
+                            toastr.success(hasil.pesan, '', {
+                                timeOut: 2000
+                            });
+                            $('#lanjutkanModal').modal('hide');
+                            // location.reload();
+                            BuktiTransaksi(hasil.last_insert_id); // Memanggil fungsi dengan ID 4
+                            setTimeout(function() {
+                                // Ambil isi dari modal-body
+                                var modalContent = $("#modalBukti").html();
+
+                                // Buat jendela popup untuk mencetak
+                                var popupWin = window.open('', '_blank', 'width=600,height=600');
+                                popupWin.document.open();
+                                popupWin.document.write('<html><head><title>Cetak</title><style>@media print { body { font-family: Arial, sans-serif; } /* Tambahkan aturan font-family lainnya jika diperlukan */ }</style></head><body>' + modalContent + '</body></html>');
+
+                                // Menambahkan event listener untuk menangani penutupan popup
+                                popupWin.onunload = function() {
+                                    // Reload halaman saat popup ditutup
+                                    location.reload();
+                                };
+
+                                popupWin.jqprint();
+                                popupWin.close();
+                            }, 500); // Waktu tunggu 500ms, disesuaikan sesuai kebutuhan Anda
+                        }
+                    });
                 }
             });
         }
-    });
+    }
 
     load_data();
 
@@ -997,16 +1359,9 @@
                 query: query,
                 page: page
             },
-            beforeSend: function() {
-                $('#loading').show();
-            },
             success: function(data) {
                 $('#result').html(data);
             },
-            complete: function() {
-                // Sembunyikan indikator loading di sini
-                $("#loading").hide();
-            }
         })
     }
 
@@ -1049,6 +1404,62 @@
         document.getElementById('kasir_select_value').innerText = "No Set";
     }
 </script>
+<script>
+    // Fungsi untuk mengatur perilaku checkbox
+    function handleCheckboxChange(checkboxes) {
+        checkboxes.forEach((checkbox) => {
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    checkboxes.forEach((otherCheckbox) => {
+                        if (otherCheckbox !== this) {
+                            otherCheckbox.checked = false;
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+    // Memilih semua input checkbox dengan nama "jenisOrder"
+    const jenisOrderCheckboxes = document.querySelectorAll('input[name="jenisOrder"]');
+    // Memanggil fungsi untuk mengatur perilaku checkbox "jenisOrder"
+    handleCheckboxChange(jenisOrderCheckboxes);
+
+    // Memilih semua input checkbox dengan nama "statusPembayaran"
+    const statusPembayaranCheckboxes = document.querySelectorAll('input[name="statusPembayaran"]');
+    // Memanggil fungsi untuk mengatur perilaku checkbox "statusPembayaran"
+    handleCheckboxChange(statusPembayaranCheckboxes);
+</script>
+
+<script>
+    // Fungsi untuk memeriksa jumlah opsi dan memilih otomatis jika hanya ada satu opsi
+    function autoSelectSingleOption() {
+        var selectElement = document.getElementById('kasir_cache');
+        var options = selectElement.options;
+
+        // Hitung jumlah opsi yang valid (tidak termasuk opsi pertama yang disabled)
+        var validOptionsCount = 0;
+        for (var i = 0; i < options.length; i++) {
+            if (!options[i].disabled) {
+                validOptionsCount++;
+            }
+        }
+
+        // Jika hanya ada satu opsi valid, pilih opsi tersebut
+        if (validOptionsCount === 1) {
+            for (var i = 0; i < options.length; i++) {
+                if (!options[i].disabled) {
+                    selectElement.value = options[i].value;
+                    break;
+                }
+            }
+        }
+    }
+
+    // Panggil fungsi untuk memeriksa dan memilih otomatis
+    autoSelectSingleOption();
+</script>
+
 </body>
 
 </html>

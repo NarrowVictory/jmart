@@ -6,19 +6,47 @@
         <div class="row g-2 align-items-center">
             <div class="col">
                 <h2 class="page-title">
-                    Edit Data
+                    Update Produk
                 </h2>
             </div>
-            <div class="col text-end">
-                <button class="btn btn-info" onclick="location.href='<?= base_url('product') ?>'">
-                    Tampilkan Semua
-                </button>
+        </div>
+        <div class="row align-items-center mt-3">
+            <div class="col">
+                <div class="btn-group">
+                    <a href="<?= base_url('product') ?>" class="btn btn-primary me-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-back-up" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M9 13l-4 -4l4 -4m-4 4h11a4 4 0 0 1 0 8h-1"></path>
+                        </svg>
+                        Kembali
+                    </a>
+                    <button class="btn btn-primary dropdown-toggle text-uppercase" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-dots-vertical" width="40" height="40" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                            <path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                            <path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                        </svg>Aksi
+                    </button>
+                    <ul class="dropdown-menu bg-secondary">
+                        <li>
+                            <a href="<?= base_url('product/detail/' . $barang['id_brg']) ?>" class="dropdown-item small text-white">
+                                Lihat Detail
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="dropdown-item small text-white delete" data-id="77">
+                                Hapus
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<form action="<?= base_url('product/simpan') ?>" method="POST">
+<form action="<?= base_url('product/update') ?>" method="POST" enctype="multipart/form-data">
     <div class="page-body">
         <div class="container-xl">
             <div class="row">
@@ -31,74 +59,76 @@
                         <div class="alert alert-danger"><?= $this->session->flashdata('error_message') ?></div>
                     <?php endif ?>
                     <div class="card" style="margin-top: -5px !important;">
-                        <div class="card-header">
-                            <h3 class="card-title">Edit Produk</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="ec-vendor-upload-detail">
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
-                                                <label for="nama_produk" class="form-label">Nama Produk</label>
-                                                <input type="text" class="form-control slug-title" id="nama_produk" name="nama_produk" value="<?= $barang['nama_barang'] ?>">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label">Kategori</label>
-                                                <select name="select_kategori" id="select_kategori" class="form-select">
-                                                    <option value="" selected disabled>Pilih Kategori</option>
-                                                    <?php foreach ($kategori as $key => $kt) : ?>
-                                                        <option <?= $barang['id_kategori_brg'] == $kt['id_kategori_brg'] ? "selected" : "" ?> value="<?= $kt['id_kategori_brg'] ?>"><?= $kt['nama_kategori_brg'] ?></option>
-                                                    <?php endforeach ?>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="barcode" class="col-12 col-form-label">Barcode</label>
-                                                <div class="col-12">
-                                                    <input id="barcode" name="barcode" class="form-control" type="text" value="<?= $barang['barcode'] ?>">
+                        <div class="card pb-4">
+                            <div class="card-body">
+                                <div class="container mt-4">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="ec-vendor-upload-detail">
+                                                <div class="row g-3">
+                                                    <div class="col-md-6">
+                                                        <label for="nama_produk" class="form-label">Nama Produk</label>
+                                                        <input type="hidden" name="id_brg" id="id_brg" value="<?= $barang['id_brg'] ?>">
+                                                        <input type="text" class="form-control slug-title" id="nama_produk" name="nama_produk" value="<?= $barang['nama_barang'] ?>">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Kategori</label>
+                                                        <select name="select_kategori" id="select_kategori" class="form-select">
+                                                            <option value="" selected disabled>Pilih Kategori</option>
+                                                            <?php foreach ($kategori as $key => $kt) : ?>
+                                                                <option <?= $barang['id_kategori_brg'] == $kt['id_kategori_brg'] ? "selected" : "" ?> value="<?= $kt['id_kategori_brg'] ?>"><?= $kt['nama_kategori_brg'] ?></option>
+                                                            <?php endforeach ?>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="barcode" class="col-12 col-form-label">Barcode</label>
+                                                        <div class="col-12">
+                                                            <input id="barcode" name="barcode" class="form-control" type="text" value="<?= $barang['barcode'] ?>">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <label for="stock_brg" class="col-12 col-form-label">Stock Awal</label>
+                                                        <div class="col-12">
+                                                            <input id="stock_brg" name="stock_brg" class="form-control" type="text" value="<?= $barang['stock_brg'] ?>">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="select_satuan" class="col-12 col-form-label">Satuan</label>
+                                                        <div class="col-12">
+                                                            <select name="select_satuan" id="select_satuan" class="form-select">
+                                                                <option value="" selected disabled>Pilih Satuan</option>
+                                                                <?php foreach ($satuan as $key => $st) : ?>
+                                                                    <option <?= $barang['id_satuan'] == $st['id_satuan'] ? "selected" : "" ?> value="<?= $st['id_satuan'] ?>"><?= $st['nama_satuan'] ?></option>
+                                                                <?php endforeach ?>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="alert_quantity" class="form-label">Alert Jumlah</label>
+                                                        <input id="alert_quantity" name="alert_quantity" class="form-control" type="text" value="<?= $barang['alert_quantity'] ?>">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="select_supplier" class="form-label">Pilih Supplier</label>
+                                                        <select name="select_supplier" id="select_supplier" class="form-select">
+                                                            <option value="" selected disabled>Pilih Supplier</option>
+                                                            <?php foreach ($supplier as $key => $sp) : ?>
+                                                                <option <?= $barang['id_supplier'] == $sp['id_supplier'] ? "selected" : "" ?> value="<?= $sp['id_supplier'] ?>"><?= $sp['nama_supplier'] ?></option>
+                                                            <?php endforeach ?>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <label for="description" class="form-label">Short Description</label>
+                                                        <textarea id="description" name="description" class="form-control" rows="3"><?= $barang['description'] ?></textarea>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Upload Gambar</label>
+                                                        <input class="form-control" type="file" id="formFile" name="fileUpload" onchange="preview()" accept=".png,.jpg,.jpeg">
+                                                        <button type="button" onclick="clearImage()" class="btn btn-danger mt-3">Clear Image</button>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <img id="frame" src="" class="img-fluid" />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <label for="stock_brg" class="col-12 col-form-label">Stock Awal</label>
-                                                <div class="col-12">
-                                                    <input id="stock_brg" name="stock_brg" class="form-control" type="text" value="<?= $barang['stock_brg'] ?>">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label for="select_satuan" class="col-12 col-form-label">Satuan</label>
-                                                <div class="col-12">
-                                                    <select name="select_satuan" id="select_satuan" class="form-select">
-                                                        <option value="" selected disabled>Pilih Satuan</option>
-                                                        <?php foreach ($satuan as $key => $st) : ?>
-                                                            <option <?= $barang['id_satuan'] == $st['id_satuan'] ? "selected" : "" ?> value="<?= $st['id_satuan'] ?>"><?= $st['nama_satuan'] ?></option>
-                                                        <?php endforeach ?>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="alert_quantity" class="form-label">Alert Jumlah</label>
-                                                <input id="alert_quantity" name="alert_quantity" class="form-control" type="text" value="<?= $barang['alert_quantity'] ?>">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="select_supplier" class="form-label">Pilih Supplier</label>
-                                                <select name="select_supplier" id="select_supplier" class="form-select">
-                                                    <option value="" selected disabled>Pilih Supplier</option>
-                                                    <?php foreach ($supplier as $key => $sp) : ?>
-                                                        <option <?= $barang['id_supplier'] == $sp['id_supplier'] ? "selected" : "" ?> value="<?= $sp['id_supplier'] ?>"><?= $sp['nama_supplier'] ?></option>
-                                                    <?php endforeach ?>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <label for="description" class="form-label">Sort Description</label>
-                                                <textarea id="description" name="description" class="form-control" rows="3"><?= $barang['description'] ?></textarea>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label">Upload Gambar</label>
-                                                <input class="form-control" type="file" id="formFile" onchange="preview()" accept=".png,.jpg,.jpeg">
-                                                <button type="button" onclick="clearImage()" class="btn btn-danger mt-3">Clear Image</button>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <img id="frame" src="" class="img-fluid" />
                                             </div>
                                         </div>
                                     </div>
@@ -111,9 +141,6 @@
             <div class="row mt-3">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Info Produk</h3>
-                        </div>
                         <div class="card-body">
                             <div class="container mt-4">
                                 <div class="row">
@@ -205,9 +232,22 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Ubah Produk</button>
-                            <button type="reset" class="btn me-auto" data-bs-dismiss="modal">Reset</button>
+                        <div class="card-footer justify-content-center align-items-center" style="border-top: 0 solid #e6e7e9 !important">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="d-grid">
+                                        <button type="submit" id="btn-submit" class="btn btn-primary btn-block">
+                                            <svg xmlns="http://www.w3.org/2000/svg" id="btn-svg" class="icon icon-tabler icon-tabler-circle-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                <circle cx="12" cy="12" r="9"></circle>
+                                                <path d="M9 12l2 2l4 -4"></path>
+                                            </svg>
+                                            <span id="btn-icon"></span>
+                                            <span id="btn-text">Ubah Data</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -231,18 +271,22 @@
     var kategori = new Choices(document.getElementById('select_kategori'));
     var supplier = new Choices(document.getElementById('select_supplier'));
     var satuan = new Choices(document.getElementById('select_satuan'));
+
+    function roundToNearest(value, nearest) {
+        return Math.round(value / nearest) * nearest;
+    }
+
     $(document).ready(function() {
         $("#hpp").on("input", function() {
             var hppValue = parseFloat($(this).val());
             var markup = $("#markup_barang").val();
-            $("#harga_jual_barang").val(hppValue);
-            $("#total_jual").val(hppValue);
+            $("#harga_jual_barang").val(roundToNearest(hppValue, 500)); // Memperbarui dengan ribuan atau kelipatan 500 terdekat
+            $("#total_jual").val(roundToNearest(hppValue, 500)); // Memperbarui dengan ribuan atau kelipatan 500 terdekat
 
             if (!isNaN(markup) && markup != "") {
                 var hargaJual = hppValue * (1 + markup / 100);
-                hargaJual = hargaJual.toFixed(2);
-                $("#harga_jual_barang").val(hargaJual);
-                $("#total_jual").val(hargaJual);
+                $("#harga_jual_barang").val(roundToNearest(hargaJual, 500)); // Memperbarui dengan ribuan atau kelipatan 500 terdekat
+                $("#total_jual").val(roundToNearest(hargaJual, 500)); // Memperbarui dengan ribuan atau kelipatan 500 terdekat
             }
         });
 
@@ -253,12 +297,11 @@
             if (!isNaN(markup) && !isNaN(hpp)) {
                 // Menghitung harga jual
                 var hargaJual = hpp * (1 + markup / 100);
-                hargaJual = hargaJual.toFixed(2);
-                $("#harga_jual_barang").val(hargaJual);
-                $("#total_jual").val(hargaJual);
+                $("#harga_jual_barang").val(roundToNearest(hargaJual, 500)); // Memperbarui dengan ribuan atau kelipatan 500 terdekat
+                $("#total_jual").val(roundToNearest(hargaJual, 500)); // Memperbarui dengan ribuan atau kelipatan 500 terdekat
             } else {
-                $("#harga_jual_barang").val(hpp);
-                $("#total_jual").val(hpp);
+                $("#harga_jual_barang").val(roundToNearest(hpp, 500)); // Memperbarui dengan ribuan atau kelipatan 500 terdekat
+                $("#total_jual").val(roundToNearest(hpp, 500)); // Memperbarui dengan ribuan atau kelipatan 500 terdekat
             }
         });
 
@@ -279,9 +322,9 @@
                 if (ppnOption === "Y") {
                     // Jika opsi PPN dipilih, tambahkan 10% PPN
                     hargaJual += hargaJual * 0.10; // 10% PPN dalam bentuk desimal
-                    $("#total_jual").val(hargaJual);
+                    $("#total_jual").val(roundToNearest(hargaJual, 500)); // Memperbarui dengan ribuan atau kelipatan 500 terdekat
                 } else {
-                    $("#total_jual").val(hargaJual);
+                    $("#total_jual").val(roundToNearest(hargaJual, 500)); // Memperbarui dengan ribuan atau kelipatan 500 terdekat
                 }
             }
         });

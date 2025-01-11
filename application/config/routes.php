@@ -49,9 +49,14 @@ defined('BASEPATH') or exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
+$route['login_kasir'] = 'login/login_kasir';
+
+$route['profile'] = 'akun/profile';
+$route['sandi'] = 'akun/sandi';
 $route['testing'] = 'login/testing';
 
 $route['alamat'] = 'home/alamat';
+$route['report'] = 'home/report';
 
 $route['pesanan_user'] = 'pesanan/user';
 
@@ -59,9 +64,34 @@ $route['create_invoice'] = 'pesanan/create_invoice';
 $route['verifikasi/(:any)'] = 'register/verifikasi/$1';
 
 $route['product/pemesanan/add'] = 'product/tambah_pemesanan';
+$route['product/pemesanan/ubah/(:num)'] = 'product/edit_pemesanan/$1';
+$route['product/pemesanan/lihat/(:num)'] = 'product/lihat_pemesanan/$1';
+$route['product/pemesanan/cetak/(:num)'] = 'product/cetak_pemesanan/$1';
+
+$route['pesanan/autodebit'] = 'autodebit/index';
+$route['pesanan/autodebit/lunas'] = 'autodebit/lunas';
 
 $route['default_controller'] = 'login';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['keranjang/add_keranjang'] = 'keranjang/add';
+
+$route['product/opname/tambah'] = 'product/tambah_opname';
+$route['product/opname/delete/(:num)'] = 'product/delete_opname/$1';
+$route['product/opname/json'] = 'product/json_opname';
+$route['product/opname/input_fisik'] = 'product/input_fisik';
+$route['product/opname/simpan_fisik/(:num)'] = 'product/simpan_fisik/$1';
+$route['product/opname/json_temp_fisik'] = 'product/json_temp_fisik';
+$route['product/opname/update_temp_fisik'] = 'product/update_temp_fisik';
+$route['product/opname/delete_temp_fisik/(:num)'] = 'product/delete_temp_fisik/$1';
+
+$route['product/opname/json_temp_rusak'] = 'product/json_temp_rusak';
+$route['product/opname/input_rusak'] = 'product/input_rusak';
+$route['product/opname/simpan_spoil/(:num)'] = 'product/simpan_spoil/$1';
+$route['product/opname/update_temp_rusak'] = 'product/update_temp_rusak';
+$route['product/opname/delete_temp_spoil/(:num)'] = 'product/delete_temp_spoil/$1';
+
+$route['product/opname/simpan'] = 'product/simpan_opname';
+$route['product/opname/detail/(:num)'] = 'product/detail_opname/$1';
+$route['product/opname/ubah/(:num)'] = 'product/ubah_opname/$1';

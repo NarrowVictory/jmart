@@ -15,18 +15,12 @@ $segment = $this->uri->segment(1);
             </a>
          </div>
          <div class="col-2">
-            <a href="<?= base_url('chat') ?>" class="footer-nav__link <?= $segment == 'chat' ? '_active' : '' ?>">
-               <i class="fa fa-comment" style="font-size: 24px;margin-top: 10px;margin-bottom: 0px;"></i>
-               <span style="font-size: 12px;">Chat</span>
-            </a>
-         </div>
-         <div class="col-2">
             <a href="<?= base_url('pesanan_user') ?>" class="footer-nav__link <?= $segment == 'pesanan_user' ? '_active' : '' ?>">
                <i class="fa fa-shopping-cart" style="font-size: 24px;margin-top: 10px;margin-bottom: 0px;"></i>
                <span style="font-size: 12px;">Pesanan</span>
             </a>
          </div>
-         <div class="col-2">
+         <div class="col-4">
             <a href="<?= base_url('map') ?>" class="footer-nav__link <?= $segment == 'map' ? '_active' : '' ?>">
                <span class="greeting-cs bg-transparent" style="text-align:center !important;display: inline-block !important;">
                   <i class="fa fa-map-marker" style="font-size: 24px;margin-top: 10px;margin-bottom: 0px;"></i>
